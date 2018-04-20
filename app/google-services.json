@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1023151485778",
+    "firebase_url": "https://picapp-4a6d8.firebaseio.com",
+    "project_id": "picapp-4a6d8",
+    "storage_bucket": "picapp-4a6d8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1023151485778:android:16fc84d91486d5d1",
+        "android_client_info": {
+          "package_name": "com.picapp.picapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1023151485778-rg5o85u7snm1hg7a6smmogsa34dn34sh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.picapp.picapp",
+            "certificate_hash": "9101c9de9f7cbce90895600d141bc003fd71235d"
+          }
+        },
+        {
+          "client_id": "1023151485778-7h1ok5g8oobomdj103e352o8ps5mr614.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNOIJo0xpPtmz96a886zU_8da8gryXFIE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1023151485778-7h1ok5g8oobomdj103e352o8ps5mr614.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

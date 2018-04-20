@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">PicApp</string>
+    <string name="register_title">Entrá a tu Cuenta</string>
+    <string name="register_text">Logueate para ver fotos y videos de tus amigos.</string>
+    <string name="login_title">Abre una Cuenta</string>
+    <string name="login_text">Registrate para ver fotos y videos de tus amigos.</string>
+    <string name="login_button">Login</string>
+    <string name="username_text">Username</string>
+    <string name="password_text">Password</string>
+    <string name="registro_text">Registrarte</string>
+    <string name="nueva_cuenta_button">Crear una Cuenta</string>
+    <string name="nueva_cuenta_text">¿No tenés una cuenta?</string>
+    <string name="email_text">Email</string>
 </resources>

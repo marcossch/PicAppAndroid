@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/drawer_layout"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+<!--el fondo se carga desde el MainActivity-->
+    <ImageView
+        android:id="@+id/signinBac"
+        android:layout_width="match_parent"
+        android:layout_height="566dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background" />
+
+
+    <ImageView
+        android:id="@+id/signinLogo"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/picapp_logo" />
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/signinLogo"
+    android:id="@+id/scrollView">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/trans_white_rect"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login_title"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login_text"
+            android:textColor="#ffffff"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginBottom="30dp"/>
+
+        <AutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="@string/email_text"
+            android:background="@drawable/rounded_white"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:drawableStart="@drawable/icon_user"
+            android:textSize="14sp"
+            android:drawablePadding="5dp"
+            android:paddingStart="10dp"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/loginEmailText"/>
+
+        <AutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="@string/password_text"
+            android:background="@drawable/rounded_white"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:drawableStart="@drawable/icon_lock"
+            android:textSize="14sp"
+            android:drawablePadding="5dp"
+            android:paddingStart="10dp"
+            android:inputType="textPassword"
+            android:id="@+id/loginPasswordText"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:textColor="#ffffff"
+            android:text="@string/login_button"
+            android:textStyle="normal"
+            android:background="@drawable/register_button"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:id="@+id/loginBtn"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nueva_cuenta_text"
+            android:textColor="#ffffff"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:layout_marginBottom="7dp"
+            android:layout_marginTop="35dp"/>
+
+        <Button
+            android:layout_width="200dp"
+            android:layout_height="30dp"
+            android:textColor="#ffffff"
+            android:text="@string/nueva_cuenta_button"
+            android:textStyle="normal"
+            android:background="@drawable/new_account_button"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:id="@+id/loginRegisterBtn"
+            />
+
+
+    </LinearLayout>
+
+</ScrollView>
+
+    <ProgressBar
+        android:id="@+id/loginProgress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="29dp"
+        android:layout_height="25dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp"
+        android:visibility="invisible"
+        android:indeterminate="true"/>
+
+</RelativeLayout>
