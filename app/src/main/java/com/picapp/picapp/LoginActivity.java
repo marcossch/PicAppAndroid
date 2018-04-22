@@ -36,12 +36,21 @@ public class LoginActivity extends AppCompatActivity {
         //instacia de firebase
         mAuth = FirebaseAuth.getInstance();
 
-        //levanto todos los botones
+        //levanto todos los botones y textos
         loginEmailText = (EditText) findViewById(R.id.loginEmailText);
         loginPasswordText = (EditText) findViewById(R.id.loginPasswordText);
         loginBtn = (Button) findViewById(R.id.loginBtn);
         loginRegisterBtn = (Button) findViewById(R.id.loginRegisterBtn);
         loginProgress = (ProgressBar) findViewById(R.id.loginProgress);
+
+        loginRegisterBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                sendToRegister();
+
+            }
+        });
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +89,9 @@ public class LoginActivity extends AppCompatActivity {
                     });
 
                 }
+                else{
+                    Toast.makeText(LoginActivity.this, "Error : campos vacios", Toast.LENGTH_LONG).show();
+                }
 
             }
         });
@@ -106,6 +118,13 @@ public class LoginActivity extends AppCompatActivity {
         Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(mainIntent);
         finish();
+
+    }
+
+    private void sendToRegister() {
+
+        Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+        startActivity(registerIntent);
 
     }
 }
