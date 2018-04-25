@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/greyBackground">
+    android:background="@color/greyBackground"
+    tools:context=".ProfileActivity"
+    >
 
     <!-- IMAGEN PRINCIPAL -->
     <TextView
@@ -28,7 +29,7 @@
             android:src="@drawable/pp"
             app:civ_border_color="@color/white"
             app:civ_border_width="2dp"/>
--->
+        -->
 
     </TextView>
 
@@ -178,8 +179,6 @@
 
     </LinearLayout>
 
-
-
     <!--<LinearLayout
         android:id="@+id/contButts"
         android:layout_width="match_parent"
@@ -263,4 +262,3 @@
     </LinearLayout>
 -->
 </RelativeLayout>
-

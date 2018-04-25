@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+<item android:state_enabled="false" android:drawable="@drawable/icon_unfollow">
+    <shape>
+        <solid android:color="#D50000"/>
+    </shape>
+</item>
+
+<item android:state_pressed="true" android:drawable="@drawable/icon_follow">
+    <shape>
+        <solid android:color="#00796B"/>
+    </shape>
+</item>
+
+</selector>
