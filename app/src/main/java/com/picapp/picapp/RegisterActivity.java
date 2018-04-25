@@ -78,7 +78,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                                     //si se registro bien lo mando a la actividad principal
                                     //esto hay que cambiarlo
-                                    sendToMain();
+                                    sendToLogin();
 
                                 } else {
 

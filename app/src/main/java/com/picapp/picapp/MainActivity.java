@@ -1,11 +1,16 @@
 package com.picapp.picapp;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -16,6 +21,13 @@ public class MainActivity extends AppCompatActivity {
     private android.support.v7.widget.Toolbar mainToolbar;
 
     private FirebaseAuth mAuth;
+
+    private BottomNavigationView mMainNav;
+    private FrameLayout mMainFrame;
+
+    private FeedFragment feedFragment;
+    private FlashesFragment flashesFragment;
+    private ProfileFragment profileFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +42,21 @@ public class MainActivity extends AppCompatActivity {
         mainToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mainToolbar);
         getSupportActionBar().setTitle("PicApp");
+
+        //frame principal
+        mMainFrame = (FrameLayout) findViewById(R.id.main_frame);
+        //barra de navegacion
+        mMainNav = (BottomNavigationView) findViewById(R.id.main_nav);
+        mMainNav.setOnNavigationItemSelectedListener(navListener);
+
+        //inicializo los fragments
+        feedFragment= new FeedFragment();
+        flashesFragment = new FlashesFragment();
+        profileFragment = new ProfileFragment();
+
+        //por default va al feed
+        setFragment(feedFragment);
+
 
     }
 
@@ -71,6 +98,33 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    //cambio de fragments principales
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    switch (item.getItemId()){
+
+                        case R.id.nav_feed :
+                            setFragment(feedFragment);
+                            return true;
+
+
+                        case R.id.nav_flashes:
+                            setFragment(flashesFragment);
+                            return true;
+
+
+                        case R.id.nav_profile:
+                            setFragment(profileFragment);
+                            return true;
+
+                        default:
+                            return false;
+
+                    }
+                }
+            };
 
     //--------------Metodos Privados-------------//
 
@@ -89,4 +143,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void setFragment(Fragment fragment) {
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.main_frame, fragment);
+
+    }
 }

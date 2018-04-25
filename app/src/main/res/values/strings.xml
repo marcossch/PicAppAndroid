@@ -17,4 +17,8 @@
     <string name="cuenta_vieja_text">¿Ya tenés una cuenta?</string>
     <string name="vieja_cuenta_button">Entrar con tu Cuenta</string>
     <string name="password2_text">Confirm Password</string>
+    <string name="nav_feed">Feed</string>
+    <string name="nav_flashes">Flashes</string>
+    <string name="nav_profile">Profile</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
