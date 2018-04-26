@@ -24,7 +24,9 @@
             android:name=".LoginActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".FlashesActivity" />
+        <activity android:name=".FeedActivity"></activity>
     </application>
 
 </manifest>

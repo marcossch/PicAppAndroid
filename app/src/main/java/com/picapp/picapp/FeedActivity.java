@@ -7,43 +7,35 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.firebase.auth.FirebaseAuth;
+
+public class FeedActivity extends AppCompatActivity {
+
+    private android.support.v7.widget.Toolbar mainToolbar;
 
     private FirebaseAuth mAuth;
+
+    private BottomNavigationView mMainNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //cambiar esto a activity_main
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_feed);
 
         //instacia de firebase
         mAuth = FirebaseAuth.getInstance();
 
+        //levanta la toolbar
+        mainToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(mainToolbar);
+        getSupportActionBar().setTitle("PicApp");
 
-    }
+        //barra de navegacion
+        mMainNav = (BottomNavigationView) findViewById(R.id.main_nav);
+        mMainNav.setOnNavigationItemSelectedListener(navListener);
+        mMainNav.setSelectedItemId(R.id.nav_feed);
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        //chequea si el usuario ya esta logueado
-        // si no lo esta lo manda a la pagina de login
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        if (currentUser != null) {
-            // User is signed in entonces va al feed
-            Intent feedIntent = new Intent(MainActivity.this, FeedActivity.class);
-            sendTo(feedIntent);
-        } else {
-            // No user is signed in
-            Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
-            sendTo(loginIntent);
-        }
     }
 
     @Override
@@ -75,18 +67,19 @@ public class MainActivity extends AppCompatActivity {
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     switch (item.getItemId()){
 
-                        case R.id.nav_feed :
-
+                        case R.id.nav_feed:
                             return true;
 
 
                         case R.id.nav_flashes:
-
+                            Intent flashesIntent = new Intent(FeedActivity.this, FlashesActivity.class);
+                            sendTo(flashesIntent);
                             return true;
 
 
                         case R.id.nav_profile:
-
+                            Intent profileIntent = new Intent(FeedActivity.this, ProfileActivity.class);
+                            sendTo(profileIntent);
                             return true;
 
                         default:
@@ -101,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     private void logout() {
 
         mAuth.signOut();
-        Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+        Intent loginIntent = new Intent(FeedActivity.this, LoginActivity.class);
         sendTo(loginIntent);
 
     }

@@ -1,11 +1,13 @@
 package com.picapp.picapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -43,6 +45,9 @@ public class LoginActivity extends AppCompatActivity {
         loginRegisterBtn = (Button) findViewById(R.id.loginRegisterBtn);
         loginProgress = (ProgressBar) findViewById(R.id.loginProgress);
 
+        hideSoftKeyboard(loginEmailText);
+        hideSoftKeyboard(loginPasswordText);
+
         loginRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                             if(task.isSuccessful()){
 
                                 //si se logueo bien lo mando a la actividad principal
-                                sendToMain();
+                                sendToFeed();
 
                             } else {
 
@@ -107,16 +112,16 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             // Si el usuario esta logueado lo mando a la actividad principal
-            sendToMain();
+            sendToFeed();
 
         }
 
     }
 
-    private void sendToMain() {
+    private void sendToFeed() {
 
-        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(mainIntent);
+        Intent feedIntent = new Intent(LoginActivity.this, FeedActivity.class);
+        startActivity(feedIntent);
         finish();
 
     }
@@ -126,5 +131,11 @@ public class LoginActivity extends AppCompatActivity {
         Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(registerIntent);
 
+    }
+
+    //escondo el teclado
+    public void hideSoftKeyboard(EditText myEditText) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(myEditText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }

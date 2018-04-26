@@ -6,24 +6,20 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
 
-
-public class ProfileActivity extends AppCompatActivity {
+public class FlashesActivity extends AppCompatActivity {
 
     private BottomNavigationView mMainNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_flashes);
 
         //barra de navegacion
         mMainNav = (BottomNavigationView) findViewById(R.id.main_nav);
         mMainNav.setOnNavigationItemSelectedListener(navListener);
-        mMainNav.setSelectedItemId(R.id.nav_profile);
+        mMainNav.setSelectedItemId(R.id.nav_flashes);
 
     }
 
@@ -35,19 +31,19 @@ public class ProfileActivity extends AppCompatActivity {
                     switch (item.getItemId()){
 
                         case R.id.nav_feed :
-                            Intent feedIntent = new Intent(ProfileActivity.this, FeedActivity.class);
+                            Intent feedIntent = new Intent(FlashesActivity.this, FeedActivity.class);
                             sendTo(feedIntent);
                             return true;
 
 
                         case R.id.nav_flashes:
-                            Intent flashesIntent = new Intent(ProfileActivity.this, FlashesActivity.class);
-                            sendTo(flashesIntent);
+
                             return true;
 
 
                         case R.id.nav_profile:
-
+                            Intent profileIntent = new Intent(FlashesActivity.this, ProfileActivity.class);
+                            sendTo(profileIntent);
                             return true;
 
                         default:
@@ -57,26 +53,6 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             };
 
-        /*Button btn = (Button) findViewById(R.id.floatingActionButton);
-        btn.setBackgroundResource(R.drawable.icon_unfollow);
-        btn.setOnTouchListener(new View.OnTouchListener() {
-            @Override    public boolean onTouch(View v, MotionEvent event) {
-
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    btn.setBackgroundResource(R.drawable.icon_follow);
-                }
-                if (event.getAction() ==MotionEvent.AXIS_PRESSURE){
-                    btn.setBackgroundResource(R.drawable.icon_follow);
-                }
-                else {
-                    btn.setBackgroundResource(R.drawable.icon_unfollow);
-                }
-                return false;
-            }
-        });*/
-    //}
-
-
     //--------------Metodos Privados-------------//
 
     private void sendTo(Intent intent) {
@@ -85,5 +61,4 @@ public class ProfileActivity extends AppCompatActivity {
         finish();
 
     }
-
 }

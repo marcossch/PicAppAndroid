@@ -1,11 +1,13 @@
 package com.picapp.picapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -44,6 +46,10 @@ public class RegisterActivity extends AppCompatActivity {
         registerBtn = (Button) findViewById(R.id.registerBtn);
         registerLoginBtn = (Button) findViewById(R.id.registerRegisterBtn);
         registerProgress = (ProgressBar) findViewById(R.id.registerProgress);
+
+        hideSoftKeyboard(registerEmailText);
+        hideSoftKeyboard(registerPasswordText);
+        hideSoftKeyboard(registerConfirmPasswordText);
 
         registerLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,6 +142,12 @@ public class RegisterActivity extends AppCompatActivity {
         Intent loginIntent = new Intent(RegisterActivity.this, LoginActivity.class);
         startActivity(loginIntent);
 
+    }
+
+    //escondo el teclado
+    public void hideSoftKeyboard(EditText myEditText) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(myEditText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
 }
