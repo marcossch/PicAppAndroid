@@ -23,6 +23,7 @@ android:layout_height="match_parent">
         android:scaleType="fitCenter"
         android:src="@drawable/picapp_logo" />
 
+
 <ScrollView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -46,18 +47,47 @@ android:layout_height="match_parent">
             android:textStyle="bold"
             android:paddingRight="10dp"
             android:paddingLeft="10dp"
-            android:paddingTop="10dp"/>
+            android:id="@+id/intro_text"
+            android:layout_marginBottom="10dp"/>
+
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/login_text"
+            android:text="@string/google_text"
             android:textColor="#ffffff"
             android:textSize="12sp"
             android:textStyle="normal"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:layout_marginBottom="30dp"/>
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"/>
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/googleBtn"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#80ffffff" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/user_login_text"
+            android:textColor="#ffffff"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="10dp"/>
 
         <AutoCompleteTextView
             android:layout_width="match_parent"
@@ -88,17 +118,16 @@ android:layout_height="match_parent">
             android:id="@+id/loginPasswordText"/>
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:textColor="#ffffff"
-            android:text="@string/login_button"
-            android:textStyle="normal"
-            android:background="@drawable/register_button"
-            android:layout_gravity="center"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="20dp"
             android:id="@+id/loginBtn"
-            />
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="45dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/register_button"
+            android:text="@string/login_button"
+            android:textColor="#ffffff"
+            android:textStyle="normal" />
 
         <TextView
             android:layout_width="match_parent"
@@ -107,8 +136,7 @@ android:layout_height="match_parent">
             android:textColor="#ffffff"
             android:textSize="12sp"
             android:gravity="center"
-            android:layout_marginBottom="7dp"
-            android:layout_marginTop="35dp"/>
+            android:layout_marginBottom="7dp" />
 
         <Button
             android:layout_width="200dp"
@@ -118,14 +146,14 @@ android:layout_height="match_parent">
             android:textStyle="normal"
             android:background="@drawable/new_account_button"
             android:layout_gravity="center"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="5dp"
             android:id="@+id/loginRegisterBtn"
             />
 
-
     </LinearLayout>
 
-</ScrollView>
+    </ScrollView>
+
 
     <ProgressBar
         android:id="@+id/loginProgress"

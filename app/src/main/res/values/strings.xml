@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">PicApp</string>
-    <string name="login_title">Entrá a tu Cuenta</string>
+    <string name="login_title">Logueate a tu Cuenta</string>
     <string name="register_text">Registrate para ver fotos y videos de tus amigos.</string>
     <string name="register_title">Abrí una Cuenta</string>
     <string name="login_text">Logueate para ver fotos y videos de tus amigos.</string>
@@ -21,4 +21,6 @@
     <string name="nav_flashes">Flashes</string>
     <string name="nav_profile">Profile</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="google_text">Entrá con tu cuenta de google</string>
+    <string name="user_login_text">O con tu usuario y contraseña</string>
 </resources>

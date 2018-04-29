@@ -26,7 +26,7 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".FlashesActivity" />
-        <activity android:name=".FeedActivity"></activity>
+        <activity android:name=".FeedActivity" />
     </application>
 
 </manifest>
