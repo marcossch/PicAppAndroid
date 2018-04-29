@@ -55,10 +55,15 @@ public class FeedActivity extends AppCompatActivity {
 
             case R.id.action_logout_btn:
                 logout();
+
+            case R.id.action_setting_btn:
+                Intent accSettings = new Intent(FeedActivity.this, AccountSettingsActivity.class);
+                sendTo(accSettings);
         }
 
         return false;
     }
+
 
     //cambio de activities principales
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =

@@ -34,7 +34,6 @@
             android:background="@drawable/pp"
             android:paddingTop="10dp"></TextView>
 
-
         <!-- BOTON SEGUIMIENTO -->
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/floatingActionButton"
