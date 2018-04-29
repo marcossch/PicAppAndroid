@@ -8,10 +8,5 @@
         android:title="@string/aceptar"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/cancel"
-        android:icon="@drawable/icon_unfollow"
-        android:title="@string/aceptar"
-        app:showAsAction="always" />
 
 </menu>

@@ -32,6 +32,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
         mainToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mainToolbar);
         getSupportActionBar().setTitle("PicApp");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //levanto las imagenes y text
         profileImage = findViewById(R.id.contenedorPresentacion);
@@ -82,8 +83,6 @@ public class AccountSettingsActivity extends AppCompatActivity {
             case R.id.save_changes:
                 //actualizar el servidor
                 //actualizar firebase
-
-            case R.id.cancel:
 
         }
 
