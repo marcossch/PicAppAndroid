@@ -146,7 +146,7 @@ android:layout_height="match_parent">
             android:textStyle="normal"
             android:background="@drawable/new_account_button"
             android:layout_gravity="center"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="20dp"
             android:id="@+id/loginRegisterBtn"
             />
 

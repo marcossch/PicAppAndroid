@@ -55,10 +55,12 @@ public class FeedActivity extends AppCompatActivity {
 
             case R.id.action_logout_btn:
                 logout();
+                return true;
 
             case R.id.action_setting_btn:
                 Intent accSettings = new Intent(FeedActivity.this, AccountSettingsActivity.class);
                 sendTo(accSettings);
+                return true;
         }
 
         return false;
