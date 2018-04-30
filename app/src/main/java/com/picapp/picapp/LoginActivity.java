@@ -112,49 +112,51 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-//        loginBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                String loginEmail = loginEmailText.getText().toString();
-//                String loginPassword = loginPasswordText.getText().toString();
-//
-//                //si el email y la pass son no vacios
-//                if(!TextUtils.isEmpty(loginEmail) && !TextUtils.isEmpty(loginPassword)){
-//
-//                    //que se ve la barra de progreso
-//                    loginProgress.setVisibility(View.VISIBLE);
-//
-//                    mAuth.signInWithEmailAndPassword(loginEmail, loginPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<AuthResult> task) {
-//
-//                            if(task.isSuccessful()){
-//
-//                                //si se logueo bien lo mando a la actividad principal
-//                                sendToFeed();
-//
-//                            } else {
-//
-//                                //aca hay que manejar el error
-//                                String errorMessage = task.getException().getMessage();
-//                                Toast.makeText(LoginActivity.this, "Error : " + errorMessage, Toast.LENGTH_LONG).show();
-//
-//                            }
-//
-//                            //escondo la barra de progreso
-//                            loginProgress.setVisibility(View.INVISIBLE);
-//
-//                        }
-//                    });
-//
-//                }
-//                else{
-//                    Toast.makeText(LoginActivity.this, "Error : campos vacios", Toast.LENGTH_LONG).show();
-//                }
-//
-//            }
-//        });
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String loginEmail = loginEmailText.getText().toString();
+                String loginPassword = loginPasswordText.getText().toString();
+
+                //si el email y la pass son no vacios
+                if(!TextUtils.isEmpty(loginEmail) && !TextUtils.isEmpty(loginPassword)){
+
+                    //que se ve la barra de progreso
+                    loginProgress.setVisibility(View.VISIBLE);
+
+                    mAuth.signInWithEmailAndPassword(loginEmail, loginPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+
+                            if(task.isSuccessful()){
+
+                                //actualizar el server
+
+                                //si se logueo bien lo mando a la actividad principal
+                                sendToFeed();
+
+                            } else {
+
+                                //aca hay que manejar el error
+                                String errorMessage = task.getException().getMessage();
+                                Toast.makeText(LoginActivity.this, "Error : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                            }
+
+                            //escondo la barra de progreso
+                            loginProgress.setVisibility(View.INVISIBLE);
+
+                        }
+                    });
+
+                }
+                else{
+                    Toast.makeText(LoginActivity.this, "Error : campos vacios", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
 
     }
 
