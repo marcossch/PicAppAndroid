@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<selector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <item
+        android:state_pressed="false"
+        android:drawable="@drawable/icon_unfollow"
+        app:backgroundTint="@color/redF">
+
+    </item>
+
+    <item
+        android:state_pressed="true"
+        android:drawable="@drawable/icon_follow"
+        app:backgroundTint="@color/greenF">
+    </item>
+
+</selector>

@@ -1,12 +1,14 @@
 package com.picapp.picapp;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 
 import android.view.MenuItem;
 import android.text.TextUtils;
@@ -18,11 +20,30 @@ import android.widget.Button;
 public class ProfileActivity extends AppCompatActivity {
 
     private BottomNavigationView mMainNav;
-
+    private FloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+
+        //Boton de seguimiento
+
+        fab = (FloatingActionButton) findViewById(R.id.fabFriends);
+        fab.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if(event.getAction() == MotionEvent.ACTION_UP){
+                    ColorStateList csl = new ColorStateList(new int[][]{new int[0]}, new int[]{0xFF00FF00});
+                    fab.setBackgroundTintList(csl);
+                    fab.setPressed(true);
+                }
+
+                return true;
+            }
+        });
+
 
         //barra de navegacion
         mMainNav = (BottomNavigationView) findViewById(R.id.main_nav);

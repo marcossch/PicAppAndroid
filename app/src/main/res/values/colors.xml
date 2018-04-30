@@ -9,4 +9,8 @@
     <color name="greyBackground">#E0E0E0</color>
     <color name="greyLetter">#616161</color>
     <color name="black">#000000</color>
+
+    <color name="redF">#D50000</color>
+    <color name="greenF">#00796B</color>
+
 </resources>
