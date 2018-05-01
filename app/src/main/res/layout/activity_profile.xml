@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/greyBackground"
+    android:theme="@style/AppTheme"
     >
-
 
     <!--barra de navegacion-->
     <android.support.design.widget.BottomNavigationView
@@ -31,6 +31,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <!-- CONTENEDOR FOTO PERFIL -->
             <LinearLayout
                 android:id="@+id/contenedorFotoPerfil"
                 android:layout_width="match_parent"
@@ -42,7 +43,7 @@
                 android:orientation="horizontal"
                 />
 
-            <!-- CONTENEDOR FOTO PERFIL -->
+            <!-- CONTENEDOR NOMBRE -->
             <RelativeLayout
                 android:id="@+id/contName"
                 android:layout_below="@id/contenedorFotoPerfil"
@@ -96,39 +97,44 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:padding="5dp">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:gravity="center_horizontal"
-                        >
+                        android:orientation="vertical">
 
-                        <TextView
+                        <Button
                             android:id="@+id/friendsNumber"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="0dp"
+
+                            android:backgroundTint="@color/colorPrimary"
+                            android:shadowColor="@color/colorPrimary"
+                            android:outlineProvider="none"
+
                             android:text="12"
                             android:fontFamily="sans-serif-condensed"
-                            android:textStyle="bold"
-                            android:textSize="20sp"
+                            android:textAlignment="center"
                             android:textColor="@color/black"
-                            android:textAlignment="center"/>
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/friendsString"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Amigos"
-                            android:fontFamily="sans-serif-condensed"
-                            android:textColor="@color/black"
                             android:layout_below="@id/friendsNumber"
-                            />
+                            android:fontFamily="sans-serif-condensed"
+                            android:text="Amigos"
+                            android:textColor="@color/black" />
+
                     </LinearLayout>
 
 
@@ -136,29 +142,36 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:padding="5dp">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:gravity="center_horizontal"
                         >
 
-                        <TextView
+                        <Button
                             android:id="@+id/pubNumber"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="0dp"
+
+                            android:backgroundTint="@color/colorPrimary"
+                            android:shadowColor="@color/colorPrimary"
+                            android:outlineProvider="none"
+
+                            android:clickable="false"
                             android:text="2"
                             android:fontFamily="sans-serif-condensed"
-                            android:textStyle="bold"
-                            android:textSize="20sp"
+                            android:textAlignment="center"
                             android:textColor="@color/black"
-                            android:textAlignment="center"/>
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/pubString"
@@ -168,6 +181,7 @@
                             android:fontFamily="sans-serif-condensed"
                             android:textColor="@color/black"
                             android:layout_below="@id/pubNumber"
+
                             />
                     </LinearLayout>
 
@@ -189,9 +203,11 @@
             app:srcCompat="@drawable/friends_button"
             app:layout_anchor="@id/contenedorFotoPerfil"
             app:layout_anchorGravity="bottom|right|end"
-            app:backgroundTint="@color/redF"/>
+            app:backgroundTint="@color/redF"
+            />
 
     </android.support.design.widget.CoordinatorLayout>
+
 
 
 

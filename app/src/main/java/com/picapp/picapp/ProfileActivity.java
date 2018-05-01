@@ -35,7 +35,7 @@ public class ProfileActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
 
                 if(event.getAction() == MotionEvent.ACTION_UP){
-                    ColorStateList csl = new ColorStateList(new int[][]{new int[0]}, new int[]{0xFF00FF00});
+                    ColorStateList csl = new ColorStateList(new int[][]{new int[0]}, new int[]{0xB5137F80});
                     fab.setBackgroundTintList(csl);
                     fab.setPressed(true);
                 }
@@ -44,6 +44,17 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        Button friends = (Button) findViewById(R.id.friendsNumber);
+        friends.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                Intent friendsIntent = new Intent(ProfileActivity.this, FriendsActivity.class);
+                sendTo(friendsIntent);
+
+                return true;
+            }
+        });
 
         //barra de navegacion
         mMainNav = (BottomNavigationView) findViewById(R.id.main_nav);

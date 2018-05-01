@@ -3,8 +3,8 @@
     package="com.picapp.picapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -29,7 +29,8 @@
         <activity android:name=".ProfileActivity" />
         <activity android:name=".FlashesActivity" />
         <activity android:name=".FeedActivity" />
-        <activity android:name=".AccountSettingsActivity"></activity>
+        <activity android:name=".AccountSettingsActivity" />
+        <activity android:name=".FriendsActivity"></activity>
     </application>
 
 </manifest>
