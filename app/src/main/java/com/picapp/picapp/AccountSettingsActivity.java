@@ -61,7 +61,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
 
                         CropImage.activity()
                                 .setGuidelines(CropImageView.Guidelines.ON)
-                                .setAspectRatio(1,1)
+                                .setAspectRatio(6,5)
                                 .start(AccountSettingsActivity.this);
 
                     }
@@ -109,6 +109,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
             case R.id.save_changes:
                 //actualizar el servidor
                 //actualizar firebase
+                return true;
 
         }
 
