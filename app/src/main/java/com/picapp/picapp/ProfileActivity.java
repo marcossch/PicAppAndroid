@@ -117,7 +117,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void sendTo(Intent intent) {
 
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
         finish();
 

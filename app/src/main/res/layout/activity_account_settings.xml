@@ -23,10 +23,11 @@
     <ImageView
         android:layout_below="@id/main_toolbar"
         android:id="@+id/contenedorPresentacion"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
         app:srcCompat="@drawable/cameranext"
-        android:background="#dfdede"/>
+        android:background="#dfdede" />
 
     <TextView
         android:id="@+id/name_text"

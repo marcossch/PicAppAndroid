@@ -31,6 +31,8 @@
         <activity android:name=".FeedActivity" />
         <activity android:name=".AccountSettingsActivity" />
         <activity android:name=".FriendsActivity"></activity>
+        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat"/>
     </application>
 
 </manifest>

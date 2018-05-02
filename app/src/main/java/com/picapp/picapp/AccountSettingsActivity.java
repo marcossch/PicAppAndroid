@@ -3,6 +3,7 @@ package com.picapp.picapp;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -15,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 public class AccountSettingsActivity extends AppCompatActivity {
 
@@ -22,6 +25,8 @@ public class AccountSettingsActivity extends AppCompatActivity {
     private android.support.v7.widget.Toolbar mainToolbar;
 
     private FirebaseAuth mAuth;
+
+    private Uri mainImageURI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +59,10 @@ public class AccountSettingsActivity extends AppCompatActivity {
 
                     } else{
 
-                        Toast.makeText(AccountSettingsActivity.this, "You already have permission.", Toast.LENGTH_LONG).show();
+                        CropImage.activity()
+                                .setGuidelines(CropImageView.Guidelines.ON)
+                                .setAspectRatio(1,1)
+                                .start(AccountSettingsActivity.this);
 
                     }
 
@@ -62,6 +70,24 @@ public class AccountSettingsActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+
+                 mainImageURI = result.getUri();
+                 profileImage.setImageURI(mainImageURI);
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
 
     }
 
