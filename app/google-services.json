@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1023151485778-bcq5map96boggtdtbg8cepnu7qpbd128.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.picapp.picapp",
+            "certificate_hash": "b281986555db869aa87420b0ae283476bd1c178e"
+          }
+        },
+        {
           "client_id": "1023151485778-rg5o85u7snm1hg7a6smmogsa34dn34sh.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

@@ -68,7 +68,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
                         android:fontFamily="sans-serif-condensed"
-                        android:text="Facundo Guerrero"
+                        android:text=""
                         android:textColor="@color/black"
                         android:textSize="28sp"
                         />
