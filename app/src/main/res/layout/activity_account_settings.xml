@@ -46,7 +46,8 @@
     <AutoCompleteTextView
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_below="@id/name_text" />
+        android:layout_below="@id/name_text"
+        android:id="@+id/account_name"/>
 
 
 </RelativeLayout>

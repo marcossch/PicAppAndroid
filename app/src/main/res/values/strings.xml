@@ -11,7 +11,7 @@
     <string name="nueva_cuenta_text">¿No tenés una cuenta?</string>
     <string name="email_text">Email</string>
     <string name="action_search_text">Search</string>
-    <string name="action_account_settings">Acount Settings</string>
+    <string name="action_account_settings">Editar Cuenta</string>
     <string name="action_logout_text">Logout</string>
     <string name="resgister_button">Registrate</string>
     <string name="cuenta_vieja_text">¿Ya tenés una cuenta?</string>

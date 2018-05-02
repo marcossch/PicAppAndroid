@@ -12,16 +12,20 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 public class AccountSettingsActivity extends AppCompatActivity {
 
     private ImageView profileImage;
+    private EditText profileName;
+
     private android.support.v7.widget.Toolbar mainToolbar;
 
     private FirebaseAuth mAuth;
@@ -33,6 +37,9 @@ public class AccountSettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_settings);
 
+        //instacia de firebase
+        mAuth = FirebaseAuth.getInstance();
+
         //levanta la toolbar
         mainToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mainToolbar);
@@ -41,8 +48,12 @@ public class AccountSettingsActivity extends AppCompatActivity {
 
         //levanto las imagenes y text
         profileImage = findViewById(R.id.contenedorPresentacion);
+        profileName = (EditText) findViewById(R.id.account_name);
 
-        //tendria que cargar la imagen de perfil del server actual
+        //cargo la imagen de perfil actual y el nombre actual
+        FirebaseUser user = mAuth.getCurrentUser();
+        profileName.setText(user.getDisplayName());
+
 
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,8 +118,9 @@ public class AccountSettingsActivity extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case R.id.save_changes:
-                //actualizar el servidor
-                //actualizar firebase
+
+                updateAccount();
+
                 return true;
 
         }
@@ -124,5 +136,12 @@ public class AccountSettingsActivity extends AppCompatActivity {
         Intent feedIntent = new Intent(AccountSettingsActivity.this, FeedActivity.class);
         startActivity(feedIntent);
         finish();
+    }
+
+    private void updateAccount() {
+
+        String user_name = profileName.getText().toString();
+
+
     }
 }
