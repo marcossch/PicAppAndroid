@@ -2,6 +2,7 @@ package com.picapp.picapp;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,6 +28,7 @@ public class ProfileActivity extends AppCompatActivity {
     private BottomNavigationView mMainNav;
     private FloatingActionButton fab;
     private String name;
+    private Uri picURL;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,13 +38,15 @@ public class ProfileActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             name = user.getDisplayName();
+            picURL = user.getPhotoUrl();
         }
         TextView txtCambiado = (TextView)findViewById(R.id.userName);
         txtCambiado.setText(name);
 
 
+
         //Boton de seguimiento
-        fab = (FloatingActionButton) findViewById(R.id.fabFriends);
+        /*fab = (FloatingActionButton) findViewById(R.id.fabFriends);
         fab.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -54,7 +59,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 return true;
             }
-        });
+        });*/
 
         Button friends = (Button) findViewById(R.id.friendsNumber);
         friends.setOnTouchListener(new View.OnTouchListener() {
