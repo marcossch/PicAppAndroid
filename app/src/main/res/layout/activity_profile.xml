@@ -9,34 +9,37 @@
     android:theme="@style/AppTheme"
     >
 
-    <!--barra de navegacion-->
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/main_nav"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:background="@color/colorPrimary"
-        app:menu="@menu/nav_items"
-        android:theme="@style/NavTheme">
-    </android.support.design.widget.BottomNavigationView>
+    <!--barra superior-->
 
-    <!-- CONTENEDOR PRESENTACION -->
-    <LinearLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/main_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:orientation="vertical">
+        android:background="@color/colorPrimary"
+        android:theme="@style/AppTheme" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <!-- CONTENEDOR PRESENTACION -->
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
 
         <!--CONTENEDOR FOTO DE PERFIL-->
         <ImageView
             android:id="@+id/contenedorFotoPerfil"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:paddingTop="10dp"
+            android:layout_height="353dp"
+            android:layout_marginTop="52dp"
+            android:layout_below="@id/main_toolbar"
             />
 
         <!-- CONTENEDOR NOMBRE -->
@@ -176,5 +179,18 @@
             android:visibility="invisible"
             />-->
     </LinearLayout>
+
+    </ScrollView>
+    <!--barra de navegacion-->
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/main_nav"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:background="@color/colorPrimary"
+        app:menu="@menu/nav_items"
+        android:theme="@style/NavTheme">
+    </android.support.design.widget.BottomNavigationView>
 
 </RelativeLayout>
