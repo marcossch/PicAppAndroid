@@ -71,7 +71,7 @@ public class ProfileActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
 
                 Intent friendsIntent = new Intent(ProfileActivity.this, FriendsActivity.class);
-                sendTo(friendsIntent);
+                sendToSub(friendsIntent);
 
                 return true;
             }
@@ -141,6 +141,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         startActivity(intent);
         finish();
+    }
+
+    private void sendToSub(Intent intent) {
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
     }
 
     private void sendToFeed() {

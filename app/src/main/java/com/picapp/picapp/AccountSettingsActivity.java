@@ -101,7 +101,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
 
                     } else {
 
-                        Toast.makeText(AccountSettingsActivity.this, "La data no existe", Toast.LENGTH_LONG).show();
+                        Toast.makeText(AccountSettingsActivity.this, "No hay una foto de perfil cargada", Toast.LENGTH_LONG).show();
 
                     }
 
