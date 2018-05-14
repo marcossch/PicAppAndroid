@@ -30,7 +30,21 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.picapp.picapp.Interfaces.WebApi;
+import com.picapp.picapp.Models.User;
+import com.picapp.picapp.Models.UserRequest;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -41,7 +55,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private ProgressBar loginProgress;
 
+    private Retrofit retrofit;
+
     private FirebaseAuth mAuth;
+    private FirebaseFirestore firebaseFirestore;
+    private StorageReference storageReference;
     private GoogleSignInClient mGoogleSignInClient;
     private SignInButton mGoogleBtn;
     private GoogleApiClient mGoogleApiClient;
@@ -52,11 +70,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        //instacia de firebase
+        //instacia de firebase y firestore
         mAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
 
-        //instacia de firebase
-        mAuth = FirebaseAuth.getInstance();
+        //Inicializa la referencia de almacenage
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -117,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 String loginEmail = loginEmailText.getText().toString();
-                String loginPassword = loginPasswordText.getText().toString();
+                final String loginPassword = loginPasswordText.getText().toString();
 
                 //si el email y la pass son no vacios
                 if(!TextUtils.isEmpty(loginEmail) && !TextUtils.isEmpty(loginPassword)){
@@ -132,9 +151,7 @@ public class LoginActivity extends AppCompatActivity {
                             if(task.isSuccessful()){
 
                                 //actualizar el server
-
-                                //si se logueo bien lo mando a la actividad principal
-                                sendToFeed();
+                                serverUpdate(mAuth.getCurrentUser(), loginPassword);
 
                             } else {
 
@@ -218,7 +235,7 @@ public class LoginActivity extends AppCompatActivity {
                                 loginProgress.setVisibility(View.INVISIBLE);
                             }
                             else {
-                                serverUpdate(user);
+                                serverUpdate(user, "Google");
                             }
 
                         } else {
@@ -235,14 +252,74 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private void serverUpdate(final FirebaseUser user) {
+    private void serverUpdate(final FirebaseUser user, final String password) {
 
-        //mandar mensaje con los tokens correspondientes al server
+        //creo retrofit que es la libreria para manejar Apis
+        retrofit = new Retrofit.Builder()
+                .baseUrl(WebApi.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        WebApi webApi = retrofit.create(WebApi.class);
+
+        //Creo la request para pasarle en el body
+        UserRequest userRequest = new UserRequest();
+        userRequest.setUsername(user.getUid());
+        userRequest.setPassword(password);
+
+        Call<User> call = webApi.loginUser(userRequest);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+
+                User serverUser = response.body();
+
+                storeFirestore(serverUser.getToken().getToken(), serverUser.getToken().getExpiresAt(), user.getUid());
+
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                //se cierra sesion en firebase
+                mAuth.signOut();
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+
+                //escondo la barra de progreso
+                loginProgress.setVisibility(View.INVISIBLE);
+            }
+        });
 
 
-        //escondo la barra de progreso
-        loginProgress.setVisibility(View.INVISIBLE);
-        sendToFeed();
+
+    }
+
+    private void storeFirestore(Integer token, Double expiresAt, String user_id) {
+
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put("token", token.toString());
+        tokenMap.put("expiresAt", expiresAt.toString());
+
+        //cada usuario tiene su propio documento
+        firebaseFirestore.collection("UserTokens").document(user_id).set(tokenMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+                if (task.isSuccessful()) {
+
+                } else {
+
+                    String error = task.getException().getMessage();
+                    Toast.makeText(LoginActivity.this, "FIRESTORE Error: " + error, Toast.LENGTH_LONG).show();
+
+                }
+
+                //escondo la barra de progreso
+                loginProgress.setVisibility(View.INVISIBLE);
+
+                sendToFeed();
+
+            }
+        });
 
     }
 

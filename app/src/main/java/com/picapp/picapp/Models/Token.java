@@ -7,16 +7,16 @@ public class Token {
 
     @SerializedName("expiresAt")
     @Expose
-    private Integer expiresAt;
+    private Double expiresAt;
     @SerializedName("token")
     @Expose
     private Integer token;
 
-    public Integer getExpiresAt() {
+    public Double getExpiresAt() {
         return expiresAt;
     }
 
-    public void setExpiresAt(Integer expiresAt) {
+    public void setExpiresAt(Double expiresAt) {
         this.expiresAt = expiresAt;
     }
 

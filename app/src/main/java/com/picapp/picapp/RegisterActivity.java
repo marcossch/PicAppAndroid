@@ -251,9 +251,10 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<UserRequest> call, Response<UserRequest> response) {
 
-                int statusCode = response.code();
-                Toast.makeText(RegisterActivity.this, "Status: " + statusCode, Toast.LENGTH_SHORT).show();
+                //escondo la barra de progreso
+                registerProgress.setVisibility(View.INVISIBLE);
 
+                sendToMain();
             }
 
             @Override
@@ -261,13 +262,12 @@ public class RegisterActivity extends AppCompatActivity {
                 //se elimina el usuario creado en firebase
                 user.delete();
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                //escondo la barra de progreso
+                registerProgress.setVisibility(View.INVISIBLE);
             }
         });
 
-        //escondo la barra de progreso
-        registerProgress.setVisibility(View.INVISIBLE);
-
-        sendToMain();
 
     }
 

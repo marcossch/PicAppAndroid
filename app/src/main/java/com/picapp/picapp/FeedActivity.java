@@ -7,8 +7,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.picapp.picapp.Interfaces.WebApi;
+import com.picapp.picapp.Models.UserLogout;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FeedActivity extends AppCompatActivity {
 
@@ -17,6 +28,8 @@ public class FeedActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     private BottomNavigationView mMainNav;
+
+    private Retrofit retrofit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,9 +113,42 @@ public class FeedActivity extends AppCompatActivity {
 
     private void logout() {
 
+        serverLogut(mAuth.getCurrentUser());
         mAuth.signOut();
         Intent loginIntent = new Intent(FeedActivity.this, LoginActivity.class);
         sendTo(loginIntent);
+
+    }
+
+    private void serverLogut(FirebaseUser user) {
+
+        //creo retrofit que es la libreria para manejar Apis
+        retrofit = new Retrofit.Builder()
+                .baseUrl(WebApi.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        WebApi webApi = retrofit.create(WebApi.class);
+
+        //Creo la request para pasarle en el body
+        UserLogout userRequest = new UserLogout();
+        userRequest.setUsername(user.getUid());
+
+        Call<UserLogout> call = webApi.logoutUser(userRequest);
+        call.enqueue(new Callback<UserLogout>() {
+            @Override
+            public void onResponse(Call<UserLogout> call, Response<UserLogout> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<UserLogout> call, Throwable t) {
+                //se cierra sesion en firebase
+                mAuth.signOut();
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
 
     }
 
