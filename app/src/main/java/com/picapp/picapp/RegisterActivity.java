@@ -254,7 +254,8 @@ public class RegisterActivity extends AppCompatActivity {
                 //escondo la barra de progreso
                 registerProgress.setVisibility(View.INVISIBLE);
 
-                sendToMain();
+                mAuth.signOut();
+                sendToLogin();
             }
 
             @Override
