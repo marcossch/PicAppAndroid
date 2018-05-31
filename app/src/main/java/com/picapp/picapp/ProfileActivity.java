@@ -39,6 +39,8 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseUser user;
     private android.support.v7.widget.Toolbar mainToolbar;
 
+    private FloatingActionButton addPostButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,21 +68,35 @@ public class ProfileActivity extends AppCompatActivity {
 
         //Click en el boton de amigos te lleva a ver tus amigos
         Button friends = (Button) findViewById(R.id.friendsNumber);
-        friends.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
 
-                Intent friendsIntent = new Intent(ProfileActivity.this, FriendsActivity.class);
-                sendToSub(friendsIntent);
-
-                return true;
-            }
-        });
+        //Boton para agregar un post
+        FloatingActionButton addPostButton = (FloatingActionButton) findViewById(R.id.agregarFoto);
 
         //barra de navegacion
         mMainNav = (BottomNavigationView) findViewById(R.id.main_nav);
         mMainNav.setOnNavigationItemSelectedListener(navListener);
         mMainNav.setSelectedItemId(R.id.nav_profile);
+
+        friends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent friendsIntent = new Intent(ProfileActivity.this, FriendsActivity.class);
+                sendToSub(friendsIntent);
+
+            }
+        });
+
+        addPostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent newPost = new Intent(ProfileActivity.this, NewPostActivity.class);
+                sendToSub(newPost);
+
+            }
+        });
+
 
     }
 

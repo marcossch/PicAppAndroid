@@ -21,10 +21,11 @@
         android:theme="@style/AppTheme" />
 
     <ScrollView
-        android:layout_below="@+id/main_toolbar"
+        android:id="@+id/main_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/main_scroll">
+        android:layout_above="@id/main_nav"
+        android:layout_below="@+id/main_toolbar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -44,58 +45,62 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimary"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/userName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
                     android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="15dp"
                     android:fontFamily="sans-serif-condensed"
                     android:text="User Name"
                     android:textColor="@color/black"
-                    android:textSize="28sp"
-                    />
+                    android:textSize="28sp" />
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/agregarFoto"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_alignEnd="@+id/userName"
+                    android:layout_marginBottom="7dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
                     android:clickable="true"
-                    app:srcCompat="@drawable/baseline_add_black_24dp" />
+                    app:srcCompat="@drawable/baseline_add_black_48dp" />
 
                 <!--<TextView-->
-                    <!--android:id="@+id/userDescription"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginLeft="15dp"-->
-                    <!--android:layout_below="@id/userName"-->
-                    <!--android:fontFamily="sans-serif-condensed"-->
-                    <!--android:text="Estas son tus publicaciones"-->
-                    <!--android:textColor="@color/greyLetter" />-->
+                <!--android:id="@+id/userDescription"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="15dp"-->
+                <!--android:layout_below="@id/userName"-->
+                <!--android:fontFamily="sans-serif-condensed"-->
+                <!--android:text="Estas son tus publicaciones"-->
+                <!--android:textColor="@color/greyLetter" />-->
 
             </RelativeLayout>
 
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#80dfdede" />
 
             <!-- CONTENEDOR AMIGOS-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimary"
+                android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/containerFirends"
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
+                    android:layout_weight="0.5"
                     android:gravity="center"
-                    android:id="@+id/containerFirends"
-                    android:layout_weight="0.5">
+                    android:orientation="vertical">
 
                     <Button
                         android:id="@+id/friendsNumber"
@@ -126,9 +131,9 @@
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
+                    android:layout_weight="0.5"
                     android:gravity="center"
-                    android:layout_weight="0.5">
+                    android:orientation="vertical">
 
                     <Button
                         android:id="@+id/pubNumber"
@@ -154,15 +159,20 @@
                         android:layout_below="@id/pubNumber"
                         android:fontFamily="sans-serif-condensed"
                         android:text="Publicaciones"
-                        android:textColor="@color/black"
-                        />
+                        android:textColor="@color/black" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#80dfdede" />
 
-        <!-- BOTON FRIENDS
+
+            <!-- BOTON FRIENDS
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fabFriends"
             android:layout_width="wrap_content"

@@ -26,4 +26,5 @@
     <string name="volver">volver</string>
     <string name="nombre">Nombre:</string>
     <string name="aceptar">aceptar</string>
+    <string name="agregarDescripcion">Agregue una descripción...</string>
 </resources>
