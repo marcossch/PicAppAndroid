@@ -22,148 +22,145 @@
 
     <ScrollView
         android:layout_below="@+id/main_toolbar"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-
-
-        <!-- CONTENEDOR PRESENTACION -->
-        <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:layout_height="match_parent"
+        android:id="@+id/main_scroll">
 
-        <!-- IMAGEN PRINCIPAL -->
-        <ImageView
-            android:id="@+id/contenedorFotoPerfil"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            app:srcCompat="@drawable/cameranext"
-            android:background="#dfdede" />
-
-        <!-- CONTENEDOR NOMBRE -->
-        <RelativeLayout
-            android:id="@+id/contName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/contenedorFotoPerfil"
-            android:background="@color/colorPrimary"
-            android:gravity="left"
-            android:orientation="vertical"
-            android:padding="5dp"
-            >
-
-            <TextView
-                android:id="@+id/userName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_centerHorizontal="true"
-                android:fontFamily="sans-serif-condensed"
-                android:text="User Name"
-                android:textColor="@color/black"
-                android:textSize="28sp"
-                />
-
-            <TextView
-                android:id="@+id/userDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_below="@id/userName"
-                android:fontFamily="sans-serif-condensed"
-                android:text="Breve descripcion de boludeces"
-                android:textColor="@color/greyLetter" />
-
-        </RelativeLayout>
-
-        <!-- CONTENEDOR AMIGOS/PUBLICACIONES -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:padding="5dp"
-            android:background="@color/colorPrimary"
-            android:orientation="horizontal"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            >
-            <!-- CONTENEDOR AMIGOS-->
-            <LinearLayout
-                android:layout_width="200dp"
+
+            <!-- IMAGEN PRINCIPAL -->
+            <ImageView
+                android:id="@+id/contenedorFotoPerfil"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                >
+                android:adjustViewBounds="true"
+                android:background="#dfdede"
+                app:srcCompat="@drawable/cameranext" />
 
-                <Button
-                    android:id="@+id/friendsNumber"
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@color/colorPrimary">
+
+                <TextView
+                    android:id="@+id/userName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
-
-                    android:backgroundTint="@color/colorPrimary"
+                    android:layout_marginLeft="15dp"
+                    android:layout_centerHorizontal="true"
                     android:fontFamily="sans-serif-condensed"
-                    android:outlineProvider="none"
-
-                    android:shadowColor="@color/colorPrimary"
-                    android:text="12"
-                    android:textAlignment="center"
+                    android:text="User Name"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="28sp"
+                    />
 
-                <TextView
-                    android:id="@+id/friendsString"
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/agregarFoto"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/friendsNumber"
-                    android:fontFamily="sans-serif-condensed"
-                    android:text="Amigos"
-                    android:textColor="@color/black" />
+                    android:layout_alignEnd="@+id/userName"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:clickable="true"
+                    app:srcCompat="@drawable/baseline_add_black_24dp" />
 
-            </LinearLayout>
+                <!--<TextView-->
+                    <!--android:id="@+id/userDescription"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginLeft="15dp"-->
+                    <!--android:layout_below="@id/userName"-->
+                    <!--android:fontFamily="sans-serif-condensed"-->
+                    <!--android:text="Estas son tus publicaciones"-->
+                    <!--android:textColor="@color/greyLetter" />-->
 
-            <!-- CONTENEDOR PUBLICACIONES-->
+            </RelativeLayout>
+
+
+            <!-- CONTENEDOR AMIGOS-->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:background="@color/colorPrimary">
 
-                <Button
-                    android:id="@+id/pubNumber"
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:id="@+id/containerFirends"
+                    android:layout_weight="0.5">
 
-                    android:backgroundTint="@color/colorPrimary"
-                    android:clickable="false"
-                    android:fontFamily="sans-serif-condensed"
+                    <Button
+                        android:id="@+id/friendsNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
 
-                    android:outlineProvider="none"
-                    android:shadowColor="@color/colorPrimary"
-                    android:text="2"
-                    android:textAlignment="center"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                        android:backgroundTint="@color/colorPrimary"
+                        android:fontFamily="sans-serif-condensed"
+                        android:outlineProvider="none"
+                        android:shadowColor="@color/colorPrimary"
+                        android:text="12"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/pubString"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/pubNumber"
-                    android:fontFamily="sans-serif-condensed"
-                    android:text="Publicaciones"
-                    android:textColor="@color/black"
+                    <TextView
+                        android:id="@+id/friendsString"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/friendsNumber"
+                        android:fontFamily="sans-serif-condensed"
+                        android:text="Amigos"
+                        android:textColor="@color/black" />
 
-                    />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_weight="0.5">
+
+                    <Button
+                        android:id="@+id/pubNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:backgroundTint="@color/colorPrimary"
+                        android:clickable="false"
+                        android:fontFamily="sans-serif-condensed"
+
+                        android:outlineProvider="none"
+                        android:shadowColor="@color/colorPrimary"
+                        android:text="2"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/pubString"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/pubNumber"
+                        android:fontFamily="sans-serif-condensed"
+                        android:text="Publicaciones"
+                        android:textColor="@color/black"
+                        />
+
+                </LinearLayout>
+
             </LinearLayout>
 
-        </LinearLayout>
 
         <!-- BOTON FRIENDS
         <android.support.design.widget.FloatingActionButton
@@ -179,8 +176,8 @@
             app:backgroundTint="@color/redF"
             android:visibility="invisible"
             />-->
-    </LinearLayout>
 
+        </LinearLayout>
     </ScrollView>
     <!--barra de navegacion-->
     <android.support.design.widget.BottomNavigationView
