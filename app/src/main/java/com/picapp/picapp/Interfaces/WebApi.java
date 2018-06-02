@@ -1,13 +1,18 @@
 package com.picapp.picapp.Interfaces;
 
 import com.picapp.picapp.Models.User;
+import com.picapp.picapp.Models.Error;
 import com.picapp.picapp.Models.UserLogout;
 import com.picapp.picapp.Models.UserRequest;
+import com.picapp.picapp.Models.UserUpdate;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 
 public interface WebApi {
 
@@ -21,5 +26,8 @@ public interface WebApi {
 
     @POST("users/logout")
     Call<UserLogout> logoutUser(@Body UserLogout UserLogout);
+
+    @PUT("users/{userid}/myAccount")
+    Call<Error> updateUser(@Body UserUpdate userRequest, @Path("userid") String user, @Header("token") String token);
 
 }

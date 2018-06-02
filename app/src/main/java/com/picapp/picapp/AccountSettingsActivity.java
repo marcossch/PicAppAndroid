@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,11 +31,21 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.picapp.picapp.Interfaces.WebApi;
+import com.picapp.picapp.Models.Error;
+import com.picapp.picapp.Models.User;
+import com.picapp.picapp.Models.UserUpdate;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AccountSettingsActivity extends AppCompatActivity {
 
@@ -52,6 +63,8 @@ public class AccountSettingsActivity extends AppCompatActivity {
     private StorageReference storageReference;
 
     private Uri mainImageURI = null;
+    private String token;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,6 +260,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
 
                         Uri download_uri = task.getResult().getDownloadUrl();
                         storeFirestore(task, new_user_name, download_uri);
+                        serverUpdate(new_user_name, user_id, download_uri);
 
                     } else {
 
@@ -261,9 +275,58 @@ public class AccountSettingsActivity extends AppCompatActivity {
 
             //solo actualizo el nombre
             storeFirestore(null, new_user_name, mainImageURI);
+            serverUpdate(new_user_name, user_id, mainImageURI);
 
         }
 
+    }
+
+    private void serverUpdate(String new_user_name, final String user_id, Uri download_uri) {
+        //creo retrofit que es la libreria para manejar Apis
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(WebApi.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        WebApi webApi = retrofit.create(WebApi.class);
+
+        //Creo la request para pasarle en el body
+        UserUpdate userUpd = new UserUpdate();
+        userUpd.setUsername(new_user_name);
+        userUpd.setProfilePhoto(download_uri);
+
+        //Obtengo el token del usuario.
+        firebaseFirestore.collection("UserTokens").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+                    //si existe este documento
+                    if(document.exists()){
+                        //levanto el token del suario
+                        token = document.getString("token");
+                    } else {
+                        Toast.makeText(AccountSettingsActivity.this, "Error al buscar el token", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    String error = task.getException().getMessage();
+                    Toast.makeText(AccountSettingsActivity.this, "FIRESTORE Retrieve Error: " + error, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        Log.d("USER:- ------------->", user_id);
+        Call<Error> call = webApi.updateUser(userUpd, user_id, token);
+        call.enqueue(new Callback<Error>() {
+            @Override
+            public void onResponse(Call<Error> call, Response<Error> response) {
+                Log.d("Error Ok", "Salio todo bien");
+                Log.d("Codigo", Integer.toString(response.code()));
+            }
+
+            @Override
+            public void onFailure(Call<Error> call, Throwable t) {
+                Log.d("Error Ok", "Salio MAAAAL");
+            }
+        });
     }
 
     private void storeFirestore(Task<UploadTask.TaskSnapshot> task, String user_name, Uri imageUri) {
