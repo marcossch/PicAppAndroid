@@ -82,7 +82,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent friendsIntent = new Intent(ProfileActivity.this, FriendsActivity.class);
-                sendToSub(friendsIntent);
+                sendTo(friendsIntent);
 
             }
         });
@@ -92,7 +92,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent newPost = new Intent(ProfileActivity.this, NewPostActivity.class);
-                sendToSub(newPost);
+                sendTo(newPost);
 
             }
         });
@@ -157,11 +157,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         startActivity(intent);
         finish();
-    }
-
-    private void sendToSub(Intent intent) {
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startActivity(intent);
     }
 
     private void sendToFeed() {

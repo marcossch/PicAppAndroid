@@ -27,4 +27,5 @@
     <string name="nombre">Nombre:</string>
     <string name="aceptar">aceptar</string>
     <string name="agregarDescripcion">Agregue una descripción...</string>
+    <string name="agregarTitulo">Agregue un titulo...</string>
 </resources>

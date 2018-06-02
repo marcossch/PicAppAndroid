@@ -72,7 +72,7 @@ public class FeedActivity extends AppCompatActivity {
 
             case R.id.action_setting_btn:
                 Intent accSettings = new Intent(FeedActivity.this, AccountSettingsActivity.class);
-                sendToSub(accSettings);
+                sendTo(accSettings);
                 return true;
         }
 
@@ -158,11 +158,6 @@ public class FeedActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
 
-    }
-
-    private void sendToSub(Intent intent) {
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startActivity(intent);
     }
 
 }
