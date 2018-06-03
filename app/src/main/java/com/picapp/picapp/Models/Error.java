@@ -8,16 +8,14 @@ public class Error {
     @SerializedName("message")
     @Expose
     private String message;
-    @SerializedName("Code")
+    @SerializedName("status_code")
     @Expose
-    private int code;
+    private int status_code;
 
-    public String getMessage() {
-        return message;
-    }
+    public String getMessage() { return message; }
 
     public int getCode() {
-        return code;
+        return status_code;
     }
 
 }

@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -39,8 +40,10 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import okhttp3.HttpUrl;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -63,7 +66,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
     private StorageReference storageReference;
 
     private Uri mainImageURI = null;
-    private String token;
+    private String token = "";
 
 
     @Override
@@ -287,44 +290,47 @@ public class AccountSettingsActivity extends AppCompatActivity {
                 .baseUrl(WebApi.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        WebApi webApi = retrofit.create(WebApi.class);
+        final WebApi webApi = retrofit.create(WebApi.class);
 
         //Creo la request para pasarle en el body
-        UserUpdate userUpd = new UserUpdate();
+        final UserUpdate userUpd = new UserUpdate();
         userUpd.setUsername(new_user_name);
-        userUpd.setProfilePhoto(download_uri);
+        userUpd.setProfilePhoto(download_uri.toString());
 
         //Obtengo el token del usuario.
         firebaseFirestore.collection("UserTokens").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
-                    DocumentSnapshot document = task.getResult();
                     //si existe este documento
-                    if(document.exists()){
-                        //levanto el token del suario
-                        token = document.getString("token");
+                    if(task.getResult().exists()){
+                        //levanto el token
+                        Object aux = task.getResult().get("token");
+                        token = aux.toString();
+                        executeUpdate(userUpd,webApi, token);
                     } else {
-                        Toast.makeText(AccountSettingsActivity.this, "Error al buscar el token", Toast.LENGTH_LONG).show();
-                    }
+                        Toast.makeText(AccountSettingsActivity.this, "El usuario no posee un token asociado", Toast.LENGTH_LONG).show();
+                        }
                 } else {
                     String error = task.getException().getMessage();
                     Toast.makeText(AccountSettingsActivity.this, "FIRESTORE Retrieve Error: " + error, Toast.LENGTH_LONG).show();
-                }
+                    }
             }
         });
-        Log.d("USER:- ------------->", user_id);
-        Call<Error> call = webApi.updateUser(userUpd, user_id, token);
+    }
+
+    private void executeUpdate(UserUpdate userUpd, WebApi webApi, String tok){
+        Call<Error> call = webApi.updateUser(userUpd ,user_id, token, "Application/json");
         call.enqueue(new Callback<Error>() {
             @Override
             public void onResponse(Call<Error> call, Response<Error> response) {
-                Log.d("Error Ok", "Salio todo bien");
-                Log.d("Codigo", Integer.toString(response.code()));
+                String err = response.toString();
+                Log.d("Response", "Debe ser 200------------------>"+err);
             }
 
             @Override
             public void onFailure(Call<Error> call, Throwable t) {
-                Log.d("Error Ok", "Salio MAAAAL");
+                Log.d("UPDATE USER: ", "-----> No se pudo actualizar los datos del usuario <-----");
             }
         });
     }

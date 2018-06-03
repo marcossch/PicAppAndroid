@@ -9,6 +9,7 @@ import com.picapp.picapp.Models.UserUpdate;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -27,7 +28,11 @@ public interface WebApi {
     @POST("users/logout")
     Call<UserLogout> logoutUser(@Body UserLogout UserLogout);
 
-    @PUT("users/{userid}/myAccount")
-    Call<Error> updateUser(@Body UserUpdate userRequest, @Path("userid") String user, @Header("token") String token);
+    @PUT("users/{userid}/myaccount")
+    Call<Error> updateUser(@Body UserUpdate userRequest, @Path("userid") String user,
+                           @Header("token") String token, @Header("Content-Type") String content);
 
+    @GET("users/{userid}/myaccount")
+    Call<User> getUser(@Path("userid") String user,
+                       @Header("token") String token, @Header("Content-Type") String content);
 }
