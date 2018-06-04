@@ -140,7 +140,11 @@ public class ProfileActivity extends AppCompatActivity {
 
 
                         case R.id.nav_profile:
+                            return true;
 
+                        case R.id.nav_chat:
+                            Intent chatIntent = new Intent(ProfileActivity.this, ChatActivity.class);
+                            sendTo(chatIntent);
                             return true;
 
                         default:

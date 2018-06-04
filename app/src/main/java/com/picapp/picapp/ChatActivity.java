@@ -1,26 +1,25 @@
 package com.picapp.picapp;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
 
-public class FlashesActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity {
 
     private BottomNavigationView mMainNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_flashes);
+        setContentView(R.layout.activity_chat);
 
         //barra de navegacion
         mMainNav = (BottomNavigationView) findViewById(R.id.main_nav);
         mMainNav.setOnNavigationItemSelectedListener(navListener);
-        mMainNav.setSelectedItemId(R.id.nav_flashes);
-
+        mMainNav.setSelectedItemId(R.id.nav_chat);
     }
 
     //cambio de activities principales
@@ -31,22 +30,22 @@ public class FlashesActivity extends AppCompatActivity {
                     switch (item.getItemId()){
 
                         case R.id.nav_feed :
-                            Intent feedIntent = new Intent(FlashesActivity.this, FeedActivity.class);
+                            Intent feedIntent = new Intent(ChatActivity.this, FeedActivity.class);
                             sendTo(feedIntent);
                             return true;
 
 
                         case R.id.nav_flashes:
+                            Intent flashesIntent = new Intent(ChatActivity.this, FlashesActivity.class);
+                            sendTo(flashesIntent);
                             return true;
-
 
                         case R.id.nav_chat:
-                            Intent chatIntent = new Intent(FlashesActivity.this, ChatActivity.class);
-                            sendTo(chatIntent);
                             return true;
 
+
                         case R.id.nav_profile:
-                            Intent profileIntent = new Intent(FlashesActivity.this, ProfileActivity.class);
+                            Intent profileIntent = new Intent(ChatActivity.this, ProfileActivity.class);
                             sendTo(profileIntent);
                             return true;
 
@@ -57,10 +56,8 @@ public class FlashesActivity extends AppCompatActivity {
                 }
             };
 
-    //--------------Metodos Privados-------------//
 
     private void sendTo(Intent intent) {
-
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
         finish();

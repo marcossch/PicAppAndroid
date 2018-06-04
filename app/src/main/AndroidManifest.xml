@@ -28,6 +28,7 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".FlashesActivity" />
+        <activity android:name=".ChatActivity" />
         <activity android:name=".FeedActivity" />
         <activity android:name=".AccountSettingsActivity" android:parentActivityName=".FeedActivity" />
         <activity android:name=".FriendsActivity" android:parentActivityName=".ProfileActivity"/>

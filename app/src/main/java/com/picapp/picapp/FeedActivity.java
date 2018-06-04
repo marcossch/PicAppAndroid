@@ -102,6 +102,11 @@ public class FeedActivity extends AppCompatActivity {
                             sendTo(profileIntent);
                             return true;
 
+                        case R.id.nav_chat:
+                            Intent chatIntent = new Intent(FeedActivity.this, ChatActivity.class);
+                            sendTo(chatIntent);
+                            return true;
+
                         default:
                             return false;
 
