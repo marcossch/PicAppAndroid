@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1023151485778-sk3g7ddmk8acfkl6idn89o4ll7klulnk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.picapp.picapp",
+            "certificate_hash": "b489a132c97fde41c8bc448461e2d6aba8905a08"
+          }
+        },
+        {
           "client_id": "1023151485778-bcq5map96boggtdtbg8cepnu7qpbd128.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -29,6 +37,10 @@
             "package_name": "com.picapp.picapp",
             "certificate_hash": "9101c9de9f7cbce90895600d141bc003fd71235d"
           }
+        },
+        {
+          "client_id": "1023151485778-7h1ok5g8oobomdj103e352o8ps5mr614.apps.googleusercontent.com",
+          "client_type": 3
         },
         {
           "client_id": "1023151485778-7h1ok5g8oobomdj103e352o8ps5mr614.apps.googleusercontent.com",

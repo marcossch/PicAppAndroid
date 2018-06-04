@@ -28,4 +28,5 @@
     <string name="aceptar">aceptar</string>
     <string name="agregarDescripcion">Agregue una descripción...</string>
     <string name="agregarTitulo">Agregue un titulo...</string>
+    <string name="privacidad">¿Quién debería ver esto?</string>
 </resources>

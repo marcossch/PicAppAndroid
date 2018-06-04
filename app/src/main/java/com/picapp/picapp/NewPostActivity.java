@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -49,6 +50,7 @@ public class NewPostActivity extends AppCompatActivity {
     private EditText description;
     private EditText titulo;
     private Uri mainImageURI = null;
+    private Switch privacidad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +75,7 @@ public class NewPostActivity extends AppCompatActivity {
         description = (EditText) findViewById(R.id.descripcion);
         titulo = (EditText) findViewById(R.id.titulo);
         newPostProgress = (ProgressBar) findViewById(R.id.newPostProgress);
+        privacidad = (Switch) findViewById(R.id.privacidad);
 
 
         //para elegir una imagen
