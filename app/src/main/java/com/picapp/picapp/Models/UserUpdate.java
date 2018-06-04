@@ -1,10 +1,7 @@
 package com.picapp.picapp.Models;
 
-import android.net.Uri;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import java.net.URI;
 
 public class UserUpdate {
 
@@ -14,16 +11,16 @@ public class UserUpdate {
 
     @SerializedName("profile_pic")
     @Expose
-    private Uri imgUrl;
+    private String imgUrl;
 
     public String getUsername() {
         return username;
     }
 
-    public Uri getImg() { return this.imgUrl; }
+    public String getImg() { return imgUrl; }
 
     public void setUsername(String username) { this.username = username; }
 
-    public void setProfilePhoto(Uri imgUrl) { this.imgUrl = imgUrl; }
+    public void setProfilePhoto(String imgUrl) { this.imgUrl = imgUrl; }
 
 }
