@@ -1,5 +1,8 @@
 package com.picapp.picapp.Interfaces;
 
+import com.picapp.picapp.Models.StoryDeleted;
+import com.picapp.picapp.Models.StoryRequest;
+import com.picapp.picapp.Models.StoryResult;
 import com.picapp.picapp.Models.User;
 import com.picapp.picapp.Models.Error;
 import com.picapp.picapp.Models.UserLogout;
@@ -8,6 +11,7 @@ import com.picapp.picapp.Models.UserUpdate;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -18,6 +22,8 @@ import retrofit2.http.Path;
 public interface WebApi {
 
     String BASE_URL = "https://picapp-app-server.herokuapp.com/";
+
+    //--------------User Management -------------------------
 
     @POST("users/signup")
     Call<UserRequest> postUser(@Body UserRequest userRequest);
@@ -35,4 +41,12 @@ public interface WebApi {
     @GET("users/{userid}/myaccount")
     Call<User> getUser(@Path("userid") String user,
                        @Header("token") String token, @Header("Content-Type") String content);
+
+    //--------------Stories -------------------------
+    @POST("stories")
+    Call<StoryResult> postStory(@Body StoryRequest StoryRequest,
+                                @Header("token") String token, @Header("Content-Type") String content);
+
+    @DELETE("stories/{storyid}")
+    Call<StoryDeleted> deleteStory(@Path("storyid") String story);
 }

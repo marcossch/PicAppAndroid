@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,14 +41,18 @@ public class ProfileActivity extends AppCompatActivity {
     private android.support.v7.widget.Toolbar mainToolbar;
 
     private FloatingActionButton addPostButton;
+    private ProgressBar profileProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        //Levantamos la toolbar
+        //que se ve la barra de progreso
+        profileProgress = (ProgressBar) findViewById(R.id.profileProgress);
+        //profileProgress.setVisibility(View.VISIBLE);
 
+        //Levantamos la toolbar
         mainToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mainToolbar);
         getSupportActionBar().setTitle("PicApp");
@@ -64,6 +69,8 @@ public class ProfileActivity extends AppCompatActivity {
         changeProfileName();
 
         //Cargo la foto de perfil del usuario
+        fotoP = findViewById(R.id.contenedorFotoPerfil);
+        fotoP.setImageDrawable(getDrawable(R.drawable.cameranext));
         changeProfilePic();
 
         //Click en el boton de amigos te lleva a ver tus amigos
@@ -111,12 +118,14 @@ public class ProfileActivity extends AppCompatActivity {
                 picURL = result.getUri();
                 fotoP.setImageURI(picURL);
 
-                //imagenModificada = true;
+                //escondo la barra de progreso
+                profileProgress.setVisibility(View.INVISIBLE);
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
         }
+
 
     }
 
@@ -154,15 +163,7 @@ public class ProfileActivity extends AppCompatActivity {
     //--------------Metodos Privados-------------//
 
     private void sendTo(Intent intent) {
-
         startActivity(intent);
-        finish();
-    }
-
-    private void sendToFeed() {
-        Intent feedIntent = new Intent(ProfileActivity.this, FeedActivity.class);
-        startActivity(feedIntent);
-        finish();
     }
 
     private void changeProfileName() {
@@ -172,7 +173,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void changeProfilePic(){
         String user_id = user.getUid();
-        fotoP = findViewById(R.id.contenedorFotoPerfil);
         firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -190,7 +190,8 @@ public class ProfileActivity extends AppCompatActivity {
                         Glide.with(ProfileActivity.this).setDefaultRequestOptions(placeholderRequest).load(image).into(fotoP);
                     }
                     else{
-                        Toast.makeText(ProfileActivity.this, "La data no existe", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ProfileActivity.this, "El usuario no tiene imagen de perfil",
+                                Toast.LENGTH_LONG).show();
                     }
                 }
                 else {
@@ -200,6 +201,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
 
