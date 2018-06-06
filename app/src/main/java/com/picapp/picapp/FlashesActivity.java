@@ -41,7 +41,7 @@ public class FlashesActivity extends AppCompatActivity {
 
 
                         case R.id.nav_chat:
-                            Intent chatIntent = new Intent(FlashesActivity.this, ChatActivity.class);
+                            Intent chatIntent = new Intent(FlashesActivity.this, ChatSelectionActivity.class);
                             sendTo(chatIntent);
                             return true;
 

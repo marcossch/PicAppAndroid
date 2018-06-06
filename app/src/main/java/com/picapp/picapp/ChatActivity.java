@@ -1,66 +1,152 @@
 package com.picapp.picapp;
 
-import android.content.Intent;
-import android.os.Bundle;
+import android.app.ProgressDialog;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
+import android.os.Bundle;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.StorageReference;
+import com.picapp.picapp.Models.SessionData;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 
 public class ChatActivity extends AppCompatActivity {
 
-    private BottomNavigationView mMainNav;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore firebaseFirestore;
+    private StorageReference storageReference;
+    private String userId;
+    private String name;
+
+    LinearLayout layout;
+    RelativeLayout layout_2;
+    ImageView sendButton;
+    EditText messageArea;
+    ScrollView scrollView;
+    ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        //barra de navegacion
-        mMainNav = (BottomNavigationView) findViewById(R.id.main_nav);
-        mMainNav.setOnNavigationItemSelectedListener(navListener);
-        mMainNav.setSelectedItemId(R.id.nav_chat);
-    }
+        mAuth = FirebaseAuth.getInstance();
+        userId = mAuth.getCurrentUser().getUid();
+        firebaseFirestore = FirebaseFirestore.getInstance();
 
-    //cambio de activities principales
-    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
-            new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    switch (item.getItemId()){
+        layout = (LinearLayout) findViewById(R.id.layout1);
+        layout_2 = (RelativeLayout)findViewById(R.id.layout2);
+        sendButton = (ImageView)findViewById(R.id.sendButton);
+        messageArea = (EditText)findViewById(R.id.messageArea);
+        scrollView = (ScrollView)findViewById(R.id.scrollView);
 
-                        case R.id.nav_feed :
-                            Intent feedIntent = new Intent(ChatActivity.this, FeedActivity.class);
-                            sendTo(feedIntent);
-                            return true;
+        progressDialog = new ProgressDialog(ChatActivity.this);
+        progressDialog.setMessage("Cargando mensajes...");
+        progressDialog.show();
 
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String messageText = messageArea.getText().toString();
 
-                        case R.id.nav_flashes:
-                            Intent flashesIntent = new Intent(ChatActivity.this, FlashesActivity.class);
-                            sendTo(flashesIntent);
-                            return true;
+                if(!messageText.equals("")){
+                    // Create object to store in db
+                    Map<String, Object> message = new HashMap<>();
+                    message.put("user", userId);
+                    message.put("message", messageText);
+                    message.put("timestamp", Timestamp.now());
+                    // Store in both documents
+                    storeInDB(userId, SessionData.onChat, message);
+                    storeInDB(SessionData.onChat, userId, message);
+                    // Restore write field
+                    messageArea.setText("");
+                }
+            }
+        });
 
-                        case R.id.nav_chat:
-                            return true;
+        firebaseFirestore.collection("Chat")
+                .document(String.format("%s_%s", userId, SessionData.onChat))
+                .collection("message")
+                .orderBy("timestamp")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshots,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) return;
 
-
-                        case R.id.nav_profile:
-                            Intent profileIntent = new Intent(ChatActivity.this, ProfileActivity.class);
-                            sendTo(profileIntent);
-                            return true;
-
-                        default:
-                            return false;
-
+                for (DocumentChange doc : snapshots.getDocumentChanges()) {
+                    switch (doc.getType()) {
+                        case ADDED:
+                            String user = (String) doc.getDocument().getData().get("user");
+                            String messageText = (String) doc.getDocument().getData().get("message");
+                            if (user.equals(userId)) addMessageBox(messageText, 1);
+                            else addMessageBox(messageText, 0);
+                            break;
+                        case MODIFIED:
+                        case REMOVED:
+                            break;
                     }
                 }
-            };
+                progressDialog.dismiss();
+            }
+        });
+    }
 
 
-    private void sendTo(Intent intent) {
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startActivity(intent);
-        finish();
 
+    public void addMessageBox(String message, int type){
+        TextView textView = new TextView(ChatActivity.this);
+        textView.setText(message);
+
+        LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp2.weight = 1.0f;
+
+        if(type == 1) {
+            lp2.gravity = Gravity.RIGHT;
+            textView.setBackgroundResource(R.drawable.bubble_in);
+        } else{
+            lp2.gravity = Gravity.LEFT;
+            textView.setBackgroundResource(R.drawable.bubble_out);
+        }
+        textView.setLayoutParams(lp2);
+        layout.addView(textView);
+        scrollView.fullScroll(View.FOCUS_DOWN);
+    }
+
+    private void storeInDB(String user1, String user2, Map<String, Object> object){
+        firebaseFirestore.collection("Chat")
+                            .document(String.format("%s_%s", user1, user2))
+                            .collection("message")
+                            .document(UUID.randomUUID().toString())
+                            .set(object);
     }
 }

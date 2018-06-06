@@ -9,7 +9,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -143,7 +142,7 @@ public class ProfileActivity extends AppCompatActivity {
                             return true;
 
                         case R.id.nav_chat:
-                            Intent chatIntent = new Intent(ProfileActivity.this, ChatActivity.class);
+                            Intent chatIntent = new Intent(ProfileActivity.this, ChatSelectionActivity.class);
                             sendTo(chatIntent);
                             return true;
 

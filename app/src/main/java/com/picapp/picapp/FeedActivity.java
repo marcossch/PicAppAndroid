@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -103,7 +102,7 @@ public class FeedActivity extends AppCompatActivity {
                             return true;
 
                         case R.id.nav_chat:
-                            Intent chatIntent = new Intent(FeedActivity.this, ChatActivity.class);
+                            Intent chatIntent = new Intent(FeedActivity.this, ChatSelectionActivity.class);
                             sendTo(chatIntent);
                             return true;
 
