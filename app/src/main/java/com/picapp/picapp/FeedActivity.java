@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -151,6 +150,11 @@ public class FeedActivity extends AppCompatActivity {
                         case R.id.nav_profile:
                             Intent profileIntent = new Intent(FeedActivity.this, ProfileActivity.class);
                             sendTo(profileIntent);
+                            return true;
+
+                        case R.id.nav_chat:
+                            Intent chatIntent = new Intent(FeedActivity.this, ChatSelectionActivity.class);
+                            sendTo(chatIntent);
                             return true;
 
                         default:

@@ -30,8 +30,8 @@
         android:layout_height="56dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        app:menu="@menu/nav_items"
         android:background="@color/colorPrimary"
-        android:theme="@style/NavTheme"></android.support.design.widget.BottomNavigationView>
+        android:theme="@style/NavTheme"
+        app:menu="@menu/nav_items" />
 
 </RelativeLayout>
