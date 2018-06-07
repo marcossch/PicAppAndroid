@@ -195,7 +195,7 @@ public class NewPostActivity extends AppCompatActivity {
 
 
         //defino donde se va a  guardar la imagen
-        final Long timestamp = System.currentTimeMillis()/1000;
+        final Long timestamp = System.currentTimeMillis();
         StorageReference image_path = storageReference.child("stories").child(timestamp.toString() + ".jpg");
 
         image_path.putFile(mainImageURI).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
@@ -337,7 +337,7 @@ public class NewPostActivity extends AppCompatActivity {
         storyRequest.setMedia(imageUri.toString());
         storyRequest.setDescription(description.getText().toString());
         //completar la descripcion
-        storyRequest.setLocation("falta");
+        storyRequest.setLocation("ubicación");
         storyRequest.setTimestamp(timestamp);
         storyRequest.setTitle(titulo.getText().toString());
         storyRequest.setIsPrivate(!(privacidad.isChecked()));

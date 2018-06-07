@@ -5,7 +5,9 @@ import com.picapp.picapp.Models.StoryRequest;
 import com.picapp.picapp.Models.StoryResult;
 import com.picapp.picapp.Models.User;
 import com.picapp.picapp.Models.Error;
+import com.picapp.picapp.Models.UserAccount;
 import com.picapp.picapp.Models.UserLogout;
+import com.picapp.picapp.Models.UserProfile;
 import com.picapp.picapp.Models.UserRequest;
 import com.picapp.picapp.Models.UserUpdate;
 
@@ -39,8 +41,14 @@ public interface WebApi {
                            @Header("token") String token, @Header("Content-Type") String content);
 
     @GET("users/{userid}/myaccount")
-    Call<User> getUser(@Path("userid") String user,
-                       @Header("token") String token, @Header("Content-Type") String content);
+    Call<UserAccount> getUserAccount(@Path("userid") String user,
+                                     @Header("token") String token, @Header("Content-Type") String content);
+
+    //--------------Profile -------------------------
+
+    @GET("users/{userid}/profile")
+    Call<UserProfile> getUserProfile(@Path("userid") String user,
+                                     @Header("token") String token, @Header("Content-Type") String content);
 
     //--------------Stories -------------------------
     @POST("stories")

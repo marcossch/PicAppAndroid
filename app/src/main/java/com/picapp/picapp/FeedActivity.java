@@ -2,9 +2,12 @@ package com.picapp.picapp;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,8 +15,18 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.picapp.picapp.AndroidModels.FeedRecyclerAdapter;
+import com.picapp.picapp.AndroidModels.FeedStory;
 import com.picapp.picapp.Interfaces.WebApi;
 import com.picapp.picapp.Models.UserLogout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,8 +39,13 @@ public class FeedActivity extends AppCompatActivity {
     private android.support.v7.widget.Toolbar mainToolbar;
 
     private FirebaseAuth mAuth;
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseUser user;
 
     private BottomNavigationView mMainNav;
+    private RecyclerView feed_list_view;
+    private List<FeedStory> feed_list;
+    private FeedRecyclerAdapter feedRecyclerAdapter;
 
     private Retrofit retrofit;
 
@@ -48,6 +66,39 @@ public class FeedActivity extends AppCompatActivity {
         mMainNav = (BottomNavigationView) findViewById(R.id.main_nav);
         mMainNav.setOnNavigationItemSelectedListener(navListener);
         mMainNav.setSelectedItemId(R.id.nav_feed);
+
+        //levanto la lista de visualizacion de stories
+        feed_list_view = (RecyclerView) findViewById(R.id.feed_list_view);
+
+        //cargo la lista de stories
+        feed_list = new ArrayList<>();
+        feedRecyclerAdapter = new FeedRecyclerAdapter(feed_list);
+        feed_list_view.setLayoutManager(new LinearLayoutManager(this));
+        feed_list_view.setAdapter(feedRecyclerAdapter);
+
+        //Agarro los atributos desde firebase
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        //levanta toda la data del feed de firebase en realtime
+        firebaseFirestore.collection("Stories").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+
+                for (DocumentChange doc: queryDocumentSnapshots.getDocumentChanges()){
+
+                    if(doc.getType() == DocumentChange.Type.ADDED){
+
+                        FeedStory feedStory = doc.getDocument().toObject(FeedStory.class);
+                        feed_list.add(feedStory);
+                        feedRecyclerAdapter.notifyDataSetChanged();
+
+                    }
+
+                }
+
+            }
+        });
 
     }
 
