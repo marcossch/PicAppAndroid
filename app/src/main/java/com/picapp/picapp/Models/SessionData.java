@@ -1,5 +1,5 @@
 package com.picapp.picapp.Models;
 
 public class SessionData {
-    public static String onChat = "";
+    public static SelectableUser onChat = new SelectableUser(null, null);
 }

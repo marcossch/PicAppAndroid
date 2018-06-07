@@ -1,10 +1,12 @@
 package com.picapp.picapp;
 
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,9 +44,8 @@ public class ChatActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore firebaseFirestore;
-    private StorageReference storageReference;
     private String userId;
-    private String name;
+    private android.support.v7.widget.Toolbar mainToolbar;
 
     LinearLayout layout;
     RelativeLayout layout_2;
@@ -64,9 +65,13 @@ public class ChatActivity extends AppCompatActivity {
         firebaseFirestore = FirebaseFirestore.getInstance();
 
         layout = (LinearLayout) findViewById(R.id.layout1);
+        mainToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(mainToolbar);
+        getSupportActionBar().setTitle(SessionData.onChat.getName());
         layout_2 = (RelativeLayout)findViewById(R.id.layout2);
         sendButton = (ImageView)findViewById(R.id.sendButton);
         messageArea = (EditText)findViewById(R.id.messageArea);
+        messageArea.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         scrollView = (ScrollView)findViewById(R.id.scrollView);
 
         progressDialog = new ProgressDialog(ChatActivity.this);
@@ -85,8 +90,8 @@ public class ChatActivity extends AppCompatActivity {
                     message.put("message", messageText);
                     message.put("timestamp", Timestamp.now());
                     // Store in both documents
-                    storeInDB(userId, SessionData.onChat, message);
-                    storeInDB(SessionData.onChat, userId, message);
+                    storeInDB(userId, SessionData.onChat.getId(), message);
+                    storeInDB(SessionData.onChat.getId(), userId, message);
                     // Restore write field
                     messageArea.setText("");
                 }
@@ -94,7 +99,7 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         firebaseFirestore.collection("Chat")
-                .document(String.format("%s_%s", userId, SessionData.onChat))
+                .document(String.format("%s_%s", userId, SessionData.onChat.getId()))
                 .collection("message")
                 .orderBy("timestamp")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -121,8 +126,6 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-
-
     public void addMessageBox(String message, int type){
         TextView textView = new TextView(ChatActivity.this);
         textView.setText(message);
@@ -133,11 +136,15 @@ public class ChatActivity extends AppCompatActivity {
         if(type == 1) {
             lp2.gravity = Gravity.RIGHT;
             textView.setBackgroundResource(R.drawable.bubble_in);
+
         } else{
             lp2.gravity = Gravity.LEFT;
             textView.setBackgroundResource(R.drawable.bubble_out);
         }
+        textView.setMaxWidth(550);
+        textView.setPadding(15, 15, 15, 15);
         textView.setLayoutParams(lp2);
+        textView.setTextColor(Color.WHITE);
         layout.addView(textView);
         scrollView.fullScroll(View.FOCUS_DOWN);
     }
