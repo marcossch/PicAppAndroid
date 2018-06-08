@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -53,7 +54,7 @@ public class ChatSelectionActivity extends AppCompatActivity {
 
         mainToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mainToolbar);
-        getSupportActionBar().setTitle("Selecciona un amigo para chatear");
+        getSupportActionBar().setTitle("PicApp");
 
         usersList = (ListView)findViewById(R.id.usersList);
         noUsersText = (TextView)findViewById(R.id.noUsersText);
@@ -81,6 +82,15 @@ public class ChatSelectionActivity extends AppCompatActivity {
         mMainNav = (BottomNavigationView) findViewById(R.id.main_nav);
         mMainNav.setOnNavigationItemSelectedListener(navListener);
         mMainNav.setSelectedItemId(R.id.nav_chat);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //levanta la barra del menu con sus items
+
+        getMenuInflater().inflate(R.menu.chat_menu, menu);
+
+        return true;
     }
 
     public void doOnSuccess(String s){
@@ -148,7 +158,6 @@ public class ChatSelectionActivity extends AppCompatActivity {
     private void sendTo(Intent intent) {
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
-        finish();
     }
 
     private void addUserToList(String id){

@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -68,6 +69,7 @@ public class ChatActivity extends AppCompatActivity {
         mainToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mainToolbar);
         getSupportActionBar().setTitle(SessionData.onChat.getName());
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         layout_2 = (RelativeLayout)findViewById(R.id.layout2);
         sendButton = (ImageView)findViewById(R.id.sendButton);
         messageArea = (EditText)findViewById(R.id.messageArea);
@@ -124,6 +126,15 @@ public class ChatActivity extends AppCompatActivity {
                 progressDialog.dismiss();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //levanta la barra del menu con sus items
+
+        getMenuInflater().inflate(R.menu.chat_menu, menu);
+
+        return true;
     }
 
     public void addMessageBox(String message, int type){

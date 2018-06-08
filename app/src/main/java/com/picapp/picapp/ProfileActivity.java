@@ -31,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.picapp.picapp.AndroidModels.FeedRecyclerAdapter;
 import com.picapp.picapp.AndroidModels.FeedStory;
 import com.picapp.picapp.Interfaces.WebApi;
+import com.picapp.picapp.Models.Story;
 import com.picapp.picapp.Models.UserAccount;
 import com.picapp.picapp.Models.UserLogout;
 import com.picapp.picapp.Models.UserProfile;
@@ -75,6 +76,8 @@ public class ProfileActivity extends AppCompatActivity {
 
         //que se ve la barra de progreso
         profileProgress = (ProgressBar) findViewById(R.id.profileProgress);
+        //que se ve la barra de progreso
+        profileProgress.setVisibility(View.VISIBLE);
 
         //Levantamos la toolbar
         mainToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.main_toolbar);
@@ -133,13 +136,13 @@ public class ProfileActivity extends AppCompatActivity {
         //-------------levanto las publicaciones del usuario--------------
 
         //levanto la lista de visualizacion de stories
-        profile_list_view = (RecyclerView) findViewById(R.id.feed_list_view);
+        profile_list_view = (RecyclerView) findViewById(R.id.profile_list_view);
 
         //cargo la lista de stories
         profile_list = new ArrayList<>();
         profileRecyclerAdapter = new FeedRecyclerAdapter(profile_list);
-        //profile_list_view.setLayoutManager(new LinearLayoutManager(ProfileActivity.this));
-        //profile_list_view.setAdapter(profileRecyclerAdapter);
+        profile_list_view.setLayoutManager(new LinearLayoutManager(ProfileActivity.this));
+        profile_list_view.setAdapter(profileRecyclerAdapter);
 
         //creo retrofit que es la libreria para manejar Apis
         retrofit = new Retrofit.Builder()
@@ -171,26 +174,41 @@ public class ProfileActivity extends AppCompatActivity {
                                 amigos.setText(userP.getNumberOfFriends().toString());
                                 publicaciones.setText(userP.getNumberOfStories().toString());
 
-                                //FeedStory feedStory = new FeedStory();
-                                //profile_list.add(feedStory);
-                                //profileRecyclerAdapter.notifyDataSetChanged();
+                                List<Story> stories = userP.getStories();
+                                for (Story story : stories){
+
+                                    FeedStory feedStory = new FeedStory();
+                                    feedStory.setDescription(story.getDescription());
+                                    feedStory.setImage(story.getMedia());
+                                    feedStory.setLocation(story.getLocation());
+                                    feedStory.setTimestamp(story.getTimestamp());
+                                    feedStory.setTitle(story.getTitle());
+                                    feedStory.setUser_id(user_id);
+
+                                    profile_list.add(feedStory);
+                                    profileRecyclerAdapter.notifyDataSetChanged();
+                                }
+
+                                profileProgress.setVisibility(View.INVISIBLE);
                             }
 
                             @Override
                             public void onFailure(Call<UserProfile> call, Throwable t) {
                                 Toast.makeText(ProfileActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                                profileProgress.setVisibility(View.INVISIBLE);
                             }
                         });
                     } else {
                         Toast.makeText(ProfileActivity.this, "El usuario no posee un token asociado", Toast.LENGTH_LONG).show();
+                        profileProgress.setVisibility(View.INVISIBLE);
                     }
                 } else {
                     String error = task.getException().getMessage();
                     Toast.makeText(ProfileActivity.this, "FIRESTORE Retrieve Error: " + error, Toast.LENGTH_LONG).show();
+                    profileProgress.setVisibility(View.INVISIBLE);
                 }
             }
         });
-
 
     }
 
