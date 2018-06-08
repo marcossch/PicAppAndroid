@@ -46,7 +46,7 @@ public interface WebApi {
 
     //--------------Profile -------------------------
 
-    @GET("users/{userid}/profile")
+    @GET("users/{userid}")
     Call<UserProfile> getUserProfile(@Path("userid") String user,
                                      @Header("token") String token, @Header("Content-Type") String content);
 

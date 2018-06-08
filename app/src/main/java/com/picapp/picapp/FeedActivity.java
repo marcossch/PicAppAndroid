@@ -18,6 +18,7 @@ import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.picapp.picapp.AndroidModels.FeedRecyclerAdapter;
 import com.picapp.picapp.AndroidModels.FeedStory;
@@ -78,6 +79,9 @@ public class FeedActivity extends AppCompatActivity {
         //Agarro los atributos desde firebase
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseFirestore = FirebaseFirestore.getInstance();
+
+
+        //Query firstQuery = firebaseFirestore.collection("Stories").orderBy("timestamp", Query.Direction.DESCENDING);
 
         //levanta toda la data del feed de firebase en realtime
         firebaseFirestore.collection("Stories").addSnapshotListener(new EventListener<QuerySnapshot>() {

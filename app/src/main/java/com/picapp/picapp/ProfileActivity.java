@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +28,22 @@ import com.google.firebase.auth.FirebaseUser;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.picapp.picapp.AndroidModels.FeedRecyclerAdapter;
+import com.picapp.picapp.AndroidModels.FeedStory;
+import com.picapp.picapp.Interfaces.WebApi;
+import com.picapp.picapp.Models.UserAccount;
+import com.picapp.picapp.Models.UserLogout;
+import com.picapp.picapp.Models.UserProfile;
 import com.theartofdev.edmodo.cropper.CropImage;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class ProfileActivity extends AppCompatActivity {
@@ -33,11 +51,19 @@ public class ProfileActivity extends AppCompatActivity {
     private BottomNavigationView mMainNav;
     private FloatingActionButton fab;
     private String name;
-    private Uri picURL;
+    private String picURL;
     private ImageView fotoP;
+    private TextView amigos;
+    private TextView publicaciones;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseUser user;
     private android.support.v7.widget.Toolbar mainToolbar;
+
+    private RecyclerView profile_list_view;
+    private List<FeedStory> profile_list;
+    private FeedRecyclerAdapter profileRecyclerAdapter;
+
+    private Retrofit retrofit;
 
     private FloatingActionButton addPostButton;
     private ProgressBar profileProgress;
@@ -49,28 +75,29 @@ public class ProfileActivity extends AppCompatActivity {
 
         //que se ve la barra de progreso
         profileProgress = (ProgressBar) findViewById(R.id.profileProgress);
-        //profileProgress.setVisibility(View.VISIBLE);
 
         //Levantamos la toolbar
         mainToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mainToolbar);
         getSupportActionBar().setTitle("PicApp");
 
-        //Agarro los atributos desde firebase
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        firebaseFirestore = FirebaseFirestore.getInstance();
-        if (user != null) {
-            name = user.getDisplayName();
-            picURL = user.getPhotoUrl();
-        }
-
-        //Cargo el nombre que esta guardado en firebase
-        changeProfileName();
-
-        //Cargo la foto de perfil del usuario
+        //levantamos la foto default
         fotoP = findViewById(R.id.contenedorFotoPerfil);
         fotoP.setImageDrawable(getDrawable(R.drawable.cameranext));
-        changeProfilePic();
+
+        //levanto la cantidad de publicaciones y amigos
+        amigos = findViewById(R.id.friendsNumber);
+        publicaciones = findViewById(R.id.pubNumber);
+
+        //Agarro los atributos desde firebase
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        final String user_id = user.getUid();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        if (user != null) {
+            //Cargo el nombre que esta guardado en firebase
+            name = user.getDisplayName();
+            changeProfileName();
+        }
 
         //Click en el boton de amigos te lleva a ver tus amigos
         Button friends = (Button) findViewById(R.id.friendsNumber);
@@ -103,27 +130,66 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        //-------------levanto las publicaciones del usuario--------------
 
-    }
+        //levanto la lista de visualizacion de stories
+        profile_list_view = (RecyclerView) findViewById(R.id.feed_list_view);
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        //cargo la lista de stories
+        profile_list = new ArrayList<>();
+        profileRecyclerAdapter = new FeedRecyclerAdapter(profile_list);
+        //profile_list_view.setLayoutManager(new LinearLayoutManager(ProfileActivity.this));
+        //profile_list_view.setAdapter(profileRecyclerAdapter);
 
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
+        //creo retrofit que es la libreria para manejar Apis
+        retrofit = new Retrofit.Builder()
+                .baseUrl(WebApi.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        final WebApi webApi = retrofit.create(WebApi.class);
+        //Obtengo el token del usuario.
+        firebaseFirestore.collection("UserTokens").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    //si existe este documento
+                    if(task.getResult().exists()){
+                        //levanto el token
+                        Object aux = task.getResult().get("token");
+                        String token = aux.toString();
+                        Call<UserProfile> call = webApi.getUserProfile(user_id, token, "Application/json");
+                        call.enqueue(new Callback<UserProfile>() {
+                            @Override
+                            public void onResponse(Call<UserProfile> call, Response<UserProfile> response) {
 
-                picURL = result.getUri();
-                fotoP.setImageURI(picURL);
+                                UserProfile userP = response.body();
+                                //levanto la info del usuario
+                                name = userP.getName();
+                                changeProfileName();
+                                picURL = userP.getProfilePic();
+                                changeProfilePic();
+                                amigos.setText(userP.getNumberOfFriends().toString());
+                                publicaciones.setText(userP.getNumberOfStories().toString());
 
-                //escondo la barra de progreso
-                profileProgress.setVisibility(View.INVISIBLE);
+                                //FeedStory feedStory = new FeedStory();
+                                //profile_list.add(feedStory);
+                                //profileRecyclerAdapter.notifyDataSetChanged();
+                            }
 
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
+                            @Override
+                            public void onFailure(Call<UserProfile> call, Throwable t) {
+                                Toast.makeText(ProfileActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(ProfileActivity.this, "El usuario no posee un token asociado", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    String error = task.getException().getMessage();
+                    Toast.makeText(ProfileActivity.this, "FIRESTORE Retrieve Error: " + error, Toast.LENGTH_LONG).show();
+                }
             }
-        }
+        });
 
 
     }
@@ -175,53 +241,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void changeProfilePic(){
-        String user_id = user.getUid();
-        firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    //si existe este documento
-                    if (task.getResult().exists()) {
-
-                        //levanto la imagen del usuario
-                        String image = task.getResult().getString("image");
-                        picURL = Uri.parse(image);
-
-                        //uso la libreria Glide para cargar la imagen a la App
-                        RequestOptions placeholderRequest = new RequestOptions();
-                        placeholderRequest.placeholder(R.drawable.cameranext);
-                        Glide.with(ProfileActivity.this).setDefaultRequestOptions(placeholderRequest).load(image).into(fotoP);
-                    }
-                    else{
-                        Toast.makeText(ProfileActivity.this, "El usuario no tiene imagen de perfil",
-                                Toast.LENGTH_LONG).show();
-                    }
-                }
-                else {
-                    String error = task.getException().getMessage();
-                    Toast.makeText(ProfileActivity.this, "FIRESTORE Retrieve Error: " + error, Toast.LENGTH_LONG).show();
-                }
-
-            }
-        });
-
+        Glide.with(ProfileActivity.this).load(picURL).into(fotoP);
     }
-
-
-    //Boton de seguimiento
-        /*fab = (FloatingActionButton) findViewById(R.id.fabFriends);
-        fab.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                if(event.getAction() == MotionEvent.ACTION_UP){
-                    ColorStateList csl = new ColorStateList(new int[][]{new int[0]}, new int[]{0xB5137F80});
-                    fab.setBackgroundTintList(csl);
-                    fab.setPressed(true);
-                }
-
-                return true;
-            }
-        });*/
 
 }

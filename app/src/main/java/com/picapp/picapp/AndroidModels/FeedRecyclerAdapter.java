@@ -125,6 +125,28 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
             }
         });
 
+        //Obtengo la foto de perfil
+        firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    //si existe este documento
+                    if(task.getResult().exists()){
+
+                        //levanto la imagen del usuario
+                        final String profileImage = task.getResult().getString("image");
+                        holder.setProfileImage(profileImage);
+
+                    } else {
+                        Toast.makeText(context, "El usuario no posee una foto de perfil", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    String error = task.getException().getMessage();
+                    Toast.makeText(context, "FIRESTORE Retrieve Error: " + error, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
 
 
     }
@@ -141,6 +163,7 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
         private TextView titleView;
         private TextView locationView;
         private ImageView image;
+        private ImageView pImage;
         private AppCompatTextView nameText;
         private TextView story_date;
 
@@ -169,6 +192,11 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
         public void setImage(String imageUri){
             image = mView.findViewById(R.id.story_image);
             Glide.with(context).load(imageUri).into(image);
+        }
+
+        public void setProfileImage(String imageUri){
+            pImage = mView.findViewById(R.id.user_profile_image);
+            Glide.with(context).load(imageUri).into(pImage);
         }
 
         public void setUsername(String name) {

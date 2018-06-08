@@ -6,53 +6,40 @@ import com.google.gson.annotations.SerializedName;
 
 public class Story {
 
-    @SerializedName("media")
+    @SerializedName("comments")
     @Expose
-    private String media;
-    @SerializedName("timestamp")
-    @Expose
-    private Integer timestamp;
-    @SerializedName("location")
-    @Expose
-    private String location;
+    private List<Object> comments = null;
     @SerializedName("description")
     @Expose
     private String description;
+    @SerializedName("is_private")
+    @Expose
+    private String isPrivate;
+    @SerializedName("location")
+    @Expose
+    private String location;
+    @SerializedName("media")
+    @Expose
+    private String media;
+    @SerializedName("reactions")
+    @Expose
+    private Reactions reactions;
+    @SerializedName("timestamp")
+    @Expose
+    private Long timestamp;
     @SerializedName("title")
     @Expose
     private String title;
-    @SerializedName("is_private")
+    @SerializedName("username")
     @Expose
-    private Boolean isPrivate;
-    @SerializedName("comments")
-    @Expose
-    private List<Comment> comments = null;
-    @SerializedName("reactions")
-    @Expose
-    private List<Reaction> reactions = null;
+    private String username;
 
-    public String getMedia() {
-        return media;
+    public List<Object> getComments() {
+        return comments;
     }
 
-    public void setMedia(String media) {
-        this.media = media;
-    }
-
-    public Integer getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Integer timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
+    public void setComments(List<Object> comments) {
+        this.comments = comments;
     }
 
     public String getDescription() {
@@ -63,6 +50,46 @@ public class Story {
         this.description = description;
     }
 
+    public String getIsPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsPrivate(String isPrivate) {
+        this.isPrivate = isPrivate;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getMedia() {
+        return media;
+    }
+
+    public void setMedia(String media) {
+        this.media = media;
+    }
+
+    public Reactions getReactions() {
+        return reactions;
+    }
+
+    public void setReactions(Reactions reactions) {
+        this.reactions = reactions;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -71,28 +98,12 @@ public class Story {
         this.title = title;
     }
 
-    public Boolean getIsPrivate() {
-        return isPrivate;
+    public String getUsername() {
+        return username;
     }
 
-    public void setIsPrivate(Boolean isPrivate) {
-        this.isPrivate = isPrivate;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
-
-    public List<Reaction> getReactions() {
-        return reactions;
-    }
-
-    public void setReactions(List<Reaction> reactions) {
-        this.reactions = reactions;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 }

@@ -9,21 +9,21 @@ public class UserProfile {
     @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("username")
+    @SerializedName("number of friends")
     @Expose
-    private String username;
+    private Long numberOfFriends;
+    @SerializedName("number of stories")
+    @Expose
+    private Long numberOfStories;
     @SerializedName("profile_pic")
     @Expose
     private String profilePic;
-    @SerializedName("number_of_stories")
-    @Expose
-    private Integer numberOfStories;
-    @SerializedName("number_of_friends")
-    @Expose
-    private Integer numberOfFriends;
     @SerializedName("stories")
     @Expose
     private List<Story> stories = null;
+    @SerializedName("username")
+    @Expose
+    private String username;
 
     public String getName() {
         return name;
@@ -33,12 +33,20 @@ public class UserProfile {
         this.name = name;
     }
 
-    public String getUsername() {
-        return username;
+    public Long getNumberOfFriends() {
+        return numberOfFriends;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setNumberOfFriends(Long numberOfFriends) {
+        this.numberOfFriends = numberOfFriends;
+    }
+
+    public Long getNumberOfStories() {
+        return numberOfStories;
+    }
+
+    public void setNumberOfStories(Long numberOfStories) {
+        this.numberOfStories = numberOfStories;
     }
 
     public String getProfilePic() {
@@ -49,28 +57,20 @@ public class UserProfile {
         this.profilePic = profilePic;
     }
 
-    public Integer getNumberOfStories() {
-        return numberOfStories;
-    }
-
-    public void setNumberOfStories(Integer numberOfStories) {
-        this.numberOfStories = numberOfStories;
-    }
-
-    public Integer getNumberOfFriends() {
-        return numberOfFriends;
-    }
-
-    public void setNumberOfFriends(Integer numberOfFriends) {
-        this.numberOfFriends = numberOfFriends;
-    }
-
     public List<Story> getStories() {
         return stories;
     }
 
     public void setStories(List<Story> stories) {
         this.stories = stories;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 }
