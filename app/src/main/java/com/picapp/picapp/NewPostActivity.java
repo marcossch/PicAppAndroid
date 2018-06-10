@@ -243,6 +243,13 @@ public class NewPostActivity extends AppCompatActivity {
                 Place place = PlacePicker.getPlace(data, this);
                 Ubicacion = (String) place.getAddress();
                 locButton.setText(Ubicacion);
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+                Log.d(TAG, status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                Log.d(TAG, "Operacion cancelada.");
+                Toast.makeText(NewPostActivity.this, "Operación cancelada. " +
+                        "Intente nuevamente en unos minutos.", Toast.LENGTH_LONG).show();
             }
         }
     }
