@@ -87,7 +87,7 @@ public class NewPostActivity extends AppCompatActivity {
 
         //levanto el token
         final Picapp picapp = Picapp.getInstance();
-        String token = picapp.getToken();
+        token = picapp.getToken();
 
         if(token == null) {
             sendToFeed();

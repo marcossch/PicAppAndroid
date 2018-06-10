@@ -77,7 +77,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
 
         //levanto el token
         final Picapp picapp = Picapp.getInstance();
-        String token = picapp.getToken();
+        token = picapp.getToken();
 
         if(token == null) {
             sendToFeed();
@@ -310,7 +310,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
     }
 
     private void executeUpdate(UserUpdate userUpd, WebApi webApi, String tok){
-        Call<Error> call = webApi.updateUser(userUpd ,user_id, token, "Application/json");
+        Call<Error> call = webApi.updateUser(userUpd ,user_id, tok, "Application/json");
         call.enqueue(new Callback<Error>() {
             @Override
             public void onResponse(Call<Error> call, Response<Error> response) {
