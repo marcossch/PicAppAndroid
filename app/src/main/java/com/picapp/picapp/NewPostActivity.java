@@ -221,37 +221,37 @@ public class NewPostActivity extends AppCompatActivity {
 
     private void storeFirestore(final StoryResult story) {
 
-        //comprimo el thumbnail
-        File newImageFile = new File(mainImageURI.getPath());
-
-        try {
-            compressedImageFile = new Compressor(NewPostActivity.this)
-                    .setMaxWidth(125)
-                    .setMaxHeight(150)
-                    .setQuality(5)
-                    .compressToBitmap(newImageFile);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] thumbData = baos.toByteArray();
-
-        UploadTask uploadTask = storageReference.child("stories/thumbs")
-                .child(story.getTimestamp().toString() + ".jpg").putBytes(thumbData);
-
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                String thumbUri = taskSnapshot.getDownloadUrl().toString();
+//        //comprimo el thumbnail
+//        File newImageFile = new File(mainImageURI.getPath());
+//
+//        try {
+//            compressedImageFile = new Compressor(NewPostActivity.this)
+//                    .setMaxWidth(125)
+//                    .setMaxHeight(150)
+//                    .setQuality(5)
+//                    .compressToBitmap(newImageFile);
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//        byte[] thumbData = baos.toByteArray();
+//
+//        UploadTask uploadTask = storageReference.child("stories/thumbs")
+//                .child(story.getTimestamp().toString() + ".jpg").putBytes(thumbData);
+//
+//        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//            @Override
+//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//
+//                String thumbUri = taskSnapshot.getDownloadUrl().toString();
 
                 Map<String, Object> postMap = new HashMap<>();
                 postMap.put("image_id", story.getStoryId());
                 postMap.put("image", story.getMedia());
-                postMap.put("thumb", thumbUri);
+                postMap.put("thumb", "thumbUri");
                 postMap.put("user_id", user_id);
                 postMap.put("timestamp", story.getTimestamp());
                 postMap.put("description", story.getDescription());
@@ -285,21 +285,21 @@ public class NewPostActivity extends AppCompatActivity {
                     }
                 });
 
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-                String error = e.getMessage();
-                Toast.makeText(NewPostActivity.this, "FIRESTORE Error: " + error, Toast.LENGTH_LONG).show();
-
-                //elimino la story del server
-                serverDeleteStory(story);
-
-                //escondo la barra de progreso
-                newPostProgress.setVisibility(View.INVISIBLE);
-            }
-        });
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//                String error = e.getMessage();
+//                Toast.makeText(NewPostActivity.this, "FIRESTORE Error: " + error, Toast.LENGTH_LONG).show();
+//
+//                //elimino la story del server
+//                serverDeleteStory(story);
+//
+//                //escondo la barra de progreso
+//                newPostProgress.setVisibility(View.INVISIBLE);
+//            }
+//        });
 
     }
 
