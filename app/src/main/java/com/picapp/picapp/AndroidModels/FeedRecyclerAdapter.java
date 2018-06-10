@@ -46,6 +46,7 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
     public List<FeedStory> feed_list;
     public Context context;
     private FirebaseFirestore firebaseFirestore;
+    public String token = null;
 
     public FeedRecyclerAdapter(List<FeedStory> feed_list){
 
@@ -53,6 +54,10 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
         //instacia de firestore
         firebaseFirestore = FirebaseFirestore.getInstance();
 
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @NonNull
@@ -93,60 +98,82 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
                 .build();
         final WebApi webApi = retrofit.create(WebApi.class);
 
-        //Obtengo el token del usuario.
-        firebaseFirestore.collection("UserTokens").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    //si existe este documento
-                    if(task.getResult().exists()){
-                        //levanto el token
-                        Object aux = task.getResult().get("token");
-                        String token = aux.toString();
-                        Call<UserAccount> call = webApi.getUserAccount(user_id, token, "Application/json");
-                        call.enqueue(new Callback<UserAccount>() {
-                            @Override
-                            public void onResponse(Call<UserAccount> call, Response<UserAccount> response) {
-                                holder.setUsername(response.body().getName());
-                            }
+        if (token == null) {
+            //Obtengo el token del usuario.
+            firebaseFirestore.collection("UserTokens").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        //si existe este documento
+                        if (task.getResult().exists()) {
+                            //levanto el token
+                            Object aux = task.getResult().get("token");
+                            String token = aux.toString();
+                            Call<UserAccount> call = webApi.getUserAccount(user_id, token, "Application/json");
+                            call.enqueue(new Callback<UserAccount>() {
+                                @Override
+                                public void onResponse(Call<UserAccount> call, Response<UserAccount> response) {
+                                    holder.setUsername(response.body().getName());
+                                }
 
-                            @Override
-                            public void onFailure(Call<UserAccount> call, Throwable t) {
-                                Log.d("UPDATE USER: ", "-----> No se pudo levantar el nombre de usuario <-----");
-                            }
-                        });
+                                @Override
+                                public void onFailure(Call<UserAccount> call, Throwable t) {
+                                    Log.d("UPDATE USER: ", "-----> No se pudo levantar el nombre de usuario <-----");
+                                }
+                            });
+                        } else {
+                            Toast.makeText(context, "El usuario no posee un token asociado", Toast.LENGTH_LONG).show();
+                        }
                     } else {
-                        Toast.makeText(context, "El usuario no posee un token asociado", Toast.LENGTH_LONG).show();
+                        String error = task.getException().getMessage();
+                        Toast.makeText(context, "FIRESTORE Retrieve Error: " + error, Toast.LENGTH_LONG).show();
                     }
-                } else {
-                    String error = task.getException().getMessage();
-                    Toast.makeText(context, "FIRESTORE Retrieve Error: " + error, Toast.LENGTH_LONG).show();
                 }
-            }
-        });
+            });
+        } else {
+            Call<UserAccount> call = webApi.getUserAccount(user_id, token, "Application/json");
+            call.enqueue(new Callback<UserAccount>() {
+                @Override
+                public void onResponse(Call<UserAccount> call, Response<UserAccount> response) {
+                    holder.setUsername(response.body().getName());
+                }
 
-        //Obtengo la foto de perfil
-        firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    //si existe este documento
-                    if(task.getResult().exists()){
+                @Override
+                public void onFailure(Call<UserAccount> call, Throwable t) {
+                    Log.d("UPDATE USER: ", "-----> No se pudo levantar el nombre de usuario <-----");
+                }
+            });
+        }
 
-                        //levanto la imagen del usuario
-                        final String profileImage = task.getResult().getString("image");
-                        holder.setProfileImage(profileImage);
+        //cambiar cuando el feed se integre al server
+        String profilePic = feed_list.get(position).getProfPic();
 
+        if (profilePic == null) {
+
+            //Obtengo la foto de perfil
+            firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        //si existe este documento
+                        if (task.getResult().exists()) {
+
+                            //levanto la imagen del usuario
+                            final String profileImage = task.getResult().getString("image");
+                            holder.setProfileImage(profileImage);
+
+                        } else {
+                            Toast.makeText(context, "El usuario no posee una foto de perfil", Toast.LENGTH_LONG).show();
+                        }
                     } else {
-                        Toast.makeText(context, "El usuario no posee una foto de perfil", Toast.LENGTH_LONG).show();
+                        String error = task.getException().getMessage();
+                        Toast.makeText(context, "FIRESTORE Retrieve Error: " + error, Toast.LENGTH_LONG).show();
                     }
-                } else {
-                    String error = task.getException().getMessage();
-                    Toast.makeText(context, "FIRESTORE Retrieve Error: " + error, Toast.LENGTH_LONG).show();
                 }
-            }
-        });
-
+            });
+        } else {
+            holder.setProfileImage(profilePic);
+        }
 
 
     }

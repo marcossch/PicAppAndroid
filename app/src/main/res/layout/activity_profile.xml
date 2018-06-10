@@ -36,7 +36,7 @@
             <!-- IMAGEN PRINCIPAL -->
             <ImageView
                 android:id="@+id/contenedorFotoPerfil"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:adjustViewBounds="true"
                 android:layout_marginLeft="8dp"

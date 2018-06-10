@@ -32,6 +32,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.picapp.picapp.AndroidModels.Picapp;
 import com.picapp.picapp.Interfaces.WebApi;
 import com.picapp.picapp.Models.Error;
 import com.picapp.picapp.Models.User;
@@ -73,6 +74,14 @@ public class AccountSettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_settings);
+
+        //levanto el token
+        final Picapp picapp = Picapp.getInstance();
+        token = picapp.getToken();
+
+        if(token == null) {
+            sendToFeed();
+        }
 
         //instacia de firebase y firestore
         mAuth = FirebaseAuth.getInstance();
@@ -297,30 +306,11 @@ public class AccountSettingsActivity extends AppCompatActivity {
         userUpd.setUsername(new_user_name);
         userUpd.setProfilePhoto(download_uri.toString());
 
-        //Obtengo el token del usuario.
-        firebaseFirestore.collection("UserTokens").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    //si existe este documento
-                    if(task.getResult().exists()){
-                        //levanto el token
-                        Object aux = task.getResult().get("token");
-                        token = aux.toString();
-                        executeUpdate(userUpd,webApi, token);
-                    } else {
-                        Toast.makeText(AccountSettingsActivity.this, "El usuario no posee un token asociado", Toast.LENGTH_LONG).show();
-                        }
-                } else {
-                    String error = task.getException().getMessage();
-                    Toast.makeText(AccountSettingsActivity.this, "FIRESTORE Retrieve Error: " + error, Toast.LENGTH_LONG).show();
-                    }
-            }
-        });
+        executeUpdate(userUpd,webApi, token);
     }
 
     private void executeUpdate(UserUpdate userUpd, WebApi webApi, String tok){
-        Call<Error> call = webApi.updateUser(userUpd ,user_id, token, "Application/json");
+        Call<Error> call = webApi.updateUser(userUpd ,user_id, tok, "Application/json");
         call.enqueue(new Callback<Error>() {
             @Override
             public void onResponse(Call<Error> call, Response<Error> response) {

@@ -42,6 +42,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.picapp.picapp.AndroidModels.Picapp;
 import com.picapp.picapp.Interfaces.WebApi;
 import com.picapp.picapp.Models.StoryDeleted;
 import com.picapp.picapp.Models.StoryRequest;
@@ -96,7 +97,14 @@ public class NewPostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
 
-        //main_layout.setBackground(ContextCompat.getDrawable(this,R.drawable.red_rounded_border));
+        //levanto el token
+        final Picapp picapp = Picapp.getInstance();
+        token = picapp.getToken();
+
+        if(token == null) {
+            sendToFeed();
+        }
+
         //instacia de firebase y firestore
         mAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -127,12 +135,13 @@ public class NewPostActivity extends AppCompatActivity {
             }
         });
 
-        // Construct a GeoDataClient.
+        /*// Construct a GeoDataClient.
         GeoDataClient mGeoDataClient = Places.getGeoDataClient(this, null);
         // Construct a PlaceDetectionClient.
         PlaceDetectionClient mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
         // Construct a FusedLocationProviderClient.
         FusedLocationProviderClient mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        */
         locButton = findViewById(R.id.locationButton);
         locButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -294,37 +303,37 @@ public class NewPostActivity extends AppCompatActivity {
 
     private void storeFirestore(final StoryResult story) {
 
-        //comprimo el thumbnail
-        File newImageFile = new File(mainImageURI.getPath());
-
-        try {
-            compressedImageFile = new Compressor(NewPostActivity.this)
-                    .setMaxWidth(125)
-                    .setMaxHeight(150)
-                    .setQuality(5)
-                    .compressToBitmap(newImageFile);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] thumbData = baos.toByteArray();
-
-        UploadTask uploadTask = storageReference.child("stories/thumbs")
-                .child(story.getTimestamp().toString() + ".jpg").putBytes(thumbData);
-
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                String thumbUri = taskSnapshot.getDownloadUrl().toString();
+//        //comprimo el thumbnail
+//        File newImageFile = new File(mainImageURI.getPath());
+//
+//        try {
+//            compressedImageFile = new Compressor(NewPostActivity.this)
+//                    .setMaxWidth(125)
+//                    .setMaxHeight(150)
+//                    .setQuality(5)
+//                    .compressToBitmap(newImageFile);
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//        byte[] thumbData = baos.toByteArray();
+//
+//        UploadTask uploadTask = storageReference.child("stories/thumbs")
+//                .child(story.getTimestamp().toString() + ".jpg").putBytes(thumbData);
+//
+//        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//            @Override
+//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//
+//                String thumbUri = taskSnapshot.getDownloadUrl().toString();
 
                 Map<String, Object> postMap = new HashMap<>();
                 postMap.put("image_id", story.getStoryId());
                 postMap.put("image", story.getMedia());
-                postMap.put("thumb", thumbUri);
+                postMap.put("thumb", "thumbUri");
                 postMap.put("user_id", user_id);
                 postMap.put("timestamp", story.getTimestamp());
                 postMap.put("description", story.getDescription());
@@ -358,21 +367,21 @@ public class NewPostActivity extends AppCompatActivity {
                     }
                 });
 
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-                String error = e.getMessage();
-                Toast.makeText(NewPostActivity.this, "FIRESTORE Error: " + error, Toast.LENGTH_LONG).show();
-
-                //elimino la story del server
-                serverDeleteStory(story);
-
-                //escondo la barra de progreso
-                newPostProgress.setVisibility(View.INVISIBLE);
-            }
-        });
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//                String error = e.getMessage();
+//                Toast.makeText(NewPostActivity.this, "FIRESTORE Error: " + error, Toast.LENGTH_LONG).show();
+//
+//                //elimino la story del server
+//                serverDeleteStory(story);
+//
+//                //escondo la barra de progreso
+//                newPostProgress.setVisibility(View.INVISIBLE);
+//            }
+//        });
 
     }
 
@@ -416,7 +425,7 @@ public class NewPostActivity extends AppCompatActivity {
         storyRequest.setTitle(titulo.getText().toString());
         storyRequest.setIsPrivate(!(privacidad.isChecked()));
 
-        setToken();
+        callServer();
 
     }
 
@@ -440,27 +449,10 @@ public class NewPostActivity extends AppCompatActivity {
         });
     }
 
-    private void setToken() {
-        //Obtengo el token del usuario.
-        firebaseFirestore.collection("UserTokens").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    //si existe este documento
-                    if (task.getResult().exists()) {
-                        //levanto el token
-                        Object aux = task.getResult().get("token");
-                        token = aux.toString();
-                        callServer();
-                    } else {
-                        Toast.makeText(NewPostActivity.this, "El usuario no posee un token asociado", Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    String error = task.getException().getMessage();
-                    Toast.makeText(NewPostActivity.this, "FIRESTORE Retrieve Error: " + error, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+    private void sendToFeed() {
+        Intent feedIntent = new Intent(NewPostActivity.this, FeedActivity.class);
+        startActivity(feedIntent);
+        finish();
     }
 
     public boolean isServicesOk(){

@@ -8,12 +8,21 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.picapp.picapp.AndroidModels.Picapp;
 
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private FirebaseFirestore firebaseFirestore;
+    private String token = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         //instacia de firebase
         mAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
 
 
     }
@@ -36,9 +46,44 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         if (currentUser != null) {
-            // User is signed in entonces va al feed
-            Intent feedIntent = new Intent(MainActivity.this, FeedActivity.class);
-            sendTo(feedIntent);
+
+            //si no tiene el token cargado, lo hace
+            final Picapp picapp = Picapp.getInstance();
+
+            if(picapp.getToken() == null){
+                //Obtengo el token del usuario.
+                firebaseFirestore.collection("UserTokens").document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            //si existe este documento
+                            if (task.getResult().exists()) {
+                                //levanto el token
+                                Object aux = task.getResult().get("token");
+                                token = aux.toString();
+
+                                picapp.setToken(token);
+
+                                // User is signed in entonces va al feed
+                                Intent feedIntent = new Intent(MainActivity.this, FeedActivity.class);
+                                sendTo(feedIntent);
+
+                            } else {
+                                Toast.makeText(MainActivity.this, "El usuario no posee un token asociado", Toast.LENGTH_LONG).show();
+                                mAuth.signOut();
+                                Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+                                sendTo(loginIntent);
+                            }
+                        } else {
+                            String error = task.getException().getMessage();
+                            Toast.makeText(MainActivity.this, "FIRESTORE Retrieve Error: " + error, Toast.LENGTH_LONG).show();
+                            mAuth.signOut();
+                            Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+                            sendTo(loginIntent);
+                        }
+                    }
+                });
+            }
         } else {
             // No user is signed in
             Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
