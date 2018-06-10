@@ -2,10 +2,16 @@ package com.picapp.picapp;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -25,19 +31,15 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceDetectionClient;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -50,13 +52,9 @@ import com.picapp.picapp.Models.StoryResult;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import id.zelory.compressor.Compressor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -69,10 +67,18 @@ public class NewPostActivity extends AppCompatActivity {
     private android.support.v7.widget.Toolbar mainToolbar;
     private ProgressBar newPostProgress;
     private String user_id;
+
+    //Location
     private String TAG = "LOCATION";
-    private String Location = "";
+    private String Ubicacion = "";
     private static final int ERROR_DIALOG_REQUEST = 9001;
     private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    private static final int PLACE_PICKER_REQUEST = 2;
+    private boolean mLocationPermissionGranted = false;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private Button locButton;
+    private double longActual;
+    private double latActual;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore firebaseFirestore;
@@ -82,7 +88,6 @@ public class NewPostActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private WebApi webApi;
 
-    private Button locButton;
     private ImageView newImage;
     private EditText description;
     private EditText titulo;
@@ -90,7 +95,8 @@ public class NewPostActivity extends AppCompatActivity {
     private Switch privacidad;
     private String token = "";
     private StoryRequest storyRequest;
-    private boolean mLocationPermissionGranted = false;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +107,7 @@ public class NewPostActivity extends AppCompatActivity {
         final Picapp picapp = Picapp.getInstance();
         token = picapp.getToken();
 
-        if(token == null) {
+        if (token == null) {
             sendToFeed();
         }
 
@@ -135,32 +141,46 @@ public class NewPostActivity extends AppCompatActivity {
             }
         });
 
-        /*// Construct a GeoDataClient.
-        GeoDataClient mGeoDataClient = Places.getGeoDataClient(this, null);
-        // Construct a PlaceDetectionClient.
-        PlaceDetectionClient mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
-        // Construct a FusedLocationProviderClient.
-        FusedLocationProviderClient mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        */
+        //Obtengo la instancia del cliente para la ubicacion
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        //Obtego los permisos necesarios + activar gps
+        getLocationPermission();
+        //Chequeo de permisos(no es necesario pero android studio se queja)
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            Toast.makeText(NewPostActivity.this, "Error al obtener permisos para la ubicacion actual", Toast.LENGTH_LONG).show();
+
+        }
+        mFusedLocationClient.getLastLocation()
+            .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if (location != null) {
+                        latActual = location.getLatitude();
+                        longActual = location.getLatitude();
+                        Toast.makeText(NewPostActivity.this, location.toString(), Toast.LENGTH_LONG).show();
+
+                    }
+                }
+            });
+
         locButton = findViewById(R.id.locationButton);
         locButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(isServicesOk()) {
 
+                    Intent builder = null;
                     try {
-                        Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
-                                        .build(NewPostActivity.this);
-
-                        startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+                        builder = new PlacePicker.IntentBuilder().build(NewPostActivity.this);
+                        startActivityForResult(builder, PLACE_PICKER_REQUEST);
                     } catch (GooglePlayServicesRepairableException e) {
                         Log.d(TAG, "Error de google places. Excepcion reparable.");
                         Toast.makeText(NewPostActivity.this, "Error al inicializar google places. \n" +
                                 "Asegurese de tener correctamente instalado y actualizado el servicio.", Toast.LENGTH_LONG).show();
                     } catch (GooglePlayServicesNotAvailableException e) {
                         Log.d(TAG, "Error de google places. Excepcion inesperada.");
-                        Toast.makeText(NewPostActivity.this, "Error al inicializar google places. \n" +
-                                "Intente nuevamente en unos minutos.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(NewPostActivity.this, "No selecciono ninguna ubicacion \n", Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -168,12 +188,14 @@ public class NewPostActivity extends AppCompatActivity {
 
     }
 
-/*    private void getLocationPermission() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         *
+    private void getLocationPermission() {
+        LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
+        boolean enabled = service
+                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if (!enabled) {
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(intent);
+        }
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -183,7 +205,7 @@ public class NewPostActivity extends AppCompatActivity {
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
-    }*/
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -204,8 +226,8 @@ public class NewPostActivity extends AppCompatActivity {
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(this, data);
-                Location = (String) place.getName();
-                locButton.setText(Location);
+                Ubicacion = (String) place.getName();
+                locButton.setText(Ubicacion);
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
                 Log.d(TAG, status.getStatusMessage());
@@ -213,6 +235,14 @@ public class NewPostActivity extends AppCompatActivity {
                 Log.d(TAG, "Operacion cancelada.");
                 Toast.makeText(NewPostActivity.this, "Operación cancelada. " +
                         "Intente nuevamente en unos minutos.", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(data, this);
+                Ubicacion = (String) place.getAddress();
+                locButton.setText(Ubicacion);
             }
         }
     }
@@ -420,7 +450,7 @@ public class NewPostActivity extends AppCompatActivity {
         storyRequest.setMedia(imageUri.toString());
         storyRequest.setDescription(description.getText().toString());
         //completar la descripcion
-        storyRequest.setLocation(Location);
+        storyRequest.setLocation(Ubicacion);
         storyRequest.setTimestamp(timestamp);
         storyRequest.setTitle(titulo.getText().toString());
         storyRequest.setIsPrivate(!(privacidad.isChecked()));
