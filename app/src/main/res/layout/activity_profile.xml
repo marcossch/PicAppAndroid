@@ -39,29 +39,49 @@
                 android:layout_width="fill_parent"
                 android:layout_height="300dp"
                 android:adjustViewBounds="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:background="#dfdede" />
 
-            <RelativeLayout
+            <LinearLayout
+                android:id="@+id/friendContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary"
-                android:orientation="vertical">
+                android:background="@drawable/back_profile"
+                android:orientation="horizontal"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:elevation="1dp"
+                >
 
                 <TextView
                     android:id="@+id/userName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.6"
                     android:layout_centerHorizontal="true"
                     android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="left"
                     android:fontFamily="sans-serif-condensed"
                     android:text="User Name"
                     android:textColor="@color/black"
                     android:textSize="28sp" />
 
+                <ImageButton
+                    android:id="@+id/mapButton"
+                    android:layout_weight="0.3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/colorPrimary"
+                    app:srcCompat="@drawable/ic_place_accent_24dp"/>
+
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/agregarFoto"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
+                    android:layout_weight="0.1"
                     android:layout_alignEnd="@+id/userName"
                     android:layout_marginBottom="7dp"
                     android:layout_marginTop="5dp"
@@ -78,7 +98,7 @@
                 <!--android:text="Estas son tus publicaciones"-->
                 <!--android:textColor="@color/greyLetter" />-->
 
-            </RelativeLayout>
+            </LinearLayout>
 
             <View
                 android:id="@+id/divider1"
@@ -90,8 +110,11 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/back_profile"
                 android:orientation="horizontal"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:elevation="1dp"
                 android:id="@+id/user_info">
 
                 <LinearLayout
@@ -216,5 +239,7 @@
         app:menu="@menu/nav_items"
         android:theme="@style/NavTheme">
     </android.support.design.widget.BottomNavigationView>
+
+
 
 </RelativeLayout>

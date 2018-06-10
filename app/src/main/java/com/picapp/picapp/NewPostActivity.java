@@ -1,36 +1,43 @@
 package com.picapp.picapp;
 
-import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceDetectionClient;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -39,8 +46,6 @@ import com.picapp.picapp.Interfaces.WebApi;
 import com.picapp.picapp.Models.StoryDeleted;
 import com.picapp.picapp.Models.StoryRequest;
 import com.picapp.picapp.Models.StoryResult;
-import com.picapp.picapp.Models.User;
-import com.picapp.picapp.Models.UserRequest;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -59,9 +64,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NewPostActivity extends AppCompatActivity {
 
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 123;
     private android.support.v7.widget.Toolbar mainToolbar;
     private ProgressBar newPostProgress;
     private String user_id;
+    private String TAG = "LOCATION";
+    private String Location = "";
+    private static final int ERROR_DIALOG_REQUEST = 9001;
+    private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore firebaseFirestore;
@@ -71,6 +81,7 @@ public class NewPostActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private WebApi webApi;
 
+    private Button locButton;
     private ImageView newImage;
     private EditText description;
     private EditText titulo;
@@ -78,12 +89,14 @@ public class NewPostActivity extends AppCompatActivity {
     private Switch privacidad;
     private String token = "";
     private StoryRequest storyRequest;
+    private boolean mLocationPermissionGranted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
 
+        //main_layout.setBackground(ContextCompat.getDrawable(this,R.drawable.red_rounded_border));
         //instacia de firebase y firestore
         mAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -104,7 +117,6 @@ public class NewPostActivity extends AppCompatActivity {
         newPostProgress = (ProgressBar) findViewById(R.id.newPostProgress);
         privacidad = (Switch) findViewById(R.id.privacidad);
 
-
         //para elegir una imagen
         newImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,7 +127,54 @@ public class NewPostActivity extends AppCompatActivity {
             }
         });
 
+        // Construct a GeoDataClient.
+        GeoDataClient mGeoDataClient = Places.getGeoDataClient(this, null);
+        // Construct a PlaceDetectionClient.
+        PlaceDetectionClient mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
+        // Construct a FusedLocationProviderClient.
+        FusedLocationProviderClient mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        locButton = findViewById(R.id.locationButton);
+        locButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isServicesOk()) {
+
+                    try {
+                        Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                                        .build(NewPostActivity.this);
+
+                        startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+                    } catch (GooglePlayServicesRepairableException e) {
+                        Log.d(TAG, "Error de google places. Excepcion reparable.");
+                        Toast.makeText(NewPostActivity.this, "Error al inicializar google places. \n" +
+                                "Asegurese de tener correctamente instalado y actualizado el servicio.", Toast.LENGTH_LONG).show();
+                    } catch (GooglePlayServicesNotAvailableException e) {
+                        Log.d(TAG, "Error de google places. Excepcion inesperada.");
+                        Toast.makeText(NewPostActivity.this, "Error al inicializar google places. \n" +
+                                "Intente nuevamente en unos minutos.", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+
     }
+
+/*    private void getLocationPermission() {
+        /*
+         * Request location permission, so that we can get the location of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         *
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -133,6 +192,20 @@ public class NewPostActivity extends AppCompatActivity {
             }
         }
 
+        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlaceAutocomplete.getPlace(this, data);
+                Location = (String) place.getName();
+                locButton.setText(Location);
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+                Log.d(TAG, status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                Log.d(TAG, "Operacion cancelada.");
+                Toast.makeText(NewPostActivity.this, "Operación cancelada. " +
+                        "Intente nuevamente en unos minutos.", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override
@@ -172,6 +245,7 @@ public class NewPostActivity extends AppCompatActivity {
         startActivity(profileIntent);
         finish();
     }
+
 
     private void bringImagePicker() {
         CropImage.activity()
@@ -337,7 +411,7 @@ public class NewPostActivity extends AppCompatActivity {
         storyRequest.setMedia(imageUri.toString());
         storyRequest.setDescription(description.getText().toString());
         //completar la descripcion
-        storyRequest.setLocation("ubicación");
+        storyRequest.setLocation(Location);
         storyRequest.setTimestamp(timestamp);
         storyRequest.setTitle(titulo.getText().toString());
         storyRequest.setIsPrivate(!(privacidad.isChecked()));
@@ -387,6 +461,23 @@ public class NewPostActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public boolean isServicesOk(){
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable( NewPostActivity.this );
+        if(available == ConnectionResult.SUCCESS){
+            Log.d(TAG, "El servicio de google maps esta OK");
+            return true;
+        }
+        else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
+            Log.d(TAG, "Ocurrio un error con el servicio de google, pero se puede arreglar");
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(NewPostActivity.this, available, ERROR_DIALOG_REQUEST);
+            dialog.show();
+        }
+        else{
+            Toast.makeText(this, "No se puede conectar al servicio de google places.", Toast.LENGTH_SHORT).show();
+        }
+        return false;
     }
 
 }

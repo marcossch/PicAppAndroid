@@ -1,41 +1,34 @@
 package com.picapp.picapp;
 
 import android.content.Intent;
-import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
-
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.picapp.picapp.AndroidModels.FeedRecyclerAdapter;
 import com.picapp.picapp.AndroidModels.FeedStory;
 import com.picapp.picapp.Interfaces.WebApi;
 import com.picapp.picapp.Models.Story;
-import com.picapp.picapp.Models.UserAccount;
-import com.picapp.picapp.Models.UserLogout;
 import com.picapp.picapp.Models.UserProfile;
-import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +56,7 @@ public class ProfileActivity extends AppCompatActivity {
     private RecyclerView profile_list_view;
     private List<FeedStory> profile_list;
     private FeedRecyclerAdapter profileRecyclerAdapter;
+    private ImageButton mapBtn;
 
     private Retrofit retrofit;
 
@@ -101,6 +95,14 @@ public class ProfileActivity extends AppCompatActivity {
             name = user.getDisplayName();
             changeProfileName();
         }
+
+        mapBtn = findViewById(R.id.mapButton);
+        mapBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                sendToMap();
+            }
+        });
 
         //Click en el boton de amigos te lleva a ver tus amigos
         Button friends = (Button) findViewById(R.id.friendsNumber);
@@ -251,6 +253,12 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void sendTo(Intent intent) {
         startActivity(intent);
+    }
+
+    private void sendToMap() {
+        Intent mapIntent = new Intent(ProfileActivity.this, MapsActivity.class);
+        startActivity(mapIntent);
+        finish();
     }
 
     private void changeProfileName() {
