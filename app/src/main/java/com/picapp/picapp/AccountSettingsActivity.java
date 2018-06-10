@@ -75,6 +75,14 @@ public class AccountSettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_settings);
 
+        //levanto el token
+        final Picapp picapp = Picapp.getInstance();
+        String token = picapp.getToken();
+
+        if(token == null) {
+            sendToFeed();
+        }
+
         //instacia de firebase y firestore
         mAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -298,9 +306,6 @@ public class AccountSettingsActivity extends AppCompatActivity {
         userUpd.setUsername(new_user_name);
         userUpd.setProfilePhoto(download_uri.toString());
 
-        //levanto el token
-        final Picapp picapp = Picapp.getInstance();
-        token = picapp.getToken();
         executeUpdate(userUpd,webApi, token);
     }
 

@@ -85,6 +85,14 @@ public class NewPostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
 
+        //levanto el token
+        final Picapp picapp = Picapp.getInstance();
+        String token = picapp.getToken();
+
+        if(token == null) {
+            sendToFeed();
+        }
+
         //instacia de firebase y firestore
         mAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -343,9 +351,6 @@ public class NewPostActivity extends AppCompatActivity {
         storyRequest.setTitle(titulo.getText().toString());
         storyRequest.setIsPrivate(!(privacidad.isChecked()));
 
-        //levanto el token
-        final Picapp picapp = Picapp.getInstance();
-        token = picapp.getToken();
         callServer();
 
     }
@@ -368,6 +373,12 @@ public class NewPostActivity extends AppCompatActivity {
                 newPostProgress.setVisibility(View.INVISIBLE);
             }
         });
+    }
+
+    private void sendToFeed() {
+        Intent feedIntent = new Intent(NewPostActivity.this, FeedActivity.class);
+        startActivity(feedIntent);
+        finish();
     }
 
 }

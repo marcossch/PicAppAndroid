@@ -75,6 +75,15 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        //levanto el token
+        final Picapp picapp = Picapp.getInstance();
+        String token = picapp.getToken();
+
+        if(token == null) {
+            Intent mainIntent = new Intent(ProfileActivity.this, MainActivity.class);
+            sendTo(mainIntent);
+        }
+
         //que se ve la barra de progreso
         profileProgress = (ProgressBar) findViewById(R.id.profileProgress);
         //que se ve la barra de progreso
@@ -139,9 +148,6 @@ public class ProfileActivity extends AppCompatActivity {
         //levanto la lista de visualizacion de stories
         profile_list_view = (RecyclerView) findViewById(R.id.profile_list_view);
 
-        //levanto el token
-        final Picapp picapp = Picapp.getInstance();
-        String token = picapp.getToken();
 
         //cargo la lista de stories
         profile_list = new ArrayList<>();

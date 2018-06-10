@@ -56,6 +56,15 @@ public class FeedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
 
+        //levanto el token
+        final Picapp picapp = Picapp.getInstance();
+        String token = picapp.getToken();
+
+        if(token == null) {
+            Intent mainIntent = new Intent(FeedActivity.this, MainActivity.class);
+            sendTo(mainIntent);
+        }
+
         //instacia de firebase
         mAuth = FirebaseAuth.getInstance();
 
@@ -71,10 +80,6 @@ public class FeedActivity extends AppCompatActivity {
 
         //levanto la lista de visualizacion de stories
         feed_list_view = (RecyclerView) findViewById(R.id.feed_list_view);
-
-        //levanto el token
-        final Picapp picapp = Picapp.getInstance();
-        String token = picapp.getToken();
 
         //cargo la lista de stories
         feed_list = new ArrayList<>();
