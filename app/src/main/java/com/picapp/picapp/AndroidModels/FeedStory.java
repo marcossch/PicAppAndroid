@@ -2,7 +2,14 @@ package com.picapp.picapp.AndroidModels;
 
 public class FeedStory {
 
-    public String description, image, image_id, location, thumb, title, user_id;
+    public String description;
+    public String image;
+    public String image_id;
+    public String location;
+    public String thumb;
+    public String title;
+    public String user_id;
+    public String profPic = null;
     public Long timestamp;
     public Boolean isPrivate;
 
@@ -83,6 +90,15 @@ public class FeedStory {
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
+
+    public String getProfPic() {
+        return profPic;
+    }
+
+    public void setProfPic(String profPic) {
+        this.profPic = profPic;
+    }
+
 //
 //    public Boolean getPrivate() {
 //        return isPrivate;

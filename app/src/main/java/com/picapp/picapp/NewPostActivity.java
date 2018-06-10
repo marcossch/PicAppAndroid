@@ -35,6 +35,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.picapp.picapp.AndroidModels.Picapp;
 import com.picapp.picapp.Interfaces.WebApi;
 import com.picapp.picapp.Models.StoryDeleted;
 import com.picapp.picapp.Models.StoryRequest;
@@ -342,7 +343,10 @@ public class NewPostActivity extends AppCompatActivity {
         storyRequest.setTitle(titulo.getText().toString());
         storyRequest.setIsPrivate(!(privacidad.isChecked()));
 
-        setToken();
+        //levanto el token
+        final Picapp picapp = Picapp.getInstance();
+        token = picapp.getToken();
+        callServer();
 
     }
 
@@ -362,29 +366,6 @@ public class NewPostActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
                 //escondo la barra de progreso
                 newPostProgress.setVisibility(View.INVISIBLE);
-            }
-        });
-    }
-
-    private void setToken() {
-        //Obtengo el token del usuario.
-        firebaseFirestore.collection("UserTokens").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    //si existe este documento
-                    if (task.getResult().exists()) {
-                        //levanto el token
-                        Object aux = task.getResult().get("token");
-                        token = aux.toString();
-                        callServer();
-                    } else {
-                        Toast.makeText(NewPostActivity.this, "El usuario no posee un token asociado", Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    String error = task.getException().getMessage();
-                    Toast.makeText(NewPostActivity.this, "FIRESTORE Retrieve Error: " + error, Toast.LENGTH_LONG).show();
-                }
             }
         });
     }

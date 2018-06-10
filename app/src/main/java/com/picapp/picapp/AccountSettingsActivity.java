@@ -32,6 +32,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.picapp.picapp.AndroidModels.Picapp;
 import com.picapp.picapp.Interfaces.WebApi;
 import com.picapp.picapp.Models.Error;
 import com.picapp.picapp.Models.User;
@@ -297,26 +298,10 @@ public class AccountSettingsActivity extends AppCompatActivity {
         userUpd.setUsername(new_user_name);
         userUpd.setProfilePhoto(download_uri.toString());
 
-        //Obtengo el token del usuario.
-        firebaseFirestore.collection("UserTokens").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    //si existe este documento
-                    if(task.getResult().exists()){
-                        //levanto el token
-                        Object aux = task.getResult().get("token");
-                        token = aux.toString();
-                        executeUpdate(userUpd,webApi, token);
-                    } else {
-                        Toast.makeText(AccountSettingsActivity.this, "El usuario no posee un token asociado", Toast.LENGTH_LONG).show();
-                        }
-                } else {
-                    String error = task.getException().getMessage();
-                    Toast.makeText(AccountSettingsActivity.this, "FIRESTORE Retrieve Error: " + error, Toast.LENGTH_LONG).show();
-                    }
-            }
-        });
+        //levanto el token
+        final Picapp picapp = Picapp.getInstance();
+        token = picapp.getToken();
+        executeUpdate(userUpd,webApi, token);
     }
 
     private void executeUpdate(UserUpdate userUpd, WebApi webApi, String tok){

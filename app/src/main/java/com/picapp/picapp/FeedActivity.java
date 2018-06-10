@@ -22,11 +22,13 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.picapp.picapp.AndroidModels.FeedRecyclerAdapter;
 import com.picapp.picapp.AndroidModels.FeedStory;
+import com.picapp.picapp.AndroidModels.Picapp;
 import com.picapp.picapp.Interfaces.WebApi;
 import com.picapp.picapp.Models.UserLogout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -70,6 +72,10 @@ public class FeedActivity extends AppCompatActivity {
         //levanto la lista de visualizacion de stories
         feed_list_view = (RecyclerView) findViewById(R.id.feed_list_view);
 
+        //levanto el token
+        final Picapp picapp = Picapp.getInstance();
+        String token = picapp.getToken();
+
         //cargo la lista de stories
         feed_list = new ArrayList<>();
         feedRecyclerAdapter = new FeedRecyclerAdapter(feed_list);
@@ -92,7 +98,15 @@ public class FeedActivity extends AppCompatActivity {
 
                     if(doc.getType() == DocumentChange.Type.ADDED){
 
-                        FeedStory feedStory = doc.getDocument().toObject(FeedStory.class);
+                        Map<String, Object> info = doc.getDocument().getData();
+
+                        FeedStory feedStory = new FeedStory();
+                        feedStory.setDescription(info.get("description").toString());
+                        feedStory.setImage(info.get("image").toString());
+                        feedStory.setLocation(info.get("location").toString());
+                        feedStory.setTimestamp((Long)info.get("timestamp"));
+                        feedStory.setTitle(info.get("title").toString());
+                        feedStory.setUser_id(info.get("user_id").toString());
                         feed_list.add(feedStory);
                         feedRecyclerAdapter.notifyDataSetChanged();
 

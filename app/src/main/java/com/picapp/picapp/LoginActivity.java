@@ -33,6 +33,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.picapp.picapp.AndroidModels.Picapp;
 import com.picapp.picapp.Interfaces.WebApi;
 import com.picapp.picapp.Models.User;
 import com.picapp.picapp.Models.UserRequest;
@@ -293,7 +294,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void storeFirestore(Integer token, Double expiresAt, String user_id) {
+    private void storeFirestore(final Integer token, Double expiresAt, String user_id) {
 
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("token", token.toString());
@@ -305,6 +306,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
 
                 if (task.isSuccessful()) {
+
+                    Picapp picapp = Picapp.getInstance();
+                    picapp.setToken(token.toString());
 
                 } else {
 

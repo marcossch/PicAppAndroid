@@ -30,6 +30,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.picapp.picapp.AndroidModels.FeedRecyclerAdapter;
 import com.picapp.picapp.AndroidModels.FeedStory;
+import com.picapp.picapp.AndroidModels.Picapp;
 import com.picapp.picapp.Interfaces.WebApi;
 import com.picapp.picapp.Models.Story;
 import com.picapp.picapp.Models.UserAccount;
@@ -138,9 +139,14 @@ public class ProfileActivity extends AppCompatActivity {
         //levanto la lista de visualizacion de stories
         profile_list_view = (RecyclerView) findViewById(R.id.profile_list_view);
 
+        //levanto el token
+        final Picapp picapp = Picapp.getInstance();
+        String token = picapp.getToken();
+
         //cargo la lista de stories
         profile_list = new ArrayList<>();
         profileRecyclerAdapter = new FeedRecyclerAdapter(profile_list);
+        profileRecyclerAdapter.setToken(token);
         profile_list_view.setLayoutManager(new LinearLayoutManager(ProfileActivity.this));
         profile_list_view.setAdapter(profileRecyclerAdapter);
 
@@ -150,63 +156,44 @@ public class ProfileActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         final WebApi webApi = retrofit.create(WebApi.class);
-        //Obtengo el token del usuario.
-        firebaseFirestore.collection("UserTokens").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
+        Call<UserProfile> call = webApi.getUserProfile(user_id, token, "Application/json");
+        call.enqueue(new Callback<UserProfile>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    //si existe este documento
-                    if(task.getResult().exists()){
-                        //levanto el token
-                        Object aux = task.getResult().get("token");
-                        String token = aux.toString();
-                        Call<UserProfile> call = webApi.getUserProfile(user_id, token, "Application/json");
-                        call.enqueue(new Callback<UserProfile>() {
-                            @Override
-                            public void onResponse(Call<UserProfile> call, Response<UserProfile> response) {
+            public void onResponse(Call<UserProfile> call, Response<UserProfile> response) {
 
-                                UserProfile userP = response.body();
-                                //levanto la info del usuario
-                                name = userP.getName();
-                                changeProfileName();
-                                picURL = userP.getProfilePic();
-                                changeProfilePic();
-                                amigos.setText(userP.getNumberOfFriends().toString());
-                                publicaciones.setText(userP.getNumberOfStories().toString());
+                UserProfile userP = response.body();
+                //levanto la info del usuario
+                name = userP.getName();
+                changeProfileName();
+                picURL = userP.getProfilePic();
+                changeProfilePic();
+                amigos.setText(userP.getNumberOfFriends().toString());
+                publicaciones.setText(userP.getNumberOfStories().toString());
 
-                                List<Story> stories = userP.getStories();
-                                for (Story story : stories){
+                List<Story> stories = userP.getStories();
+                for (Story story : stories){
 
-                                    FeedStory feedStory = new FeedStory();
-                                    feedStory.setDescription(story.getDescription());
-                                    feedStory.setImage(story.getMedia());
-                                    feedStory.setLocation(story.getLocation());
-                                    feedStory.setTimestamp(story.getTimestamp());
-                                    feedStory.setTitle(story.getTitle());
-                                    feedStory.setUser_id(user_id);
+                    FeedStory feedStory = new FeedStory();
+                    feedStory.setDescription(story.getDescription());
+                    feedStory.setImage(story.getMedia());
+                    feedStory.setLocation(story.getLocation());
+                    feedStory.setTimestamp(story.getTimestamp());
+                    feedStory.setTitle(story.getTitle());
+                    feedStory.setUser_id(user_id);
+                    feedStory.setProfPic(picURL);
 
-                                    profile_list.add(feedStory);
-                                    profileRecyclerAdapter.notifyDataSetChanged();
-                                }
-
-                                profileProgress.setVisibility(View.INVISIBLE);
-                            }
-
-                            @Override
-                            public void onFailure(Call<UserProfile> call, Throwable t) {
-                                Toast.makeText(ProfileActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
-                                profileProgress.setVisibility(View.INVISIBLE);
-                            }
-                        });
-                    } else {
-                        Toast.makeText(ProfileActivity.this, "El usuario no posee un token asociado", Toast.LENGTH_LONG).show();
-                        profileProgress.setVisibility(View.INVISIBLE);
-                    }
-                } else {
-                    String error = task.getException().getMessage();
-                    Toast.makeText(ProfileActivity.this, "FIRESTORE Retrieve Error: " + error, Toast.LENGTH_LONG).show();
-                    profileProgress.setVisibility(View.INVISIBLE);
+                    profile_list.add(feedStory);
+                    profileRecyclerAdapter.notifyDataSetChanged();
                 }
+
+                profileProgress.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onFailure(Call<UserProfile> call, Throwable t) {
+                Toast.makeText(ProfileActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                profileProgress.setVisibility(View.INVISIBLE);
             }
         });
 
