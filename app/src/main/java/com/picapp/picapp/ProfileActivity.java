@@ -190,6 +190,8 @@ public class ProfileActivity extends AppCompatActivity {
                     feedStory.setTitle(story.getTitle());
                     feedStory.setUser_id(user_id);
                     feedStory.setProfPic(picURL);
+                    feedStory.setReactions(story.getReactions());
+                    feedStory.setComments(story.getComments());
 
                     profile_list.add(feedStory);
                     profileRecyclerAdapter.notifyDataSetChanged();

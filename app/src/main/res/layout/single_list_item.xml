@@ -20,7 +20,8 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            tools:ignore="ExtraText">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/user_profile_image"
@@ -82,10 +83,8 @@
                 android:id="@+id/description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/title" />
@@ -98,6 +97,50 @@
                 android:textAllCaps="true"
                 app:layout_constraintStart_toEndOf="@+id/user_profile_image"
                 app:layout_constraintTop_toBottomOf="@+id/date" />
+
+            <com.fangxu.allangleexpandablebutton.AllAngleExpandableButton
+                android:id="@+id/button_expandable"
+                android:layout_width="49dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:aebAnimDurationMillis="175"
+                app:aebBlurBackground="false"
+                app:aebBlurRadius="10"
+                app:aebButtonElevation="4dp"
+                app:aebButtonGapDp="25dp"
+                app:aebEndAngleDegree="90"
+                app:aebIsSelectionMode="false"
+                app:aebMainButtonRotateAnimDurationMillis="250"
+                app:aebMainButtonRotateDegree="-135"
+                app:aebMainButtonSizeDp="32dp"
+                app:aebMainButtonTextColor="#ffff5656"
+                app:aebMainButtonTextSizeSp="20dp"
+                app:aebMaskBackgroundColor="#80000000"
+                app:aebRippleColor="#ffff5656"
+                app:aebRippleEffect="true"
+                app:aebStartAngleDegree="90"
+                app:aebSubButtonSizeDp="56dp"
+                app:aebSubButtonTextColor="#ff0000ff"
+                app:aebSubButtonTextSizeSp="18dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/description" />
+
+            <TextView
+                android:id="@+id/reactios_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/button_expandable"
+                app:layout_constraintTop_toBottomOf="@+id/description" />
+
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>

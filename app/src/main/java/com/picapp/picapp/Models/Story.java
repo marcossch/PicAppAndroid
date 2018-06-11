@@ -1,6 +1,9 @@
 package com.picapp.picapp.Models;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -23,7 +26,7 @@ public class Story {
     private String media;
     @SerializedName("reactions")
     @Expose
-    private Reactions reactions;
+    private Map<String, String> reactions = null;
     @SerializedName("timestamp")
     @Expose
     private Long timestamp;
@@ -74,11 +77,11 @@ public class Story {
         this.media = media;
     }
 
-    public Reactions getReactions() {
+    public Map<String, String> getReactions() {
         return reactions;
     }
 
-    public void setReactions(Reactions reactions) {
+    public void setReactions(Map<String, String> reactions) {
         this.reactions = reactions;
     }
 

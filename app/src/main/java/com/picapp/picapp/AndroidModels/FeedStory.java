@@ -1,5 +1,10 @@
 package com.picapp.picapp.AndroidModels;
 
+import com.picapp.picapp.Models.Reactions;
+
+import java.util.List;
+import java.util.Map;
+
 public class FeedStory {
 
     public String description;
@@ -12,6 +17,8 @@ public class FeedStory {
     public String profPic = null;
     public Long timestamp;
     public Boolean isPrivate;
+    public Map<String, String> reactions;
+    public List<Object> comments;
 
     public FeedStory(
 //            String description, String image, String image_id, String location, String thumb, String title, String user_id, Long timestamp, Boolean isPrivate
@@ -97,6 +104,18 @@ public class FeedStory {
 
     public void setProfPic(String profPic) {
         this.profPic = profPic;
+    }
+
+    public void setReactions(Map<String, String> reactions) {
+        this.reactions = reactions;
+    }
+
+    public void setComments(List<Object> comments) {
+        this.comments = comments;
+    }
+
+    public Map<String,String> getReactions() {
+        return reactions;
     }
 
 //

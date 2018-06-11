@@ -1,5 +1,6 @@
 package com.picapp.picapp.Interfaces;
 
+import com.picapp.picapp.Models.Reaction;
 import com.picapp.picapp.Models.StoryDeleted;
 import com.picapp.picapp.Models.StoryRequest;
 import com.picapp.picapp.Models.StoryResult;
@@ -57,4 +58,9 @@ public interface WebApi {
 
     @DELETE("stories/{storyid}")
     Call<StoryDeleted> deleteStory(@Path("storyid") String story);
+
+    //--------------Reactions -------------------------
+    @POST("stories/{storyid}/reactions")
+    Call<Reaction> postReaction(@Body Reaction Reaction, @Path("storyid") String story,
+                             @Header("token") String token, @Header("Content-Type") String content);
 }
