@@ -10,7 +10,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -23,7 +22,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyC6qdU58QN0s-R_sO8WXTV3d6RBoNePE-w" />
-
 
         <activity
             android:name=".MainActivity"
@@ -57,7 +55,8 @@
         <activity
             android:name=".NewPostActivity"
             android:parentActivityName=".ProfileActivity" />
-        <activity android:name=".MapsActivity"></activity>
+        <activity android:name=".MapsActivity" />
+        <activity android:name=".SearchActivity"></activity>
     </application>
 
 </manifest>

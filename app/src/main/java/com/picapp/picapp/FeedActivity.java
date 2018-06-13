@@ -147,6 +147,11 @@ public class FeedActivity extends AppCompatActivity {
                 Intent accSettings = new Intent(FeedActivity.this, AccountSettingsActivity.class);
                 sendTo(accSettings);
                 return true;
+
+            case R.id.action_search_btn:
+                Intent profSearch = new Intent(FeedActivity.this, SearchActivity.class);
+                sendTo(profSearch);
+                return true;
         }
 
         return false;
