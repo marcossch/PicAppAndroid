@@ -422,7 +422,7 @@ public class NewPostActivity extends AppCompatActivity {
 
     private void serverDeleteStory(StoryResult story) {
 
-        Call<StoryDeleted> call = webApi.deleteStory(story.getStoryId());
+        Call<StoryDeleted> call = webApi.deleteStory(story.getStoryId(), token, "Application/json");
         call.enqueue(new Callback<StoryDeleted>() {
             @Override
             public void onResponse(Call<StoryDeleted> call, Response<StoryDeleted> response) {
