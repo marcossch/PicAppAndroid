@@ -158,8 +158,6 @@ public class NewPostActivity extends AppCompatActivity {
                     if (location != null) {
                         latActual = location.getLatitude();
                         longActual = location.getLatitude();
-                        Toast.makeText(NewPostActivity.this, location.toString(), Toast.LENGTH_LONG).show();
-
                     }
                 }
             });
