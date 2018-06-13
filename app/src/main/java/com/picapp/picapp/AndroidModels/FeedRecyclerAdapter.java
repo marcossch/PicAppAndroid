@@ -5,10 +5,12 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -22,13 +24,16 @@ import com.fangxu.allangleexpandablebutton.ButtonData;
 import com.fangxu.allangleexpandablebutton.ButtonEventListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.picapp.picapp.AccountSettingsActivity;
 import com.picapp.picapp.Interfaces.WebApi;
+import com.picapp.picapp.LoginActivity;
 import com.picapp.picapp.Models.Error;
 import com.picapp.picapp.Models.Reaction;
+import com.picapp.picapp.Models.StoryDeleted;
 import com.picapp.picapp.Models.UserAccount;
 import com.picapp.picapp.Models.UserUpdate;
 import com.picapp.picapp.ProfileActivity;
@@ -55,6 +60,7 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
     public String token = null;
     private FirebaseAuth mAuth;
     private String user_id;
+    private boolean isProfile = false;
 
 
     public FeedRecyclerAdapter(List<FeedStory> feed_list){
@@ -69,6 +75,10 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public void isProfile() {
+        isProfile = true;
     }
 
     @NonNull
@@ -92,12 +102,14 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
         Long milliseconds = feed_list.get(position).getTimestamp();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         String dateString = formatter.format(new Date(milliseconds));
+        final Map<String, String> reactions = feed_list.get(position).getReactions();
 
         holder.setDescText(desc_data);
         holder.setLocation(location_data);
         holder.setTitleText(title_data);
         holder.setImage(imageUrl);
         holder.setDate(dateString);
+        holder.setReactionCount(reactions.size());
 
 
         //levanto el nombre de usuario
@@ -190,67 +202,94 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
         holder.reactButton.setButtonEventListener(new ButtonEventListener() {
             @Override
             public void onButtonClicked(int index) {
+                holder.reactButton.destroyDrawingCache();
                 //do whatever you want,the param index is counted from startAngle to endAngle,
                 //the value is from 1 to buttonCount - 1(buttonCount if aebIsSelectionMode=true)
 
-//                //si el usuario ya reacciono, no puede volver a reaccionar
-//                final Map<String, String> reactions = feed_list.get(position).getReactions();
-//                holder.setReactionCount(reactions.size());
-//                if(!reactions.containsKey(user_id)){
-//
-//                    final Reaction reaction = new Reaction();
-//                    reaction.setReactingUserId(user_id);
-//
-//                    switch (index) {
-//
-//                        case 1:
-//
-//                            reaction.setReaction("like");
-//
-//                        case 2:
-//
-//                            reaction.setReaction("dislike");
-//
-//                        case 3:
-//
-//                            reaction.setReaction("funny");
-//
-//                        case 4:
-//
-//                            reaction.setReaction("boring");
-//
-//                    }
-//                    Call<Reaction> call = webApi.postReaction(reaction, feed_list.get(position).getImage_id(),
-//                            token, "Application/json");
-//                    call.enqueue(new Callback<Reaction>() {
-//                        @Override
-//                        public void onResponse(Call<Reaction> call, Response<Reaction> response) {
-//                            reactions.put(user_id, reaction.getReaction());
-//                            holder.setReactionCount(reactions.size());
-//                        }
-//
-//                        @Override
-//                        public void onFailure(Call<Reaction> call, Throwable t) {
-//                            Log.d("UPDATE USER: ", "-----> No se pudo cargar la reaccion <-----");
-//                        }
-//                    });
-//
-//
-//                }
+                //si el usuario ya reacciono, no puede volver a reaccionar
+                final Map<String, String> reactions = feed_list.get(position).getReactions();
+                holder.setReactionCount(reactions.size());
+                if (!reactions.containsKey(user_id)) {
+
+                    final Reaction reaction = new Reaction();
+                    reaction.setReactingUserId(user_id);
+
+                    switch (index) {
+
+                        case 1:
+
+                            reaction.setReaction("like");
+
+                        case 2:
+
+                            reaction.setReaction("dislike");
+
+                        case 3:
+
+                            reaction.setReaction("funny");
+
+                        case 4:
+
+                            reaction.setReaction("boring");
+
+                    }
+                    Call<Reaction> call = webApi.postReaction(reaction, feed_list.get(position).getImage_id(),
+                            token, "Application/json");
+                    call.enqueue(new Callback<Reaction>() {
+                        @Override
+                        public void onResponse(Call<Reaction> call, Response<Reaction> response) {
+                            reactions.put(user_id, reaction.getReaction());
+                            holder.setReactionCount(reactions.size());
+                        }
+
+                        @Override
+                        public void onFailure(Call<Reaction> call, Throwable t) {
+                            Log.d("UPDATE USER: ", "-----> No se pudo cargar la reaccion <-----" + t.getMessage());
+                        }
+                    });
+
+
+                }
 
             }
 
             @Override
             public void onExpand() {
-
+                holder.reactButton.destroyDrawingCache();
             }
 
             @Override
             public void onCollapse() {
-
+                holder.reactButton.destroyDrawingCache();
             }
         });
 
+        //elimiar imagenes, solo si esta en el perfil propio
+        if (isProfile) {
+            holder.deleteButton.setVisibility(View.VISIBLE);
+            holder.deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Call<StoryDeleted> call = webApi.deleteStory(feed_list.get(position).getImage_id(), token, "Application/json");
+                    call.enqueue(new Callback<StoryDeleted>() {
+                        @Override
+                        public void onResponse(Call<StoryDeleted> call, Response<StoryDeleted> response) {
+                            feed_list.remove(position);
+                            notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onFailure(Call<StoryDeleted> call, Throwable t) {
+
+                            Toast.makeText(context, "Server ERROR:" + t.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                }
+            });
+
+        }
     }
 
     @Override
@@ -269,6 +308,8 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
         private AppCompatTextView nameText;
         private TextView story_date;
 
+        private Button deleteButton;
+
         private AllAngleExpandableButton reactButton;
         private TextView reactionsCount;
 
@@ -281,12 +322,16 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
 
             reactButton = (AllAngleExpandableButton) mView.findViewById(R.id.button_expandable);
             final List<ButtonData> buttonDatas = new ArrayList<>();
-            int[] drawable = {R.mipmap.ic_like_options, R.mipmap.ic_like, R.mipmap.ic_dislike, R.mipmap.ic_funny, R.mipmap.ic_borring};
+            final Images images = Images.getInstance();
+            int [] drawable = images.getImages();
             for (int i = 0; i < drawable.length; i++) {
                 ButtonData buttonData = ButtonData.buildIconButton(context, drawable[i], 0);
                 buttonDatas.add(buttonData);
             }
             reactButton.setButtonDatas(buttonDatas);
+
+            deleteButton = mView.findViewById(R.id.deleteStory);
+            deleteButton.setVisibility(View.INVISIBLE);
 
         }
 
@@ -327,7 +372,7 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
 
         public void setReactionCount(int reactionCount) {
             reactionsCount = mView.findViewById(R.id.reactios_count);
-            reactionsCount.setText(reactionCount);
+            reactionsCount.setText(String.valueOf(reactionCount));
         }
     }
 

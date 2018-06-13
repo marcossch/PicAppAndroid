@@ -37,6 +37,10 @@ public class Story {
     @Expose
     private String username;
 
+    @SerializedName("story_id")
+    @Expose
+    private String story_id;
+
     public List<Object> getComments() {
         return comments;
     }
@@ -107,6 +111,14 @@ public class Story {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getStory_id() {
+        return story_id;
+    }
+
+    public void setStory_id(String story_id) {
+        this.story_id = story_id;
     }
 
 }

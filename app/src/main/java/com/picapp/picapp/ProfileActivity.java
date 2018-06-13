@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -29,10 +30,12 @@ import com.picapp.picapp.AndroidModels.FeedStory;
 import com.picapp.picapp.AndroidModels.Picapp;
 import com.picapp.picapp.Interfaces.WebApi;
 import com.picapp.picapp.Models.Story;
+import com.picapp.picapp.Models.UserAccount;
 import com.picapp.picapp.Models.UserProfile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -155,6 +158,7 @@ public class ProfileActivity extends AppCompatActivity {
         profile_list = new ArrayList<>();
         profileRecyclerAdapter = new FeedRecyclerAdapter(profile_list);
         profileRecyclerAdapter.setToken(token);
+        profileRecyclerAdapter.isProfile();
         profile_list_view.setLayoutManager(new LinearLayoutManager(ProfileActivity.this));
         profile_list_view.setAdapter(profileRecyclerAdapter);
 
@@ -190,11 +194,22 @@ public class ProfileActivity extends AppCompatActivity {
                     feedStory.setTitle(story.getTitle());
                     feedStory.setUser_id(user_id);
                     feedStory.setProfPic(picURL);
-                    feedStory.setReactions(story.getReactions());
-                    feedStory.setComments(story.getComments());
+                    feedStory.setImage_id(story.getStory_id());
+
+                    Map<String, String> reactions = story.getReactions();
+                    List<Object> coments = story.getComments();
+
+                    if (reactions != null){
+                        feedStory.setReactions(story.getReactions());
+                    }
+
+                    if (coments != null){
+                        feedStory.setComments(story.getComments());
+                    }
 
                     profile_list.add(feedStory);
                     profileRecyclerAdapter.notifyDataSetChanged();
+
                 }
 
                 profileProgress.setVisibility(View.INVISIBLE);

@@ -57,7 +57,8 @@ public interface WebApi {
                                 @Header("token") String token, @Header("Content-Type") String content);
 
     @DELETE("stories/{storyid}")
-    Call<StoryDeleted> deleteStory(@Path("storyid") String story);
+    Call<StoryDeleted> deleteStory(@Path("storyid") String story,
+                                   @Header("token") String token, @Header("Content-Type") String content);
 
     //--------------Reactions -------------------------
     @POST("stories/{storyid}/reactions")

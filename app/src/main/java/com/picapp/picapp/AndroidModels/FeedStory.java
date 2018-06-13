@@ -2,6 +2,7 @@ package com.picapp.picapp.AndroidModels;
 
 import com.picapp.picapp.Models.Reactions;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public class FeedStory {
     public String profPic = null;
     public Long timestamp;
     public Boolean isPrivate;
-    public Map<String, String> reactions;
+    public Map<String, String> reactions = new HashMap<>();
     public List<Object> comments;
 
     public FeedStory(
