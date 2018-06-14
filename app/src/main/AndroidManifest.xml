@@ -56,7 +56,10 @@
             android:name=".NewPostActivity"
             android:parentActivityName=".ProfileActivity" />
         <activity android:name=".MapsActivity" />
-        <activity android:name=".SearchActivity"></activity>
+        <activity android:name=".SearchActivity" />
+        <activity android:name=".ReaccionesActivity"
+            android:parentActivityName=".FeedActivity">
+        </activity>
     </application>
 
 </manifest>

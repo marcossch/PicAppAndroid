@@ -129,7 +129,6 @@
                         android:id="@+id/friendsNumber"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
                         android:backgroundTint="@color/colorPrimary"
                         android:fontFamily="sans-serif-condensed"
                         android:outlineProvider="none"
