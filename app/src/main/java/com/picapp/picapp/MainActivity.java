@@ -1,14 +1,12 @@
 package com.picapp.picapp;
 
 import android.content.Intent;
-import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -17,7 +15,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.picapp.picapp.AndroidModels.Images;
 import com.picapp.picapp.AndroidModels.Picapp;
 
 public class MainActivity extends AppCompatActivity {
@@ -51,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
             //si no tiene el token cargado, lo hace
             final Picapp picapp = Picapp.getInstance();
-            final Images images = Images.getInstance();
 
             if(picapp.getToken() == null){
                 //Obtengo el token del usuario.

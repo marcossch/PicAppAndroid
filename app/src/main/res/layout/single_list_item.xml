@@ -15,8 +15,10 @@
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -98,48 +100,55 @@
                 app:layout_constraintStart_toEndOf="@+id/user_profile_image"
                 app:layout_constraintTop_toBottomOf="@+id/date" />
 
-            <com.fangxu.allangleexpandablebutton.AllAngleExpandableButton
-                android:id="@+id/button_expandable"
+            <com.getbase.floatingactionbutton.FloatingActionsMenu
+                android:id="@+id/floatingActionsMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                app:aebAnimDurationMillis="175"
-                app:aebButtonElevation="4dp"
-                app:aebButtonGapDp="25dp"
-                app:aebEndAngleDegree="90"
-                app:aebIsSelectionMode="false"
-                app:aebMainButtonRotateAnimDurationMillis="250"
-                app:aebMainButtonRotateDegree="-135"
-                app:aebMainButtonSizeDp="56dp"
-                app:aebMainButtonTextColor="#ffff5656"
-                app:aebMainButtonTextSizeSp="20dp"
-                app:aebMaskBackgroundColor="#80000000"
-                app:aebRippleColor="#ffff5656"
-                app:aebRippleEffect="true"
-                app:aebStartAngleDegree="90"
-                app:aebSubButtonSizeDp="56dp"
-                app:aebSubButtonTextColor="#ff0000ff"
-                app:aebSubButtonTextSizeSp="18dp"
-                app:aebBlurBackground="true"
-                app:aebBlurRadius="10"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/description" />
+                android:layout_marginTop="32dp"
+                app:fab_labelStyle="@style/CustomFav"
+                app:layout_constraintTop_toTopOf="@+id/story_image"
+                app:fab_addButtonColorNormal="#f05353"
+                app:fab_addButtonColorPressed="#c33939"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteX="0dp">
 
-            <TextView
-                android:id="@+id/reactios_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/button_expandable"
-                app:layout_constraintTop_toBottomOf="@+id/description" />
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/like"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fab_icon="@mipmap/ic_like"
+                    app:fab_size="mini"
+                    app:fab_colorNormal="#FFFFFF"
+                    app:fab_colorPressed="#e1e1e1"/>
+
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/dislike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fab_icon="@mipmap/ic_dislike"
+                    app:fab_size="mini"
+                    app:fab_colorNormal="#FFFFFF"
+                    app:fab_colorPressed="#e1e1e1"/>
+
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/funny"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fab_icon="@mipmap/ic_funny"
+                    app:fab_size="mini"
+                    app:fab_colorNormal="#FFFFFF"
+                    app:fab_colorPressed="#e1e1e1"/>
+
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/boring"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fab_icon="@mipmap/ic_borring"
+                    app:fab_size="mini"
+                    app:fab_colorNormal="#FFFFFF"
+                    app:fab_colorPressed="#e1e1e1"/>
+
+            </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
             <Button
                 android:id="@+id/deleteStory"
@@ -153,6 +162,32 @@
                 app:layout_constraintBottom_toTopOf="@+id/story_image"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/reactions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Reacciones:"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/floatingActionsMenu"
+                app:layout_constraintTop_toBottomOf="@+id/description"
+                app:layout_constraintVertical_bias="0.415" />
+
+            <TextView
+                android:id="@+id/reactios_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/reactions"
+                app:layout_constraintTop_toBottomOf="@+id/description"
+                app:layout_constraintVertical_bias="0.405" />
 
         </android.support.constraint.ConstraintLayout>
 

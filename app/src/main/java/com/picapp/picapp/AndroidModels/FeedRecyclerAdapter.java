@@ -3,11 +3,13 @@ package com.picapp.picapp.AndroidModels;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.design.internal.NavigationMenu;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,6 +24,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.fangxu.allangleexpandablebutton.AllAngleExpandableButton;
 import com.fangxu.allangleexpandablebutton.ButtonData;
 import com.fangxu.allangleexpandablebutton.ButtonEventListener;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -198,41 +201,18 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
             holder.setProfileImage(profilePic);
         }
 
-        //likes
-        holder.reactButton.setButtonEventListener(new ButtonEventListener() {
-            @Override
-            public void onButtonClicked(int index) {
-                holder.reactButton.destroyDrawingCache();
-                //do whatever you want,the param index is counted from startAngle to endAngle,
-                //the value is from 1 to buttonCount - 1(buttonCount if aebIsSelectionMode=true)
+        //-----------likes-----------
 
+        holder.like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 //si el usuario ya reacciono, no puede volver a reaccionar
-                final Map<String, String> reactions = feed_list.get(position).getReactions();
-                holder.setReactionCount(reactions.size());
                 if (!reactions.containsKey(user_id)) {
 
                     final Reaction reaction = new Reaction();
                     reaction.setReactingUserId(user_id);
+                    reaction.setReaction("like");
 
-                    switch (index) {
-
-                        case 1:
-
-                            reaction.setReaction("like");
-
-                        case 2:
-
-                            reaction.setReaction("dislike");
-
-                        case 3:
-
-                            reaction.setReaction("funny");
-
-                        case 4:
-
-                            reaction.setReaction("boring");
-
-                    }
                     Call<Reaction> call = webApi.postReaction(reaction, feed_list.get(position).getImage_id(),
                             token, "Application/json");
                     call.enqueue(new Callback<Reaction>() {
@@ -248,19 +228,94 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
                         }
                     });
 
+                }
+            }
+        });
+
+        holder.dislike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //si el usuario ya reacciono, no puede volver a reaccionar
+                if (!reactions.containsKey(user_id)) {
+
+                    final Reaction reaction = new Reaction();
+                    reaction.setReactingUserId(user_id);
+                    reaction.setReaction("dislike");
+
+                    Call<Reaction> call = webApi.postReaction(reaction, feed_list.get(position).getImage_id(),
+                            token, "Application/json");
+                    call.enqueue(new Callback<Reaction>() {
+                        @Override
+                        public void onResponse(Call<Reaction> call, Response<Reaction> response) {
+                            reactions.put(user_id, reaction.getReaction());
+                            holder.setReactionCount(reactions.size());
+                        }
+
+                        @Override
+                        public void onFailure(Call<Reaction> call, Throwable t) {
+                            Log.d("UPDATE USER: ", "-----> No se pudo cargar la reaccion <-----" + t.getMessage());
+                        }
+                    });
 
                 }
-
             }
+        });
 
+        holder.funny.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onExpand() {
-                holder.reactButton.destroyDrawingCache();
+            public void onClick(View v) {
+                //si el usuario ya reacciono, no puede volver a reaccionar
+                if (!reactions.containsKey(user_id)) {
+
+                    final Reaction reaction = new Reaction();
+                    reaction.setReactingUserId(user_id);
+                    reaction.setReaction("funny");
+
+                    Call<Reaction> call = webApi.postReaction(reaction, feed_list.get(position).getImage_id(),
+                            token, "Application/json");
+                    call.enqueue(new Callback<Reaction>() {
+                        @Override
+                        public void onResponse(Call<Reaction> call, Response<Reaction> response) {
+                            reactions.put(user_id, reaction.getReaction());
+                            holder.setReactionCount(reactions.size());
+                        }
+
+                        @Override
+                        public void onFailure(Call<Reaction> call, Throwable t) {
+                            Log.d("UPDATE USER: ", "-----> No se pudo cargar la reaccion <-----" + t.getMessage());
+                        }
+                    });
+
+                }
             }
+        });
 
+        holder.boring.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCollapse() {
-                holder.reactButton.destroyDrawingCache();
+            public void onClick(View v) {
+                //si el usuario ya reacciono, no puede volver a reaccionar
+                if (!reactions.containsKey(user_id)) {
+
+                    final Reaction reaction = new Reaction();
+                    reaction.setReactingUserId(user_id);
+                    reaction.setReaction("boring");
+
+                    Call<Reaction> call = webApi.postReaction(reaction, feed_list.get(position).getImage_id(),
+                            token, "Application/json");
+                    call.enqueue(new Callback<Reaction>() {
+                        @Override
+                        public void onResponse(Call<Reaction> call, Response<Reaction> response) {
+                            reactions.put(user_id, reaction.getReaction());
+                            holder.setReactionCount(reactions.size());
+                        }
+
+                        @Override
+                        public void onFailure(Call<Reaction> call, Throwable t) {
+                            Log.d("UPDATE USER: ", "-----> No se pudo cargar la reaccion <-----" + t.getMessage());
+                        }
+                    });
+
+                }
             }
         });
 
@@ -310,7 +365,10 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
 
         private Button deleteButton;
 
-        private AllAngleExpandableButton reactButton;
+        private FloatingActionButton like;
+        private FloatingActionButton funny;
+        private FloatingActionButton boring;
+        private FloatingActionButton dislike;
         private TextView reactionsCount;
 
         public ViewHolder(View itemView) {
@@ -320,15 +378,10 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
 
             reactionsCount = mView.findViewById(R.id.reactios_count);
 
-            reactButton = (AllAngleExpandableButton) mView.findViewById(R.id.button_expandable);
-            final List<ButtonData> buttonDatas = new ArrayList<>();
-            final Images images = Images.getInstance();
-            int [] drawable = images.getImages();
-            for (int i = 0; i < drawable.length; i++) {
-                ButtonData buttonData = ButtonData.buildIconButton(context, drawable[i], 0);
-                buttonDatas.add(buttonData);
-            }
-            reactButton.setButtonDatas(buttonDatas);
+            like = (FloatingActionButton) mView.findViewById(R.id.like);
+            dislike = (FloatingActionButton) mView.findViewById(R.id.dislike);
+            funny = (FloatingActionButton) mView.findViewById(R.id.funny);
+            boring = (FloatingActionButton) mView.findViewById(R.id.boring);
 
             deleteButton = mView.findViewById(R.id.deleteStory);
             deleteButton.setVisibility(View.INVISIBLE);
