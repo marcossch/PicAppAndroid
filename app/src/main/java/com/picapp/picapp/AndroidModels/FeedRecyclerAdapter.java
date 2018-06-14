@@ -1,6 +1,7 @@
 package com.picapp.picapp.AndroidModels;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.internal.NavigationMenu;
@@ -32,8 +33,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.picapp.picapp.AccountSettingsActivity;
+import com.picapp.picapp.FriendsActivity;
 import com.picapp.picapp.Interfaces.WebApi;
 import com.picapp.picapp.LoginActivity;
+import com.picapp.picapp.MapsActivity;
 import com.picapp.picapp.Models.Error;
 import com.picapp.picapp.Models.Reaction;
 import com.picapp.picapp.Models.StoryDeleted;
@@ -41,6 +44,7 @@ import com.picapp.picapp.Models.UserAccount;
 import com.picapp.picapp.Models.UserUpdate;
 import com.picapp.picapp.ProfileActivity;
 import com.picapp.picapp.R;
+import com.picapp.picapp.ReaccionesActivity;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -343,8 +347,22 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
 
                 }
             });
-
         }
+
+        holder.reacciones.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent friendsIntent = new Intent(context, ReaccionesActivity.class);
+
+                for (String key : reactions.keySet()) {
+
+                    friendsIntent.putExtra(key, reactions.get(key));
+                }
+                context.startActivity(friendsIntent);
+            }
+        });
+
     }
 
     @Override
@@ -370,6 +388,7 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
         private FloatingActionButton boring;
         private FloatingActionButton dislike;
         private TextView reactionsCount;
+        private Button reacciones;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -382,6 +401,8 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
             dislike = (FloatingActionButton) mView.findViewById(R.id.dislike);
             funny = (FloatingActionButton) mView.findViewById(R.id.funny);
             boring = (FloatingActionButton) mView.findViewById(R.id.boring);
+
+            reacciones = (Button) mView.findViewById(R.id.reactions);
 
             deleteButton = mView.findViewById(R.id.deleteStory);
             deleteButton.setVisibility(View.INVISIBLE);
