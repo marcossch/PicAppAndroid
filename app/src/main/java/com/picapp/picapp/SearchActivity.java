@@ -1,6 +1,7 @@
 package com.picapp.picapp;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -13,13 +14,25 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.picapp.picapp.AndroidModels.FeedStory;
+import com.picapp.picapp.Models.SearchAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -29,6 +42,7 @@ public class SearchActivity extends AppCompatActivity {
     private FirebaseUser firUser;
     private ArrayList<String> nameList;
     private ArrayList<String> picList;
+    SearchAdapter searchAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +78,14 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                Toast.makeText(getApplicationContext(), "LA S ES: "+s, Toast.LENGTH_LONG).show();
 
                 if(!s.toString().isEmpty()){
                     setAdapter(s.toString());
+                }
+                else{
+                    nameList.clear();
+                    picList.clear();
+                    peopleList.removeAllViews();
                 }
             }
         });
@@ -76,34 +94,32 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void setAdapter(final String searchString) {
-        dataRef.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+
+        firebaseFirestore.collection("Users").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                nameList.clear();
+                picList.clear();
+                peopleList.removeAllViews();
                 int count = 0;
-                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
-                    String uid = snapshot.getKey();
-                    String name = snapshot.child("name").getValue(String.class);
-                    String img = snapshot.child("image").getValue(String.class);
-                    Toast.makeText(getApplicationContext(), "Nombre:"+uid, Toast.LENGTH_LONG).show();
+                for (DocumentSnapshot doc: queryDocumentSnapshots.getDocuments()) {
+                    Map<String, Object> data = doc.getData();
+                    String name = (String) data.get("name");
+                    String pic = (String) data.get("image");
 
                     if(name.contains(searchString)){
                         nameList.add(name);
-                        Toast.makeText(getApplicationContext(), "Nombre:"+name, Toast.LENGTH_LONG).show();
-                        picList.add(img);
+                        picList.add(pic);
                         count = count + 1;
                     }
-
-                    if(count == 10){
+                    if(count==5){
                         break;
                     }
 
                 }
-
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                searchAdapter = new SearchAdapter(SearchActivity.this, nameList, picList);
+                peopleList.setAdapter(searchAdapter);
 
             }
         });
