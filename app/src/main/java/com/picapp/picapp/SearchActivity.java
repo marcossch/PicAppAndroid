@@ -95,7 +95,6 @@ public class SearchActivity extends AppCompatActivity {
 
     private void setAdapter(final String searchString) {
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-
         firebaseFirestore.collection("Users").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -108,7 +107,9 @@ public class SearchActivity extends AppCompatActivity {
                     String name = (String) data.get("name");
                     String pic = (String) data.get("image");
 
-                    if(name.contains(searchString)){
+                    String lowerName = name.toLowerCase();
+                    String lowerSearch = searchString.toLowerCase();
+                    if(lowerName.substring(0, Math.min(lowerName.length(), lowerSearch.length())).contains(lowerSearch) ){
                         nameList.add(name);
                         picList.add(pic);
                         count = count + 1;

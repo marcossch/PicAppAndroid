@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.picapp.picapp.ProfileActivity;
 import com.picapp.picapp.R;
 import java.util.ArrayList;
 
@@ -47,8 +48,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
     @Override
     public void onBindViewHolder(@NonNull SearchViewHolder holder, int position) {
         holder.name.setText(nameList.get(position));
-        //Glide.with(context).load(picList.get(position)).
-          //      .placeholder(R.mipmap.ic_launcher_round).into(holder.profileImg);
+        Glide.with(context).load(picList.get(position)).into(holder.profileImg);
     }
 
 
