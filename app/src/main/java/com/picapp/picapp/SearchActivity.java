@@ -94,7 +94,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void setAdapter(final String searchString) {
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        final FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestore.collection("Users").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -102,19 +102,23 @@ public class SearchActivity extends AppCompatActivity {
                 picList.clear();
                 peopleList.removeAllViews();
                 int count = 0;
+
                 for (DocumentSnapshot doc: queryDocumentSnapshots.getDocuments()) {
                     Map<String, Object> data = doc.getData();
+                    String idCurrentU = firUser.getUid();
+                    String idActual = doc.getId();
                     String name = (String) data.get("name");
                     String pic = (String) data.get("image");
-
+                    //dataRef.child("Users").child(idActual).getKey();
                     String lowerName = name.toLowerCase();
                     String lowerSearch = searchString.toLowerCase();
-                    if(lowerName.substring(0, Math.min(lowerName.length(), lowerSearch.length())).contains(lowerSearch) ){
+                    if( (!idCurrentU.contains(idActual)) &&
+                            (lowerName.substring(0, Math.min(lowerName.length(), lowerSearch.length())).contains(lowerSearch)) ){
                         nameList.add(name);
                         picList.add(pic);
                         count = count + 1;
                     }
-                    if(count==5){
+                    if(count==10){
                         break;
                     }
 
