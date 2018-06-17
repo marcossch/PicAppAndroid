@@ -87,96 +87,12 @@
                 android:layout_height="1dp"
                 android:background="#80dfdede" />
 
-            <!-- CONTENEDOR AMIGOS-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/back_profile"
-                android:orientation="horizontal"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:elevation="1dp"
-                android:id="@+id/user_info">
-
-                <LinearLayout
-                    android:id="@+id/containerFirends"
-                    android:layout_width="fill_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.5"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/friendsNumber"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
-                        android:backgroundTint="@color/colorPrimary"
-                        android:fontFamily="sans-serif-condensed"
-
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:text="0"/>
-
-                    <TextView
-                        android:id="@+id/friendsString"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/friendsNumber"
-                        android:fontFamily="sans-serif-condensed"
-                        android:text="Amigos"
-                        android:textColor="@color/black" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.5"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/pubNumber"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
-                        android:backgroundTint="@color/colorPrimary"
-                        android:fontFamily="sans-serif-condensed"
-
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:text="0"/>
-
-                    <TextView
-                        android:id="@+id/pubString"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/pubNumber"
-                        android:fontFamily="sans-serif-condensed"
-                        android:text="Publicaciones"
-                        android:textColor="@color/black" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <View
-                android:id="@+id/divider2"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#80dfdede"/>
-
             <LinearLayout
                 android:id="@+id/blockProfile"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:elevation="1dp"

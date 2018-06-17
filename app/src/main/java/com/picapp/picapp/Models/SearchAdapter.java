@@ -64,7 +64,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
                 Intent profIntent = new Intent(context, OtherProfileActivity.class);
                 profIntent.putExtra("name", holder.name.getText());
                 profIntent.putExtra("pic", picList.get(position));
-                //profIntent.putExtra("id", holder.name.getText());
+                profIntent.putExtra("id", idList.get(position));
                 context.startActivity(profIntent);
                 //finish();
             }

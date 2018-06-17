@@ -59,16 +59,12 @@
         <activity android:name=".SearchActivity" />
         <activity
             android:name=".ReaccionesActivity"
-<<<<<<< HEAD
-            android:parentActivityName=".FeedActivity"></activity>
-        <activity android:name=".OtherProfileActivity"></activity>
-=======
             android:parentActivityName=".FeedActivity">
         </activity>
         <activity android:name=".CommentsActivity"
             android:parentActivityName=".FeedActivity">
         </activity>
->>>>>>> 079a9ea8d63edb59eb188eee09dcc60ee176092d
+        <activity android:name=".OtherProfileActivity"></activity>
     </application>
 
 </manifest>

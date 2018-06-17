@@ -35,5 +35,7 @@ public class OtherProfileActivity extends AppCompatActivity {
         this.name = userName;
         String profilePic = myIntent.getStringExtra("pic");
         this.pic = profilePic;
+        String id = myIntent.getStringExtra("id");
+        this.id = id;
     }
 }
