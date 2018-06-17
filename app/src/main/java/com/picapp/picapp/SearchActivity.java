@@ -1,6 +1,5 @@
 package com.picapp.picapp;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,24 +9,16 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.picapp.picapp.AndroidModels.FeedStory;
 import com.picapp.picapp.Models.SearchAdapter;
 
 import java.util.ArrayList;
@@ -94,8 +85,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void setAdapter(final String searchString) {
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-
+        final FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestore.collection("Users").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -103,17 +93,23 @@ public class SearchActivity extends AppCompatActivity {
                 picList.clear();
                 peopleList.removeAllViews();
                 int count = 0;
+
                 for (DocumentSnapshot doc: queryDocumentSnapshots.getDocuments()) {
                     Map<String, Object> data = doc.getData();
+                    String idCurrentU = firUser.getUid();
+                    String idActual = doc.getId();
                     String name = (String) data.get("name");
                     String pic = (String) data.get("image");
-
-                    if(name.contains(searchString)){
+                    //dataRef.child("Users").child(idActual).getKey();
+                    String lowerName = name.toLowerCase();
+                    String lowerSearch = searchString.toLowerCase();
+                    if( (!idCurrentU.contains(idActual)) &&
+                            (lowerName.substring(0, Math.min(lowerName.length(), lowerSearch.length())).contains(lowerSearch)) ){
                         nameList.add(name);
                         picList.add(pic);
                         count = count + 1;
                     }
-                    if(count==5){
+                    if(count==10){
                         break;
                     }
 
