@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:backgroundTint="@color/colorPrimary">
 
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -18,16 +19,20 @@
         app:civ_border_color="#FF000000"
         />
 
-    <TextView
+    <Button
         android:id="@+id/profile_name"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:layout_marginLeft="15dp"
         android:fontFamily="sans-serif-condensed"
-        android:text="Rodriguinio"
         android:textColor="@color/black"
-        android:textSize="26sp"
+        android:textSize="20dp"
+        android:textAlignment="textStart"
+        android:outlineProvider="none"
+        android:text="Rodriguinio"
+        android:layout_weight="1"
+        android:backgroundTint="@color/colorPrimary"
         />
 
 
