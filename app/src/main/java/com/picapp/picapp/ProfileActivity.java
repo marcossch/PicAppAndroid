@@ -29,6 +29,7 @@ import com.picapp.picapp.AndroidModels.FeedRecyclerAdapter;
 import com.picapp.picapp.AndroidModels.FeedStory;
 import com.picapp.picapp.AndroidModels.Picapp;
 import com.picapp.picapp.Interfaces.WebApi;
+import com.picapp.picapp.Models.Comment;
 import com.picapp.picapp.Models.Story;
 import com.picapp.picapp.Models.UserAccount;
 import com.picapp.picapp.Models.UserProfile;
@@ -197,7 +198,7 @@ public class ProfileActivity extends AppCompatActivity {
                     feedStory.setImage_id(story.getStory_id());
 
                     Map<String, String> reactions = story.getReactions();
-                    List<Object> coments = story.getComments();
+                    ArrayList<Comment> coments = story.getComments();
 
                     if (reactions != null){
                         feedStory.setReactions(story.getReactions());

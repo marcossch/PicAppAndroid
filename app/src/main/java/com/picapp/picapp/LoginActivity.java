@@ -283,7 +283,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(Call<User> call, Throwable t) {
                 //se cierra sesion en firebase
                 mAuth.signOut();
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "SERVER Login ERROR:" + t.getMessage(), Toast.LENGTH_LONG).show();
 
                 //escondo la barra de progreso
                 loginProgress.setVisibility(View.INVISIBLE);
@@ -309,6 +309,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     Picapp picapp = Picapp.getInstance();
                     picapp.setToken(token.toString());
+                    sendToFeed();
 
                 } else {
 

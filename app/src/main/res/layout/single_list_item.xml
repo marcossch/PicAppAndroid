@@ -32,29 +32,33 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:src="@drawable/cameranext"
-                app:civ_border_color="#c2bebe"
+                app:civ_border_color="#3688ae"
                 app:civ_border_width="0.5dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/username"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:textSize="14sp"
                 android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/deleteStory"
                 app:layout_constraintStart_toEndOf="@+id/user_profile_image"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/date"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:textSize="14sp"
                 android:textStyle="italic"
+                app:layout_constraintEnd_toStartOf="@+id/deleteStory"
                 app:layout_constraintStart_toEndOf="@+id/user_profile_image"
                 app:layout_constraintTop_toBottomOf="@+id/username" />
 
@@ -66,7 +70,7 @@
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/user_profile_image"
+                app:layout_constraintTop_toBottomOf="@+id/location"
                 app:srcCompat="@drawable/background" />
 
             <TextView
@@ -75,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="2dp"
                 android:textStyle="italic"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -93,10 +97,12 @@
 
             <TextView
                 android:id="@+id/location"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:textAllCaps="true"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/user_profile_image"
                 app:layout_constraintTop_toBottomOf="@+id/date" />
 
@@ -105,48 +111,48 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
+                app:fab_addButtonColorNormal="#3688ae"
+                app:fab_addButtonColorPressed="#2b7394"
                 app:fab_labelStyle="@style/CustomFav"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/story_image"
-                app:fab_addButtonColorNormal="#f05353"
-                app:fab_addButtonColorPressed="#c33939"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteX="0dp">
+                tools:ignore="MissingConstraints">
 
                 <com.getbase.floatingactionbutton.FloatingActionButton
                     android:id="@+id/like"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:fab_icon="@mipmap/ic_like"
-                    app:fab_size="mini"
                     app:fab_colorNormal="#FFFFFF"
-                    app:fab_colorPressed="#e1e1e1"/>
+                    app:fab_colorPressed="#e1e1e1"
+                    app:fab_icon="@mipmap/ic_like"
+                    app:fab_size="mini" />
 
                 <com.getbase.floatingactionbutton.FloatingActionButton
                     android:id="@+id/dislike"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:fab_icon="@mipmap/ic_dislike"
-                    app:fab_size="mini"
                     app:fab_colorNormal="#FFFFFF"
-                    app:fab_colorPressed="#e1e1e1"/>
+                    app:fab_colorPressed="#e1e1e1"
+                    app:fab_icon="@mipmap/ic_dislike"
+                    app:fab_size="mini" />
 
                 <com.getbase.floatingactionbutton.FloatingActionButton
                     android:id="@+id/funny"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:fab_icon="@mipmap/ic_funny"
-                    app:fab_size="mini"
                     app:fab_colorNormal="#FFFFFF"
-                    app:fab_colorPressed="#e1e1e1"/>
+                    app:fab_colorPressed="#e1e1e1"
+                    app:fab_icon="@mipmap/ic_funny"
+                    app:fab_size="mini" />
 
                 <com.getbase.floatingactionbutton.FloatingActionButton
                     android:id="@+id/boring"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:fab_icon="@mipmap/ic_borring"
-                    app:fab_size="mini"
                     app:fab_colorNormal="#FFFFFF"
-                    app:fab_colorPressed="#e1e1e1"/>
+                    app:fab_colorPressed="#e1e1e1"
+                    app:fab_icon="@mipmap/ic_borring"
+                    app:fab_size="mini" />
 
             </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
@@ -155,13 +161,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginEnd="2dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginTop="2dp"
+                android:backgroundTint="#3688ae"
                 android:text="ELIMINAR"
+                android:textColor="#ffffff"
                 android:textSize="14dp"
                 app:layout_constraintBottom_toTopOf="@+id/story_image"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.153" />
 
             <Button
                 android:id="@+id/reactions"
@@ -180,16 +189,31 @@
 
             <TextView
                 android:id="@+id/reactios_count"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginTop="11dp"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/commentButton"
                 app:layout_constraintStart_toEndOf="@+id/reactions"
                 app:layout_constraintTop_toBottomOf="@+id/description"
                 app:layout_constraintVertical_bias="0.405" />
+
+            <ImageButton
+                android:id="@+id/commentButton"
+                android:layout_width="62dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="2dp"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="#3688ae"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/description"
+                app:srcCompat="@drawable/baseline_send_white_48dp" />
 
         </android.support.constraint.ConstraintLayout>
 

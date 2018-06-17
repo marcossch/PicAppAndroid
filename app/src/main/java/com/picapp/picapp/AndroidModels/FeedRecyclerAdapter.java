@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,10 +34,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.picapp.picapp.AccountSettingsActivity;
+import com.picapp.picapp.CommentsActivity;
 import com.picapp.picapp.FriendsActivity;
 import com.picapp.picapp.Interfaces.WebApi;
 import com.picapp.picapp.LoginActivity;
 import com.picapp.picapp.MapsActivity;
+import com.picapp.picapp.Models.Comment;
 import com.picapp.picapp.Models.Error;
 import com.picapp.picapp.Models.Reaction;
 import com.picapp.picapp.Models.StoryDeleted;
@@ -109,7 +112,10 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
         Long milliseconds = feed_list.get(position).getTimestamp();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         String dateString = formatter.format(new Date(milliseconds));
+        //levanto las reacciones
         final Map<String, String> reactions = feed_list.get(position).getReactions();
+        //levanto los comentarios
+        final ArrayList<Comment> comments = feed_list.get(position).getComments();
 
         holder.setDescText(desc_data);
         holder.setLocation(location_data);
@@ -363,6 +369,22 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
             }
         });
 
+        holder.commentsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent commentsIntent = new Intent(context, CommentsActivity.class);
+                commentsIntent.putExtra("image_id", feed_list.get(position).image_id);
+                ArrayList<String> commentsString = new ArrayList<String>();
+                for (Object comment : comments) {
+                    commentsString.add(((Comment) comment).getCommentingUserId());
+                    commentsString.add(((Comment) comment).getComment());
+                    commentsString.add(String.valueOf(((Comment) comment).getTimestamp()));
+                }
+                commentsIntent.putStringArrayListExtra("comments", commentsString);
+                context.startActivity(commentsIntent);
+            }
+        });
+
     }
 
     @Override
@@ -390,6 +412,8 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
         private TextView reactionsCount;
         private Button reacciones;
 
+        private ImageButton commentsButton;
+
         public ViewHolder(View itemView) {
             super(itemView);
 
@@ -403,6 +427,7 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
             boring = (FloatingActionButton) mView.findViewById(R.id.boring);
 
             reacciones = (Button) mView.findViewById(R.id.reactions);
+            commentsButton = (ImageButton) mView.findViewById(R.id.commentButton);
 
             deleteButton = mView.findViewById(R.id.deleteStory);
             deleteButton.setVisibility(View.INVISIBLE);

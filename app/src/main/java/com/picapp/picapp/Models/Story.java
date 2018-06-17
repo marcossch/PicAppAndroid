@@ -1,5 +1,6 @@
 package com.picapp.picapp.Models;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,7 @@ public class Story {
 
     @SerializedName("comments")
     @Expose
-    private List<Object> comments = null;
+    private ArrayList<Comment> comments = null;
     @SerializedName("description")
     @Expose
     private String description;
@@ -41,11 +42,11 @@ public class Story {
     @Expose
     private String story_id;
 
-    public List<Object> getComments() {
+    public ArrayList<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<Object> comments) {
+    public void setComments(ArrayList<Comment> comments) {
         this.comments = comments;
     }
 
