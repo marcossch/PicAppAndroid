@@ -1,7 +1,9 @@
 package com.picapp.picapp.AndroidModels;
 
+import com.picapp.picapp.Models.Comment;
 import com.picapp.picapp.Models.Reactions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +21,7 @@ public class FeedStory {
     public Long timestamp;
     public Boolean isPrivate;
     public Map<String, String> reactions = new HashMap<>();
-    public List<Object> comments;
+    public ArrayList<Comment> comments;
 
     public FeedStory(
 //            String description, String image, String image_id, String location, String thumb, String title, String user_id, Long timestamp, Boolean isPrivate
@@ -111,12 +113,16 @@ public class FeedStory {
         this.reactions = reactions;
     }
 
-    public void setComments(List<Object> comments) {
+    public void setComments(ArrayList<Comment> comments) {
         this.comments = comments;
     }
 
     public Map<String,String> getReactions() {
         return reactions;
+    }
+
+    public ArrayList<Comment> getComments() {
+        return comments;
     }
 
 //

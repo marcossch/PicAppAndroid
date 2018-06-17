@@ -1,5 +1,7 @@
 package com.picapp.picapp.Interfaces;
 
+import com.picapp.picapp.Models.Comment;
+import com.picapp.picapp.Models.CommentRequest;
 import com.picapp.picapp.Models.Reaction;
 import com.picapp.picapp.Models.StoryDeleted;
 import com.picapp.picapp.Models.StoryRequest;
@@ -64,4 +66,8 @@ public interface WebApi {
     @POST("stories/{storyid}/reactions")
     Call<Reaction> postReaction(@Body Reaction Reaction, @Path("storyid") String story,
                              @Header("token") String token, @Header("Content-Type") String content);
+
+    @POST("stories/{storyid}/comments")
+    Call<Comment> postComment(@Body CommentRequest CommentRequest, @Path("storyid") String story,
+                              @Header("token") String token, @Header("Content-Type") String content);
 }

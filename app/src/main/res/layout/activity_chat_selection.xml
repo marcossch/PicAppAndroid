@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_below="@id/titulo_chat"
         android:layout_height="1dp"
-        android:background="@color/colorPrimary" />
+        android:background="#aeadad" />
 
     <TextView
         android:layout_width="match_parent"
