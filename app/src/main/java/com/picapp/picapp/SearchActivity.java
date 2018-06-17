@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,7 +23,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.picapp.picapp.Models.SearchAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class SearchActivity extends AppCompatActivity {
@@ -33,7 +33,9 @@ public class SearchActivity extends AppCompatActivity {
     private FirebaseUser firUser;
     private ArrayList<String> nameList;
     private ArrayList<String> picList;
-    SearchAdapter searchAdapter;
+    private ArrayList<String> idList;
+    private SearchAdapter searchAdapter;
+    private Button profBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,7 @@ public class SearchActivity extends AppCompatActivity {
 
         picList = new ArrayList<>();
         nameList = new ArrayList<>();
+        idList = new ArrayList<>();
 
         searchView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -76,10 +79,13 @@ public class SearchActivity extends AppCompatActivity {
                 else{
                     nameList.clear();
                     picList.clear();
+                    idList.clear();
                     peopleList.removeAllViews();
                 }
             }
         });
+
+        //Levanto el boton
 
 
     }
@@ -91,6 +97,7 @@ public class SearchActivity extends AppCompatActivity {
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 nameList.clear();
                 picList.clear();
+                idList.clear();
                 peopleList.removeAllViews();
                 int count = 0;
 
@@ -105,6 +112,7 @@ public class SearchActivity extends AppCompatActivity {
                     String lowerSearch = searchString.toLowerCase();
                     if( (!idCurrentU.contains(idActual)) &&
                             (lowerName.substring(0, Math.min(lowerName.length(), lowerSearch.length())).contains(lowerSearch)) ){
+                        idList.add(idActual);
                         nameList.add(name);
                         picList.add(pic);
                         count = count + 1;
@@ -114,7 +122,7 @@ public class SearchActivity extends AppCompatActivity {
                     }
 
                 }
-                searchAdapter = new SearchAdapter(SearchActivity.this, nameList, picList);
+                searchAdapter = new SearchAdapter(SearchActivity.this, nameList, picList, idList);
                 peopleList.setAdapter(searchAdapter);
 
             }
