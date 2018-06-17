@@ -68,7 +68,7 @@
                     android:textSize="28sp" />
 
                 <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/agregarFoto"
+                    android:id="@+id/agregarAmigos"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_weight="0.1"
@@ -76,7 +76,8 @@
                     android:layout_marginBottom="7dp"
                     android:layout_marginTop="5dp"
                     android:clickable="true"
-                    app:srcCompat="@drawable/baseline_add_black_48dp" />
+                    android:backgroundTint="@color/greenF"
+                    app:srcCompat="@drawable/icon_add_user" />
 
 
             </LinearLayout>
