@@ -105,6 +105,8 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
     public void onBindViewHolder(final @NonNull ViewHolder holder, final int position) {
 
         String desc_data = feed_list.get(position).getDescription();
+        String profilePic = feed_list.get(position).getProfPic();
+        String nameU = feed_list.get(position).getName();
         String title_data = feed_list.get(position).getTitle();
         String location_data = feed_list.get(position).getLocation();
         String imageUrl = feed_list.get(position).getImage();
@@ -123,10 +125,12 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
         holder.setImage(imageUrl);
         holder.setDate(dateString);
         holder.setReactionCount(reactions.size());
+        holder.setProfileImage(profilePic);
+        holder.setUsername(nameU);
 
 
         //levanto el nombre de usuario
-        final String user_id = feed_list.get(position).getUser_id();
+        user_id = feed_list.get(position).getUser_id();
         //creo retrofit que es la libreria para manejar Apis
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(WebApi.BASE_URL)
@@ -134,6 +138,7 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
                 .build();
         final WebApi webApi = retrofit.create(WebApi.class);
 
+        //los usuarios del feed no tienen token asociado
         if (token == null) {
             //Obtengo el token del usuario.
             firebaseFirestore.collection("UserTokens").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -144,19 +149,7 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
                         if (task.getResult().exists()) {
                             //levanto el token
                             Object aux = task.getResult().get("token");
-                            String token = aux.toString();
-                            Call<UserAccount> call = webApi.getUserAccount(user_id, token, "Application/json");
-                            call.enqueue(new Callback<UserAccount>() {
-                                @Override
-                                public void onResponse(Call<UserAccount> call, Response<UserAccount> response) {
-                                    holder.setUsername(response.body().getName());
-                                }
-
-                                @Override
-                                public void onFailure(Call<UserAccount> call, Throwable t) {
-                                    Log.d("UPDATE USER: ", "-----> No se pudo levantar el nombre de usuario <-----");
-                                }
-                            });
+                            token = aux.toString();
                         } else {
                             Toast.makeText(context, "El usuario no posee un token asociado", Toast.LENGTH_LONG).show();
                         }
@@ -166,51 +159,7 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
                     }
                 }
             });
-        } else {
-            Call<UserAccount> call = webApi.getUserAccount(user_id, token, "Application/json");
-            call.enqueue(new Callback<UserAccount>() {
-                @Override
-                public void onResponse(Call<UserAccount> call, Response<UserAccount> response) {
-                    holder.setUsername(response.body().getName());
-                }
-
-                @Override
-                public void onFailure(Call<UserAccount> call, Throwable t) {
-                    Log.d("UPDATE USER: ", "-----> No se pudo levantar el nombre de usuario <-----");
-                }
-            });
         }
-
-        //cambiar cuando el feed se integre al server
-        String profilePic = feed_list.get(position).getProfPic();
-
-        if (profilePic == null) {
-
-            //Obtengo la foto de perfil
-            firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        //si existe este documento
-                        if (task.getResult().exists()) {
-
-                            //levanto la imagen del usuario
-                            final String profileImage = task.getResult().getString("image");
-                            holder.setProfileImage(profileImage);
-
-                        } else {
-                            Toast.makeText(context, "El usuario no posee una foto de perfil", Toast.LENGTH_LONG).show();
-                        }
-                    } else {
-                        String error = task.getException().getMessage();
-                        Toast.makeText(context, "FIRESTORE Retrieve Error: " + error, Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-        } else {
-            holder.setProfileImage(profilePic);
-        }
-
         //-----------likes-----------
 
         holder.like.setOnClickListener(new View.OnClickListener() {
@@ -359,13 +308,20 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
             @Override
             public void onClick(View v) {
 
-                Intent friendsIntent = new Intent(context, ReaccionesActivity.class);
+                if(reactions.size() > 0) {
+                    Intent reaccionesIntent = new Intent(context, ReaccionesActivity.class);
 
-                for (String key : reactions.keySet()) {
+                    for (String key : reactions.keySet()) {
 
-                    friendsIntent.putExtra(key, reactions.get(key));
+                        reaccionesIntent.putExtra(key, reactions.get(key));
+                    }
+                    context.startActivity(reaccionesIntent);
+                }else{
+                    Toast.makeText(context, "No hay reacciones para este Story aún", Toast.LENGTH_LONG).show();
                 }
-                context.startActivity(friendsIntent);
+
+
+
             }
         });
 

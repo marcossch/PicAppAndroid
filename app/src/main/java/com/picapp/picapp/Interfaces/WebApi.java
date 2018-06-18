@@ -2,6 +2,7 @@ package com.picapp.picapp.Interfaces;
 
 import com.picapp.picapp.Models.Comment;
 import com.picapp.picapp.Models.CommentRequest;
+import com.picapp.picapp.Models.Feed;
 import com.picapp.picapp.Models.Reaction;
 import com.picapp.picapp.Models.StoryDeleted;
 import com.picapp.picapp.Models.StoryRequest;
@@ -65,6 +66,9 @@ public interface WebApi {
     @DELETE("stories/{storyid}")
     Call<StoryDeleted> deleteStory(@Path("storyid") String story,
                                    @Header("token") String token, @Header("Content-Type") String content);
+
+    @GET("feed")
+    Call<Feed> getFeed(@Header("token") String token, @Header("Content-Type") String content);
 
     //--------------Reactions -------------------------
     @POST("stories/{storyid}/reactions")

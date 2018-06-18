@@ -37,10 +37,16 @@ public class Story {
     @SerializedName("username")
     @Expose
     private String username;
-
     @SerializedName("story_id")
     @Expose
     private String story_id;
+    @SerializedName("name")
+    @Expose
+    private String name;
+    @SerializedName("profile_pic")
+    @Expose
+    private String profilePic;
+
 
     public ArrayList<Comment> getComments() {
         return comments;
@@ -120,6 +126,22 @@ public class Story {
 
     public void setStory_id(String story_id) {
         this.story_id = story_id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
     }
 
 }

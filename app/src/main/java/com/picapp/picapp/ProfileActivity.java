@@ -57,6 +57,7 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     private FirebaseUser user;
     private android.support.v7.widget.Toolbar mainToolbar;
+    private String username;
 
     private RecyclerView profile_list_view;
     private List<FeedStory> profile_list;
@@ -170,6 +171,20 @@ public class ProfileActivity extends AppCompatActivity {
                 .build();
         final WebApi webApi = retrofit.create(WebApi.class);
 
+        //levanto el nombre del usuario
+        Call<UserAccount> callUsername = webApi.getUserAccount(user_id, token, "Application/json");
+        callUsername.enqueue(new Callback<UserAccount>() {
+            @Override
+            public void onResponse(Call<UserAccount> call, Response<UserAccount> response) {
+                username = response.body().getName();
+            }
+
+            @Override
+            public void onFailure(Call<UserAccount> call, Throwable t) {
+                Log.d("UPDATE USER: ", "-----> No se pudo levantar el nombre de usuario <-----");
+            }
+        });
+
         Call<UserProfile> call = webApi.getUserProfile(user_id, token, "Application/json");
         call.enqueue(new Callback<UserProfile>() {
             @Override
@@ -193,9 +208,10 @@ public class ProfileActivity extends AppCompatActivity {
                     feedStory.setLocation(story.getLocation());
                     feedStory.setTimestamp(story.getTimestamp());
                     feedStory.setTitle(story.getTitle());
-                    feedStory.setUser_id(user_id);
+                    feedStory.setUser_id(story.getUsername());
                     feedStory.setProfPic(picURL);
                     feedStory.setImage_id(story.getStory_id());
+                    feedStory.setName(username);
 
                     Map<String, String> reactions = story.getReactions();
                     ArrayList<Comment> coments = story.getComments();

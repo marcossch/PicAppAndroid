@@ -109,13 +109,12 @@
                 android:id="@+id/floatingActionsMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
                 app:fab_addButtonColorNormal="#3688ae"
                 app:fab_addButtonColorPressed="#2b7394"
                 app:fab_addButtonSize="mini"
                 app:fab_labelStyle="@style/CustomFav"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/story_image"
                 tools:ignore="MissingConstraints">
 
                 <com.getbase.floatingactionbutton.FloatingActionButton
@@ -176,14 +175,15 @@
                 android:id="@+id/reactions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:backgroundTint="@color/colorPrimary"
                 android:outlineProvider="none"
                 android:shadowColor="@color/colorPrimary"
                 android:text="Reacciones:"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/floatingActionsMenu"
-                app:layout_constraintTop_toBottomOf="@+id/description" />
+                app:layout_constraintTop_toBottomOf="@+id/description"
+                app:layout_constraintVertical_bias="0.0" />
 
             <TextView
                 android:id="@+id/reactios_count"
@@ -191,23 +191,24 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginTop="19dp"
+                android:layout_marginTop="10dp"
                 android:text="a"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/commentButton"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/reactions"
-                app:layout_constraintTop_toBottomOf="@+id/description"
-                app:layout_constraintVertical_bias="0.405" />
+                app:layout_constraintTop_toTopOf="@+id/reactions"
+                app:layout_constraintVertical_bias="0.0" />
 
             <ImageButton
                 android:id="@+id/commentButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="12dp"
                 android:backgroundTint="#3688ae"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

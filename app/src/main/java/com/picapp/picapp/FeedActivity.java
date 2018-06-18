@@ -10,6 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,7 +26,11 @@ import com.picapp.picapp.AndroidModels.FeedRecyclerAdapter;
 import com.picapp.picapp.AndroidModels.FeedStory;
 import com.picapp.picapp.AndroidModels.Picapp;
 import com.picapp.picapp.Interfaces.WebApi;
+import com.picapp.picapp.Models.Comment;
+import com.picapp.picapp.Models.Feed;
+import com.picapp.picapp.Models.Story;
 import com.picapp.picapp.Models.UserLogout;
+import com.picapp.picapp.Models.UserProfile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,12 +55,19 @@ public class FeedActivity extends AppCompatActivity {
     private List<FeedStory> feed_list;
     private FeedRecyclerAdapter feedRecyclerAdapter;
 
+    private ProgressBar feedProgress;
+
     private Retrofit retrofit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
+
+        //que se ve la barra de progreso
+        feedProgress = (ProgressBar) findViewById(R.id.feedProgress);
+        //que se ve la barra de progreso
+        feedProgress.setVisibility(View.VISIBLE);
 
         //levanto el token
         final Picapp picapp = Picapp.getInstance();
@@ -91,34 +104,57 @@ public class FeedActivity extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
+        //creo retrofit que es la libreria para manejar Apis
+        retrofit = new Retrofit.Builder()
+                .baseUrl(WebApi.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        final WebApi webApi = retrofit.create(WebApi.class);
 
-        //Query firstQuery = firebaseFirestore.collection("Stories").orderBy("timestamp", Query.Direction.DESCENDING);
-
-        //levanta toda la data del feed de firebase en realtime
-        firebaseFirestore.collection("Stories").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        Call<Feed> call = webApi.getFeed(token, "Application/json");
+        call.enqueue(new Callback<Feed>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+            public void onResponse(Call<Feed> call, Response<Feed> response) {
 
-                for (DocumentChange doc: queryDocumentSnapshots.getDocumentChanges()){
+                Feed feed = response.body();
+                List<Story> stories = feed.getStories();
+                for (Story story : stories){
 
-                    if(doc.getType() == DocumentChange.Type.ADDED){
+                    FeedStory feedStory = new FeedStory();
+                    feedStory.setDescription(story.getDescription());
+                    feedStory.setImage(story.getMedia());
+                    feedStory.setLocation(story.getLocation());
+                    feedStory.setTimestamp(story.getTimestamp());
+                    feedStory.setTitle(story.getTitle());
+                    feedStory.setName(story.getName());
+                    feedStory.setProfPic(story.getProfilePic());
+                    feedStory.setImage_id(story.getStory_id());
+                    feedStory.setUser_id(story.getUsername());
 
-                        Map<String, Object> info = doc.getDocument().getData();
+                    Map<String, String> reactions = story.getReactions();
+                    ArrayList<Comment> coments = story.getComments();
 
-                        FeedStory feedStory = new FeedStory();
-                        feedStory.setDescription(info.get("description").toString());
-                        feedStory.setImage(info.get("image").toString());
-                        feedStory.setLocation(info.get("location").toString());
-                        feedStory.setTimestamp((Long)info.get("timestamp"));
-                        feedStory.setTitle(info.get("title").toString());
-                        feedStory.setUser_id(info.get("user_id").toString());
-                        feed_list.add(feedStory);
-                        feedRecyclerAdapter.notifyDataSetChanged();
-
+                    if (reactions != null){
+                        feedStory.setReactions(story.getReactions());
                     }
 
-                }
+                    if (coments != null){
+                        feedStory.setComments(story.getComments());
+                    }
 
+                    feed_list.add(feedStory);
+                    feedRecyclerAdapter.notifyDataSetChanged();
+
+                }
+                //escondo la barra de progreso
+                feedProgress.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onFailure(Call<Feed> call, Throwable t) {
+                Toast.makeText(FeedActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                //escondo la barra de progreso
+                feedProgress.setVisibility(View.INVISIBLE);
             }
         });
 

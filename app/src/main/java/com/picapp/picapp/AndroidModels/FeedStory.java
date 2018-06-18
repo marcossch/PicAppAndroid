@@ -18,6 +18,8 @@ public class FeedStory {
     public String title;
     public String user_id;
     public String profPic = null;
+    public String name;
+    public String profile_pic;
     public Long timestamp;
     public Boolean isPrivate;
     public Map<String, String> reactions = new HashMap<>();
@@ -123,6 +125,22 @@ public class FeedStory {
 
     public ArrayList<Comment> getComments() {
         return comments;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getProfile_pic() {
+        return profile_pic;
+    }
+
+    public void setProfile_pic(String profile_pic) {
+        this.profile_pic = profile_pic;
     }
 
 //
