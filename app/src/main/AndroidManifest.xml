@@ -64,6 +64,7 @@
         <activity android:name=".CommentsActivity"
             android:parentActivityName=".FeedActivity">
         </activity>
+        <activity android:name=".OtherProfileActivity"></activity>
     </application>
 
 </manifest>

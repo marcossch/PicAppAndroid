@@ -53,6 +53,10 @@ public interface WebApi {
     Call<UserProfile> getUserProfile(@Path("userid") String user,
                                      @Header("token") String token, @Header("Content-Type") String content);
 
+    @GET("users/{userid}/friends")
+    Call<UserProfile> getUserFriends(@Path("userid") String user,
+                                     @Header("token") String token, @Header("Content-Type") String content);
+
     //--------------Stories -------------------------
     @POST("stories")
     Call<StoryResult> postStory(@Body StoryRequest StoryRequest,

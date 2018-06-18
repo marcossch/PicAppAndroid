@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/greyBackground"
+    android:theme="@style/AppTheme"
+    >
+
+    <!--barra superior-->
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/main_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimary"
+        android:theme="@style/AppTheme" />
+
+    <ScrollView
+        android:id="@+id/main_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/main_nav"
+        android:layout_below="@+id/main_toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <!-- IMAGEN PRINCIPAL -->
+            <ImageView
+                android:id="@+id/contenedorFotoPerfil"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:adjustViewBounds="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="#dfdede" />
+
+            <LinearLayout
+                android:id="@+id/friendContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/back_profile"
+                android:orientation="horizontal"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:elevation="1dp"
+                >
+
+                <TextView
+                    android:id="@+id/userName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.6"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="left"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="User Name"
+                    android:textColor="@color/black"
+                    android:textSize="28sp" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/agregarAmigos"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="0.1"
+                    android:layout_alignEnd="@+id/userName"
+                    android:layout_marginBottom="7dp"
+                    android:layout_marginTop="5dp"
+                    android:clickable="true"
+                    android:backgroundTint="@color/greenF"
+                    app:srcCompat="@drawable/icon_add_user" />
+
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#80dfdede" />
+
+            <LinearLayout
+                android:id="@+id/blockProfile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:elevation="1dp"
+                >
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.6"
+                    app:srcCompat="@drawable/icon_lock" />
+
+                <TextView
+                    android:id="@+id/perfilIsBlocked"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.4"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="15dp"
+                    android:gravity="left"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="Todavia no son amigos"
+                    android:textColor="@color/greyLetter"
+                    android:textSize="24sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
