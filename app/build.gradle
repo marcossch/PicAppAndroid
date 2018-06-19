@@ -52,6 +52,10 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:15.0.1'
     implementation 'com.github.uin3566:AllAngleExpandableButton:v1.2.0'
     implementation 'com.getbase:floatingactionbutton:1.10.1'
+    implementation 'info.androidhive:imagefilters:1.0.7'
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    implementation 'com.karumi:dexter:4.1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

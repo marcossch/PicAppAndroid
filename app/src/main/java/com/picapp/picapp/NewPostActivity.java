@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -46,6 +48,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.picapp.picapp.AndroidModels.Picapp;
 import com.picapp.picapp.Interfaces.WebApi;
+import com.picapp.picapp.Models.SessionData;
 import com.picapp.picapp.Models.StoryDeleted;
 import com.picapp.picapp.Models.StoryRequest;
 import com.picapp.picapp.Models.StoryResult;
@@ -89,6 +92,7 @@ public class NewPostActivity extends AppCompatActivity {
     private WebApi webApi;
 
     private ImageView newImage;
+    private Button filterButton;
     private EditText description;
     private EditText titulo;
     private Uri mainImageURI = null;
@@ -126,6 +130,7 @@ public class NewPostActivity extends AppCompatActivity {
 
         //levanto las imagenes, text y barra de progreso
         newImage = findViewById(R.id.contenedorPresentacion);
+        filterButton = (Button) findViewById(R.id.filterButton);
         description = (EditText) findViewById(R.id.descripcion);
         titulo = (EditText) findViewById(R.id.titulo);
         newPostProgress = (ProgressBar) findViewById(R.id.newPostProgress);
@@ -135,9 +140,16 @@ public class NewPostActivity extends AppCompatActivity {
         newImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 bringImagePicker();
+            }
+        });
 
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                BitmapDrawable bmd = (BitmapDrawable) newImage.getDrawable();
+                SessionData.onEdit = bmd.getBitmap();
+                startActivity(new Intent(NewPostActivity.this, EditImageActivity.class));
             }
         });
 

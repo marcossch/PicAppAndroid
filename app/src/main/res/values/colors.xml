@@ -17,5 +17,8 @@
     <color name="likeBtnAccent">#106f92</color>
     <color name="yellow">#FFEE58</color>
 
+    <color name="color_option_menu">#FF3990</color>
+    <color name="filter_label_normal">#8A8889</color>
+    <color name="filter_label_selected">#221F20</color>
 
 </resources>
