@@ -1,67 +1,67 @@
 package com.picapp.picapp;
 
-import android.app.Dialog;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.location.Location;
-import android.location.LocationManager;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.Switch;
-import android.widget.Toast;
+    import android.app.Dialog;
+    import android.content.Intent;
+    import android.content.pm.PackageManager;
+    import android.graphics.Bitmap;
+    import android.location.Location;
+    import android.location.LocationManager;
+    import android.net.Uri;
+    import android.os.Bundle;
+    import android.provider.Settings;
+    import android.support.annotation.NonNull;
+    import android.support.v4.app.ActivityCompat;
+    import android.support.v4.content.ContextCompat;
+    import android.support.v7.app.AppCompatActivity;
+    import android.util.Log;
+    import android.view.Menu;
+    import android.view.MenuItem;
+    import android.view.View;
+    import android.widget.Button;
+    import android.widget.EditText;
+    import android.widget.ImageView;
+    import android.widget.ProgressBar;
+    import android.widget.Switch;
+    import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.picapp.picapp.AndroidModels.Picapp;
-import com.picapp.picapp.Interfaces.WebApi;
-import com.picapp.picapp.Models.StoryDeleted;
-import com.picapp.picapp.Models.StoryRequest;
-import com.picapp.picapp.Models.StoryResult;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
+    import com.google.android.gms.common.ConnectionResult;
+    import com.google.android.gms.common.GoogleApiAvailability;
+    import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+    import com.google.android.gms.common.GooglePlayServicesRepairableException;
+    import com.google.android.gms.common.api.Status;
+    import com.google.android.gms.location.FusedLocationProviderClient;
+    import com.google.android.gms.location.LocationServices;
+    import com.google.android.gms.location.places.Place;
+    import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+    import com.google.android.gms.location.places.ui.PlacePicker;
+    import com.google.android.gms.tasks.OnCompleteListener;
+    import com.google.android.gms.tasks.OnSuccessListener;
+    import com.google.android.gms.tasks.Task;
+    import com.google.firebase.auth.FirebaseAuth;
+    import com.google.firebase.auth.FirebaseUser;
+    import com.google.firebase.firestore.DocumentReference;
+    import com.google.firebase.firestore.FirebaseFirestore;
+    import com.google.firebase.storage.FirebaseStorage;
+    import com.google.firebase.storage.StorageReference;
+    import com.google.firebase.storage.UploadTask;
+    import com.picapp.picapp.AndroidModels.Picapp;
+    import com.picapp.picapp.Interfaces.WebApi;
+    import com.picapp.picapp.Models.StoryDeleted;
+    import com.picapp.picapp.Models.StoryRequest;
+    import com.picapp.picapp.Models.StoryResult;
+    import com.theartofdev.edmodo.cropper.CropImage;
+    import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.util.HashMap;
-import java.util.Map;
+    import java.util.HashMap;
+    import java.util.Map;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+    import retrofit2.Call;
+    import retrofit2.Callback;
+    import retrofit2.Response;
+    import retrofit2.Retrofit;
+    import retrofit2.converter.gson.GsonConverterFactory;
 
-public class NewPostActivity extends AppCompatActivity {
+public class NewPostVideoActivity extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 123;
     private android.support.v7.widget.Toolbar mainToolbar;
@@ -121,7 +121,7 @@ public class NewPostActivity extends AppCompatActivity {
         //levanta la toolbar
         mainToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mainToolbar);
-        getSupportActionBar().setTitle("PicApp - Foto");
+        getSupportActionBar().setTitle("PicApp - Video");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //levanto las imagenes, text y barra de progreso
@@ -148,19 +148,19 @@ public class NewPostActivity extends AppCompatActivity {
         //Chequeo de permisos(no es necesario pero android studio se queja)
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            Toast.makeText(NewPostActivity.this, "Error al obtener permisos para la ubicacion actual", Toast.LENGTH_LONG).show();
+            Toast.makeText(NewPostVideoActivity.this, "Error al obtener permisos para la ubicacion actual", Toast.LENGTH_LONG).show();
 
         }
         mFusedLocationClient.getLastLocation()
-            .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    if (location != null) {
-                        latActual = location.getLatitude();
-                        longActual = location.getLatitude();
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            latActual = location.getLatitude();
+                            longActual = location.getLatitude();
+                        }
                     }
-                }
-            });
+                });
 
         locButton = findViewById(R.id.locationButton);
         locButton.setOnClickListener(new View.OnClickListener() {
@@ -170,15 +170,15 @@ public class NewPostActivity extends AppCompatActivity {
 
                     Intent builder = null;
                     try {
-                        builder = new PlacePicker.IntentBuilder().build(NewPostActivity.this);
+                        builder = new PlacePicker.IntentBuilder().build(NewPostVideoActivity.this);
                         startActivityForResult(builder, PLACE_PICKER_REQUEST);
                     } catch (GooglePlayServicesRepairableException e) {
                         Log.d(TAG, "Error de google places. Excepcion reparable.");
-                        Toast.makeText(NewPostActivity.this, "Error al inicializar google places. \n" +
+                        Toast.makeText(NewPostVideoActivity.this, "Error al inicializar google places. \n" +
                                 "Asegurese de tener correctamente instalado y actualizado el servicio.", Toast.LENGTH_LONG).show();
                     } catch (GooglePlayServicesNotAvailableException e) {
                         Log.d(TAG, "Error de google places. Excepcion inesperada.");
-                        Toast.makeText(NewPostActivity.this, "No selecciono ninguna ubicacion \n", Toast.LENGTH_LONG).show();
+                        Toast.makeText(NewPostVideoActivity.this, "No selecciono ninguna ubicacion \n", Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -231,7 +231,7 @@ public class NewPostActivity extends AppCompatActivity {
                 Log.d(TAG, status.getStatusMessage());
             } else if (resultCode == RESULT_CANCELED) {
                 Log.d(TAG, "Operacion cancelada.");
-                Toast.makeText(NewPostActivity.this, "Operación cancelada. " +
+                Toast.makeText(NewPostVideoActivity.this, "Operación cancelada. " +
                         "Intente nuevamente en unos minutos.", Toast.LENGTH_LONG).show();
             }
         }
@@ -246,7 +246,7 @@ public class NewPostActivity extends AppCompatActivity {
                 Log.d(TAG, status.getStatusMessage());
             } else if (resultCode == RESULT_CANCELED) {
                 Log.d(TAG, "Operacion cancelada.");
-                Toast.makeText(NewPostActivity.this, "Operación cancelada. " +
+                Toast.makeText(NewPostVideoActivity.this, "Operación cancelada. " +
                         "Intente nuevamente en unos minutos.", Toast.LENGTH_LONG).show();
             }
         }
@@ -276,10 +276,9 @@ public class NewPostActivity extends AppCompatActivity {
                 return true;
 
             case R.id.media_switch:
-
-                sendToVideo();
+                item.setTitle("Foto");
+                sendToFoto();
                 return true;
-
 
         }
 
@@ -291,7 +290,7 @@ public class NewPostActivity extends AppCompatActivity {
     //--------------Metodos Privados-------------//
 
     private void sendToProfile() {
-        Intent profileIntent = new Intent(NewPostActivity.this, ProfileActivity.class);
+        Intent profileIntent = new Intent(NewPostVideoActivity.this, ProfileActivity.class);
         startActivity(profileIntent);
         finish();
     }
@@ -302,7 +301,7 @@ public class NewPostActivity extends AppCompatActivity {
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setMinCropResultSize(512, 512)
                 .setAspectRatio(5,6)
-                .start(NewPostActivity.this);
+                .start(NewPostVideoActivity.this);
     }
 
     private void updateAccount() {
@@ -333,7 +332,7 @@ public class NewPostActivity extends AppCompatActivity {
                 } else {
 
                     String error = task.getException().getMessage();
-                    Toast.makeText(NewPostActivity.this, "IMAGE Error: " + error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(NewPostVideoActivity.this, "IMAGE Error: " + error, Toast.LENGTH_LONG).show();
                     //escondo la barra de progreso
                     newPostProgress.setVisibility(View.INVISIBLE);
                 }
@@ -344,42 +343,42 @@ public class NewPostActivity extends AppCompatActivity {
 
     private void storeFirestore(final StoryResult story) {
 
-                Map<String, Object> postMap = new HashMap<>();
-                postMap.put("image_id", story.getStoryId());
-                postMap.put("image", story.getMedia());
-                postMap.put("thumb", "thumbUri");
-                postMap.put("user_id", user_id);
-                postMap.put("timestamp", story.getTimestamp());
-                postMap.put("description", story.getDescription());
-                postMap.put("title", story.getTitle());
-                postMap.put("location", story.getLocation());
-                postMap.put("isPrivate", story.getIsPrivate());
+        Map<String, Object> postMap = new HashMap<>();
+        postMap.put("image_id", story.getStoryId());
+        postMap.put("image", story.getMedia());
+        postMap.put("thumb", "thumbUri");
+        postMap.put("user_id", user_id);
+        postMap.put("timestamp", story.getTimestamp());
+        postMap.put("description", story.getDescription());
+        postMap.put("title", story.getTitle());
+        postMap.put("location", story.getLocation());
+        postMap.put("isPrivate", story.getIsPrivate());
 
-                //cada usuario tiene su propio documento
-                firebaseFirestore.collection("Stories").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentReference> task) {
+        //cada usuario tiene su propio documento
+        firebaseFirestore.collection("Stories").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
 
-                        if (task.isSuccessful()) {
+                if (task.isSuccessful()) {
 
-                            //escondo la barra de progreso
-                            newPostProgress.setVisibility(View.INVISIBLE);
-                            sendToProfile();
+                    //escondo la barra de progreso
+                    newPostProgress.setVisibility(View.INVISIBLE);
+                    sendToProfile();
 
-                        } else {
+                } else {
 
-                            String error = task.getException().getMessage();
-                            Toast.makeText(NewPostActivity.this, "FIRESTORE Error: " + error, Toast.LENGTH_LONG).show();
+                    String error = task.getException().getMessage();
+                    Toast.makeText(NewPostVideoActivity.this, "FIRESTORE Error: " + error, Toast.LENGTH_LONG).show();
 
-                            //elimino la story del server
-                            serverDeleteStory(story);
+                    //elimino la story del server
+                    serverDeleteStory(story);
 
-                            //escondo la barra de progreso
-                            newPostProgress.setVisibility(View.INVISIBLE);
-                        }
+                    //escondo la barra de progreso
+                    newPostProgress.setVisibility(View.INVISIBLE);
+                }
 
-                    }
-                });
+            }
+        });
 
     }
 
@@ -448,26 +447,26 @@ public class NewPostActivity extends AppCompatActivity {
     }
 
     private void sendToFeed() {
-        Intent feedIntent = new Intent(NewPostActivity.this, FeedActivity.class);
+        Intent feedIntent = new Intent(NewPostVideoActivity.this, FeedActivity.class);
         startActivity(feedIntent);
         finish();
     }
 
-    private void sendToVideo() {
-        Intent videoIntent = new Intent(NewPostActivity.this, NewPostVideoActivity.class);
+    private void sendToFoto() {
+        Intent videoIntent = new Intent(NewPostVideoActivity.this, NewPostActivity.class);
         startActivity(videoIntent);
         finish();
     }
 
     public boolean isServicesOk(){
-        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable( NewPostActivity.this );
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable( NewPostVideoActivity.this );
         if(available == ConnectionResult.SUCCESS){
             Log.d(TAG, "El servicio de google maps esta OK");
             return true;
         }
         else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
             Log.d(TAG, "Ocurrio un error con el servicio de google, pero se puede arreglar");
-            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(NewPostActivity.this, available, ERROR_DIALOG_REQUEST);
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(NewPostVideoActivity.this, available, ERROR_DIALOG_REQUEST);
             dialog.show();
         }
         else{

@@ -59,12 +59,13 @@
         <activity android:name=".SearchActivity" />
         <activity
             android:name=".ReaccionesActivity"
-            android:parentActivityName=".FeedActivity"></activity>
+            android:parentActivityName=".FeedActivity" />
         <activity
             android:name=".CommentsActivity"
-            android:parentActivityName=".FeedActivity"></activity>
+            android:parentActivityName=".FeedActivity" />
         <activity android:name=".OtherProfileActivity" />
-        <activity android:name=".FriendProfileActivity"></activity>
+        <activity android:name=".FriendProfileActivity" />
+        <activity android:name=".NewPostVideoActivity"></activity>
     </application>
 
 </manifest>

@@ -17,7 +17,7 @@
         android:layout_alignParentTop="true"
         android:background="@color/colorPrimary"
         android:theme="@style/AppTheme"
-        app:menu="@menu/options_menu" />
+        app:menu="@menu/new_post_menu" />
 
     <ScrollView
         android:id="@+id/main_scroll"
