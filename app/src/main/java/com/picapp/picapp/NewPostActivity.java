@@ -56,7 +56,9 @@ import com.zomato.photofilters.SampleFilters;
 import com.zomato.photofilters.imageprocessors.Filter;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -92,6 +94,7 @@ public class NewPostActivity extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     private StorageReference storageReference;
     private Bitmap compressedImageFile;
+    private Bitmap original;
 
     private Retrofit retrofit;
     private WebApi webApi;
@@ -104,11 +107,24 @@ public class NewPostActivity extends AppCompatActivity {
     private String token = "";
     private StoryRequest storyRequest;
 
-
+    private List<Filter> filters = new ArrayList<>();
+    private int filterCounter;
+    private boolean originalNotSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Set filters
+        filterCounter = 0;
+        originalNotSet = true;
+        filters.add(SampleFilters.getAweStruckVibeFilter());
+        filters.add(SampleFilters.getBlueMessFilter());
+        filters.add(SampleFilters.getLimeStutterFilter());
+        filters.add(SampleFilters.getNightWhisperFilter());
+        filters.add(SampleFilters.getStarLitFilter());
+        filters.add(new Filter()); // No filter
+
         setContentView(R.layout.activity_new_post);
 
         //levanto el token
@@ -144,12 +160,15 @@ public class NewPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(mainImageURI != null) {
-                    Filter filter = SampleFilters.getStarLitFilter();
-                    BitmapDrawable drawable = (BitmapDrawable) newImage.getDrawable();
-                    Bitmap input = drawable.getBitmap().copy( Bitmap.Config.ARGB_8888 , true);
+                    if (original == null || originalNotSet){
+                        BitmapDrawable drawable = (BitmapDrawable) newImage.getDrawable();
+                        original = drawable.getBitmap();
+                        originalNotSet = false;
+                    }
+                    Bitmap input = original.copy(Bitmap.Config.RGB_565, true);
+                    Filter filter = getNextFilter();
                     Bitmap outputImage = filter.processFilter(input);
                     newImage.setImageBitmap(outputImage);
-
                 }
             }
         });
@@ -158,9 +177,7 @@ public class NewPostActivity extends AppCompatActivity {
         newImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 bringImagePicker();
-
             }
         });
 
@@ -209,6 +226,10 @@ public class NewPostActivity extends AppCompatActivity {
 
     }
 
+    private Filter getNextFilter(){
+        return filters.get(filterCounter++ % 6);
+    }
+
     private void getLocationPermission() {
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
         boolean enabled = service
@@ -238,6 +259,7 @@ public class NewPostActivity extends AppCompatActivity {
 
                 mainImageURI = result.getUri();
                 newImage.setImageURI(mainImageURI);
+                originalNotSet = true;
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
@@ -339,9 +361,8 @@ public class NewPostActivity extends AppCompatActivity {
         final Long timestamp = System.currentTimeMillis();
         StorageReference image_path = storageReference.child("stories").child(timestamp.toString() + ".jpg");
 
-        newImage.setDrawingCacheEnabled(true);
-        newImage.buildDrawingCache();
-        Bitmap bitmap = newImage.getDrawingCache();
+        BitmapDrawable drawable = (BitmapDrawable) newImage.getDrawable();
+        Bitmap bitmap = drawable.getBitmap();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data = baos.toByteArray();
