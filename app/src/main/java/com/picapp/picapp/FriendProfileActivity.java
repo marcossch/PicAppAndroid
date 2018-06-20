@@ -1,7 +1,6 @@
 package com.picapp.picapp;
 
 import android.content.Intent;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
