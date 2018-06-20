@@ -68,6 +68,19 @@
                     android:textSize="28sp" />
 
                 <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/borrarAmigos"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="0.1"
+                    android:layout_marginBottom="7dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:visibility="invisible"
+                    android:clickable="true"
+                    app:backgroundTint="@color/redF"
+                    app:srcCompat="@drawable/icon_delete_friend" />
+
+                <android.support.design.widget.FloatingActionButton
                     android:id="@+id/agregarAmigos"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
@@ -75,10 +88,10 @@
                     android:layout_alignEnd="@+id/userName"
                     android:layout_marginBottom="7dp"
                     android:layout_marginTop="5dp"
+                    android:visibility="invisible"
                     android:clickable="true"
-                    android:backgroundTint="@color/greenF"
+                    app:backgroundTint="@color/greenF"
                     app:srcCompat="@drawable/icon_add_user" />
-
 
             </LinearLayout>
 

@@ -3,6 +3,8 @@ package com.picapp.picapp.Interfaces;
 import com.picapp.picapp.Models.Comment;
 import com.picapp.picapp.Models.CommentRequest;
 import com.picapp.picapp.Models.Feed;
+import com.picapp.picapp.Models.FriendshipResponse;
+import com.picapp.picapp.Models.FriendshipStatus;
 import com.picapp.picapp.Models.Reaction;
 import com.picapp.picapp.Models.StoryDeleted;
 import com.picapp.picapp.Models.StoryRequest;
@@ -54,9 +56,24 @@ public interface WebApi {
     Call<UserProfile> getUserProfile(@Path("userid") String user,
                                      @Header("token") String token, @Header("Content-Type") String content);
 
-    @GET("users/{userid}/friends")
+/*    @GET("users/{userid}/friends")
     Call<UserProfile> getUserFriends(@Path("userid") String user,
                                      @Header("token") String token, @Header("Content-Type") String content);
+*/
+
+    //--------------Friendship ----------------------
+
+    @GET("users/{userid}/friendship")
+    Call<FriendshipStatus> getFriendshipStatus(@Path("userid") String user,
+                                         @Header("token") String token, @Header("Content-Type") String content);
+
+    @POST("users/{userid}/friendship")
+     Call<FriendshipResponse> postFriendship(@Path("userid") String user,
+                                             @Header("token") String token, @Header("Content-Type") String content);
+
+    @DELETE("users/{userid}/friendship")
+    Call<FriendshipResponse> deleteFriendship(@Path("userid") String user,
+                                            @Header("token") String token, @Header("Content-Type") String content);
 
     //--------------Stories -------------------------
     @POST("stories")

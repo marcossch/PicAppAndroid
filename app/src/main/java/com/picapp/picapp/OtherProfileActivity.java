@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -28,46 +29,193 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.UploadTask;
+import com.picapp.picapp.AndroidModels.Picapp;
+import com.picapp.picapp.Interfaces.WebApi;
+import com.picapp.picapp.Models.FriendshipResponse;
+import com.picapp.picapp.Models.FriendshipStatus;
 import com.picapp.picapp.Models.SelectableUser;
+import com.picapp.picapp.Models.UserAccount;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class OtherProfileActivity extends AppCompatActivity {
 
     private String name;
     private String id;
     private String pic;
+    private String status;
     private FirebaseFirestore firebaseFirestore;
-    private android.support.design.widget.FloatingActionButton friendshipBtn;
+    private android.support.design.widget.FloatingActionButton addFriendsBtn;
+    private android.support.design.widget.FloatingActionButton deleteFriendsBtn;
     private FirebaseUser currentUser;
     private ArrayList<String> recibidas;
     private ArrayList<String> enviadas;
+    private Retrofit retrofit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other_profile);
 
-        recibidas = new ArrayList<>();
-        enviadas = new ArrayList<>();
+        //Levanto el token desde la applicacion.
+        final Picapp picapp = Picapp.getInstance();
+        final String token = picapp.getToken();
 
+        if(token == null) {
+            Log.d("TOKEN: ", "-----> El token es Null. <-----");
+        }
+        
+        //Inicializaciones:
         firebaseFirestore = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
+        retrofit = new Retrofit.Builder()
+                .baseUrl(WebApi.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        final WebApi webApi = retrofit.create(WebApi.class);
+        
+        recibidas = new ArrayList<>();
+        enviadas = new ArrayList<>();
+        
         //Setteo los parametros pasados por parametro
         setParams();
+        //Agrego los parametros al nuevo perfil
         TextView nameView = findViewById(R.id.userName);
         nameView.setText(this.name);
         ImageView imgView = findViewById(R.id.contenedorFotoPerfil);
         Glide.with(this).load(this.pic).into(imgView);
 
-        //Obtengo el boton para enviar solicitudes de amistad
-        friendshipBtn = findViewById(R.id.agregarAmigos);
-        //Obtengo las solicitudes de amistad enviadas, y recibidas
-        DocumentReference docRef = firebaseFirestore.collection("Solicitudes").document(currentUser.getUid());
+        //Obtengo los botones de solicitudes
+        addFriendsBtn = findViewById(R.id.agregarAmigos);
+        deleteFriendsBtn = findViewById(R.id.borrarAmigos);
+
+        //levanto el nombre del usuario
+        Call<FriendshipStatus> friendshipStatus = webApi.getFriendshipStatus(id, token, "Application/json");
+        friendshipStatus.enqueue(new Callback<FriendshipStatus>() {
+            @Override
+            public void onResponse(Call<FriendshipStatus> call, Response<FriendshipStatus> response) {
+                status = response.body().getState();
+                setButtonConditions(status);
+            }
+
+            @Override
+            public void onFailure(Call<FriendshipStatus> call, Throwable t) {
+                Log.d("FRIENDSHIP STATUS", "-----> No se pudo obtener el estado de amistad <-----");
+            }
+        });
+
+        addFriendsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Call<FriendshipResponse> friendshipResponse = webApi.postFriendship(id, token, "Application/json");
+                friendshipResponse.enqueue(new Callback<FriendshipResponse>() {
+
+                    @Override
+                    public void onResponse(Call<FriendshipResponse> call, Response<FriendshipResponse> response) {
+                        //levanto el nombre del usuario
+                        Call<FriendshipStatus> friendshipStatus = webApi.getFriendshipStatus(id, token, "Application/json");
+                        friendshipStatus.enqueue(new Callback<FriendshipStatus>() {
+                            @Override
+                            public void onResponse(Call<FriendshipStatus> call, Response<FriendshipStatus> response) {
+                                status = response.body().getState();
+                                setButtonConditions(status);
+                                //Ir al nuevo profile
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<FriendshipStatus> call, Throwable t) {
+                                Log.d("FRIENDSHIP STATUS", "-----> No se pudo obtener el estado de amistad <-----");
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Call<FriendshipResponse> call, Throwable t) {
+                        Log.d("ADD FRIEND", "-----> No se pudo enviar la solicitud de amistad <-----");
+                    }
+                });
+            }
+        });
+
+        deleteFriendsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Call<FriendshipResponse> friendshipResponse = webApi.deleteFriendship(id, token, "Application/json");
+                friendshipResponse.enqueue(new Callback<FriendshipResponse>() {
+                    @Override
+                    public void onResponse(Call<FriendshipResponse> call, Response<FriendshipResponse> response) {
+                        setButtonConditions("not_friends");
+                    }
+
+                    @Override
+                    public void onFailure(Call<FriendshipResponse> call, Throwable t) {
+                        Log.d("DELETE FRIEND", "-----> No se pudo cancelar la amistad <-----");
+                    }
+                });
+            }
+        });
+    }
+
+    public void setParams(){
+        Intent myIntent = getIntent(); // gets the previously created intent
+        String userName = myIntent.getStringExtra("name");
+        this.name = userName;
+        String profilePic = myIntent.getStringExtra("pic");
+        this.pic = profilePic;
+        String id = myIntent.getStringExtra("id");
+        this.id = id;
+    }
+
+    public void setButtonConditions(String state) {
+        switch(state){
+            //Cuando no son amigos, lo unico que podes hacer es enviarla
+            case "not_friends":
+                deleteFriendsBtn.setVisibility(View.INVISIBLE);
+                deleteFriendsBtn.setClickable(false);
+                addFriendsBtn.setVisibility(View.VISIBLE);
+                addFriendsBtn.setClickable(true);
+                break;
+
+            //Cuando recibiste una, podes eliminarla o aceptarla
+            case "received":
+                Toast.makeText(OtherProfileActivity.this, "El usuario "+name+" te envio una solicitud de amistad.", Toast.LENGTH_LONG).show();
+                deleteFriendsBtn.setVisibility(View.VISIBLE);
+                deleteFriendsBtn.setClickable(true);
+                addFriendsBtn.setVisibility(View.VISIBLE);
+                addFriendsBtn.setClickable(true);
+                break;
+
+            //Cuando son amigos o la enviaste, lo unico que podes hacer es eliminarla
+            case "sent":
+                deleteFriendsBtn.setVisibility(View.VISIBLE);
+                deleteFriendsBtn.setClickable(true);
+                addFriendsBtn.setVisibility(View.INVISIBLE);
+                addFriendsBtn.setClickable(false);
+                break;
+
+            case "friends":
+                deleteFriendsBtn.setVisibility(View.VISIBLE);
+                deleteFriendsBtn.setClickable(true);
+                addFriendsBtn.setVisibility(View.INVISIBLE);
+                addFriendsBtn.setClickable(false);
+                break;
+        }
+    }
+
+}
+
+/*Obtengo las solicitudes de amistad enviadas, y recibidas
+        *DocumentReference docRef = firebaseFirestore.collection("Solicitudes").document(currentUser.getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -83,38 +231,16 @@ public class OtherProfileActivity extends AppCompatActivity {
             }
         });
         Toast.makeText(OtherProfileActivity.this, enviadas.toString(), Toast.LENGTH_LONG).show();
-
-/*        firebaseFirestore.collection("Solicitudes").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        *
+*        firebaseFirestore.collection("Solicitudes").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 for (DocumentSnapshot doc: queryDocumentSnapshots.getDocuments()) {
                 }
             }
-        });         */
-        friendshipBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //friendshipBtn.setBackgroundResource(R.drawable.icon_delete_friend);
-                //friendshipBtn.setBackgroundTintList(getResources().getColorStateList(R.color.yellow));
-                //storeFirestore();
-            }
-        });
+        })
 
-
-
-    }
-
-    public void setParams(){
-        Intent myIntent = getIntent(); // gets the previously created intent
-        String userName = myIntent.getStringExtra("name");
-        this.name = userName;
-        String profilePic = myIntent.getStringExtra("pic");
-        this.pic = profilePic;
-        String id = myIntent.getStringExtra("id");
-        this.id = id;
-    }
-
-    private void storeFirestore() {
+            private void storeFirestore() {
 
         Map<String, ArrayList<String>> userMap = new HashMap<>();
         ArrayList<String> a = new ArrayList<>();
@@ -135,6 +261,4 @@ public class OtherProfileActivity extends AppCompatActivity {
                 }
             }
         });
-
-    }
-}
+    }*/
