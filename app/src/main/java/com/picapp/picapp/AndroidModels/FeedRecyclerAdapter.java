@@ -35,6 +35,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.picapp.picapp.AccountSettingsActivity;
 import com.picapp.picapp.CommentsActivity;
+import com.picapp.picapp.FeedActivity;
 import com.picapp.picapp.FriendsActivity;
 import com.picapp.picapp.Interfaces.WebApi;
 import com.picapp.picapp.LoginActivity;
@@ -70,6 +71,7 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
     public String token = null;
     private FirebaseAuth mAuth;
     private String user_id;
+    private String user_id_post;
     private boolean isProfile = false;
 
 
@@ -130,7 +132,7 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
 
 
         //levanto el nombre de usuario
-        user_id = feed_list.get(position).getUser_id();
+        user_id_post = feed_list.get(position).getUser_id();
         //creo retrofit que es la libreria para manejar Apis
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(WebApi.BASE_URL)
@@ -141,7 +143,7 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
         //los usuarios del feed no tienen token asociado
         if (token == null) {
             //Obtengo el token del usuario.
-            firebaseFirestore.collection("UserTokens").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            firebaseFirestore.collection("UserTokens").document(user_id_post).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {
@@ -255,6 +257,8 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
                 //si el usuario ya reacciono, no puede volver a reaccionar
                 if (!reactions.containsKey(user_id)) {
 
+                    Toast.makeText(context, "aca", Toast.LENGTH_LONG).show();
+
                     final Reaction reaction = new Reaction();
                     reaction.setReactingUserId(user_id);
                     reaction.setReaction("boring");
@@ -310,6 +314,7 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
 
                 if(reactions.size() > 0) {
                     Intent reaccionesIntent = new Intent(context, ReaccionesActivity.class);
+                    reaccionesIntent.putExtra("token", token);
 
                     for (String key : reactions.keySet()) {
 

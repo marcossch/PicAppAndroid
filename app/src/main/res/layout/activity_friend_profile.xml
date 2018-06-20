@@ -67,6 +67,15 @@
                     android:textColor="@color/black"
                     android:textSize="28sp" />
 
+                <ImageButton
+                    android:id="@+id/mapButton"
+                    android:layout_weight="0.3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/colorPrimary"
+                    app:srcCompat="@drawable/ic_place_accent_24dp"/>
+
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/borrarAmigos"
                     android:layout_width="48dp"
@@ -75,25 +84,11 @@
                     android:layout_marginBottom="7dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
-                    android:visibility="invisible"
                     android:clickable="true"
                     app:backgroundTint="@color/redF"
                     android:tint="@color/colorPrimary"
                     app:srcCompat="@drawable/icon_delete_friend" />
 
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/agregarAmigos"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_weight="0.1"
-                    android:layout_alignEnd="@+id/userName"
-                    android:layout_marginBottom="7dp"
-                    android:layout_marginTop="5dp"
-                    android:visibility="invisible"
-                    android:clickable="true"
-                    app:backgroundTint="@color/greenF"
-                    android:tint="@color/colorPrimary"
-                    app:srcCompat="@drawable/icon_add_user" />
 
             </LinearLayout>
 
@@ -103,39 +98,101 @@
                 android:layout_height="1dp"
                 android:background="#80dfdede" />
 
+            <!-- CONTENEDOR AMIGOS-->
             <LinearLayout
-                android:id="@+id/blockProfile"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@drawable/back_profile"
                 android:orientation="horizontal"
-                android:layout_marginTop="20dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:elevation="1dp"
-                >
+                android:id="@+id/user_info">
 
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/containerFirends"
+                    android:layout_width="fill_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.6"
-                    app:srcCompat="@drawable/icon_lock" />
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/perfilIsBlocked"
-                    android:layout_width="wrap_content"
+                    <Button
+                        android:id="@+id/friendsNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:fontFamily="sans-serif-condensed"
+                        android:outlineProvider="none"
+                        android:shadowColor="@color/colorPrimary"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:clickable="false"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/friendsString"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/friendsNumber"
+                        android:fontFamily="sans-serif-condensed"
+                        android:text="Amigos"
+                        android:textColor="@color/black" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.4"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="15dp"
-                    android:gravity="left"
-                    android:fontFamily="sans-serif-condensed"
-                    android:text="Todavia no son amigos"
-                    android:textColor="@color/greyLetter"
-                    android:textSize="24sp" />
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/pubNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:backgroundTint="@color/colorPrimary"
+                        android:clickable="false"
+                        android:fontFamily="sans-serif-condensed"
+
+                        android:outlineProvider="none"
+                        android:shadowColor="@color/colorPrimary"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/pubString"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/pubNumber"
+                        android:fontFamily="sans-serif-condensed"
+                        android:text="Publicaciones"
+                        android:textColor="@color/black" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/profile_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/user_info"
+                android:layout_above="@id/main_nav"/>
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#80dfdede" />
+
         </LinearLayout>
     </ScrollView>
+
 </RelativeLayout>

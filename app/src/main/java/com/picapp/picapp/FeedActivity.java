@@ -35,7 +35,9 @@ import com.picapp.picapp.Models.UserProfile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -55,6 +57,8 @@ public class FeedActivity extends AppCompatActivity {
     private List<FeedStory> feed_list;
     private FeedRecyclerAdapter feedRecyclerAdapter;
 
+    private String token;
+
     private ProgressBar feedProgress;
 
     private Retrofit retrofit;
@@ -71,7 +75,7 @@ public class FeedActivity extends AppCompatActivity {
 
         //levanto el token
         final Picapp picapp = Picapp.getInstance();
-        String token = picapp.getToken();
+        token = picapp.getToken();
 
         if(token == null) {
             Intent mainIntent = new Intent(FeedActivity.this, MainActivity.class);
@@ -99,14 +103,22 @@ public class FeedActivity extends AppCompatActivity {
         feedRecyclerAdapter = new FeedRecyclerAdapter(feed_list);
         feed_list_view.setLayoutManager(new LinearLayoutManager(this));
         feed_list_view.setAdapter(feedRecyclerAdapter);
+        feedRecyclerAdapter.setToken(token);
 
         //Agarro los atributos desde firebase
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .build();
+
         //creo retrofit que es la libreria para manejar Apis
         retrofit = new Retrofit.Builder()
                 .baseUrl(WebApi.BASE_URL)
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         final WebApi webApi = retrofit.create(WebApi.class);
