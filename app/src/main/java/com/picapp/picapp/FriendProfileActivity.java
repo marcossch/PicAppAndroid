@@ -1,7 +1,6 @@
 package com.picapp.picapp;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -15,21 +14,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.picapp.picapp.AndroidModels.FeedRecyclerAdapter;
 import com.picapp.picapp.AndroidModels.FeedStory;
 import com.picapp.picapp.AndroidModels.Picapp;
 import com.picapp.picapp.Interfaces.WebApi;
 import com.picapp.picapp.Models.Comment;
+import com.picapp.picapp.Models.FriendshipResponse;
 import com.picapp.picapp.Models.Story;
-import com.picapp.picapp.Models.UserAccount;
 import com.picapp.picapp.Models.UserProfile;
 
 import java.util.ArrayList;
@@ -59,15 +54,13 @@ public class FriendProfileActivity extends AppCompatActivity {
     private ImageButton mapBtn;
     private Retrofit retrofit;
     private FloatingActionButton addPostButton;
-    private ProgressBar profileProgress;
+    private android.support.design.widget.FloatingActionButton deleteFriendsBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_friend_profile);
 
-        BottomNavigationView mMainNav = (BottomNavigationView) findViewById(R.id.main_nav);
-        mMainNav.setVisibility(View.INVISIBLE);
         //levanta la toolbar
         mainToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mainToolbar);
@@ -76,17 +69,12 @@ public class FriendProfileActivity extends AppCompatActivity {
 
         //levanto el token
         final Picapp picapp = Picapp.getInstance();
-        String token = picapp.getToken();
+        final String token = picapp.getToken();
 
         if(token == null) {
             Intent mainIntent = new Intent(FriendProfileActivity.this, MainActivity.class);
             sendTo(mainIntent);
         }
-
-        //que se ve la barra de progreso
-        profileProgress = (ProgressBar) findViewById(R.id.profileProgress);
-        //que se ve la barra de progreso
-        profileProgress.setVisibility(View.VISIBLE);
 
         //levantamos la foto default
         fotoP = findViewById(R.id.contenedorFotoPerfil);
@@ -123,15 +111,6 @@ public class FriendProfileActivity extends AppCompatActivity {
             }
         });
 
-        /*addPostButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent newPost = new Intent(FriendProfileActivity.this, NewPostActivity.class);
-                sendTo(newPost);
-
-            }
-        });*/
 
         //-------------levanto las publicaciones del usuario--------------
 
@@ -180,7 +159,7 @@ public class FriendProfileActivity extends AppCompatActivity {
                     feedStory.setUser_id(story.getUsername());
                     feedStory.setProfPic(picURL);
                     feedStory.setImage_id(story.getStory_id());
-                    feedStory.setName(username);
+                    feedStory.setName(name);
 
                     Map<String, String> reactions = story.getReactions();
                     ArrayList<Comment> coments = story.getComments();
@@ -197,14 +176,32 @@ public class FriendProfileActivity extends AppCompatActivity {
                     profileRecyclerAdapter.notifyDataSetChanged();
 
                 }
-
-                profileProgress.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onFailure(Call<UserProfile> call, Throwable t) {
                 Toast.makeText(FriendProfileActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
-                profileProgress.setVisibility(View.INVISIBLE);
+            }
+        });
+        //Preparo las cosas para el delete
+        deleteFriendsBtn = findViewById(R.id.borrarAmigos);
+        final String id = getIntent().getStringExtra("id");
+
+        deleteFriendsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Call<FriendshipResponse> friendshipResponse = webApi.deleteFriendship(id, token, "Application/json");
+                friendshipResponse.enqueue(new Callback<FriendshipResponse>() {
+                    @Override
+                    public void onResponse(Call<FriendshipResponse> call, Response<FriendshipResponse> response) {
+                        sendToFeed();
+                    }
+
+                    @Override
+                    public void onFailure(Call<FriendshipResponse> call, Throwable t) {
+                        Log.d("DELETE FRIEND", "-----> No se pudo cancelar la amistad <-----");
+                    }
+                });
             }
         });
     }

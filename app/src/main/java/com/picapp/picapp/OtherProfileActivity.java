@@ -137,7 +137,7 @@ public class OtherProfileActivity extends AppCompatActivity {
                             public void onResponse(Call<FriendshipStatus> call, Response<FriendshipStatus> response) {
                                 status = response.body().getState();
                                 setButtonConditions(status);
-                                //Ir al nuevo profile
+                                sendToFeed();
                             }
 
                             @Override
