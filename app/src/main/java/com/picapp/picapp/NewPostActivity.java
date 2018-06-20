@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -51,7 +52,10 @@ import com.picapp.picapp.Models.StoryRequest;
 import com.picapp.picapp.Models.StoryResult;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.zomato.photofilters.SampleFilters;
+import com.zomato.photofilters.imageprocessors.Filter;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,6 +68,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class NewPostActivity extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 123;
+    // Load filter library
+    static { System.loadLibrary("NativeImageProcessor"); }
+
     private android.support.v7.widget.Toolbar mainToolbar;
     private ProgressBar newPostProgress;
     private String user_id;
@@ -77,6 +84,7 @@ public class NewPostActivity extends AppCompatActivity {
     private boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationClient;
     private Button locButton;
+    private Button filterButton;
     private double longActual;
     private double latActual;
 
@@ -130,6 +138,21 @@ public class NewPostActivity extends AppCompatActivity {
         titulo = (EditText) findViewById(R.id.titulo);
         newPostProgress = (ProgressBar) findViewById(R.id.newPostProgress);
         privacidad = (Switch) findViewById(R.id.privacidad);
+        filterButton = (Button) findViewById(R.id.filterButton);
+
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mainImageURI != null) {
+                    Filter filter = SampleFilters.getStarLitFilter();
+                    BitmapDrawable drawable = (BitmapDrawable) newImage.getDrawable();
+                    Bitmap input = drawable.getBitmap().copy( Bitmap.Config.ARGB_8888 , true);
+                    Bitmap outputImage = filter.processFilter(input);
+                    newImage.setImageBitmap(outputImage);
+
+                }
+            }
+        });
 
         //para elegir una imagen
         newImage.setOnClickListener(new View.OnClickListener() {
@@ -316,7 +339,14 @@ public class NewPostActivity extends AppCompatActivity {
         final Long timestamp = System.currentTimeMillis();
         StorageReference image_path = storageReference.child("stories").child(timestamp.toString() + ".jpg");
 
-        image_path.putFile(mainImageURI).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+        newImage.setDrawingCacheEnabled(true);
+        newImage.buildDrawingCache();
+        Bitmap bitmap = newImage.getDrawingCache();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        image_path.putBytes(data).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if (task.isSuccessful()) {
