@@ -35,7 +35,6 @@ public class SearchActivity extends AppCompatActivity {
     private ArrayList<String> picList;
     private ArrayList<String> idList;
     private SearchAdapter searchAdapter;
-    private Button profBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

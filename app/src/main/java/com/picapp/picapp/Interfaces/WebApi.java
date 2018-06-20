@@ -3,6 +3,7 @@ package com.picapp.picapp.Interfaces;
 import com.picapp.picapp.Models.Comment;
 import com.picapp.picapp.Models.CommentRequest;
 import com.picapp.picapp.Models.Feed;
+import com.picapp.picapp.Models.FriendsList;
 import com.picapp.picapp.Models.FriendshipResponse;
 import com.picapp.picapp.Models.FriendshipStatus;
 import com.picapp.picapp.Models.Reaction;
@@ -60,10 +61,10 @@ public interface WebApi {
     @GET("users/{userid}/preview")
     Call<UserPreview> getPreview(@Path("userid") String user,
                                  @Header("token") String token, @Header("Content-Type") String content);
-/*    @GET("users/{userid}/friends")
-    Call<UserProfile> getUserFriends(@Path("userid") String user,
+    @GET("users/{userid}/friends")
+    Call<FriendsList> getUserFriends(@Path("userid") String user,
                                      @Header("token") String token, @Header("Content-Type") String content);
-*/
+
 
     //--------------Friendship ----------------------
 
