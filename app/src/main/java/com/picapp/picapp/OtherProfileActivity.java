@@ -10,6 +10,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -60,11 +62,18 @@ public class OtherProfileActivity extends AppCompatActivity {
     private ArrayList<String> recibidas;
     private ArrayList<String> enviadas;
     private Retrofit retrofit;
+    private android.support.v7.widget.Toolbar mainToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other_profile);
+
+        //levanta la toolbar
+        mainToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(mainToolbar);
+        getSupportActionBar().setTitle("PicApp");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Levanto el token desde la applicacion.
         final Picapp picapp = Picapp.getInstance();
@@ -129,7 +138,6 @@ public class OtherProfileActivity extends AppCompatActivity {
                                 status = response.body().getState();
                                 setButtonConditions(status);
                                 //Ir al nuevo profile
-
                             }
 
                             @Override
@@ -164,6 +172,14 @@ public class OtherProfileActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //levanta la barra del menu con sus items
+
+        getMenuInflater().inflate(R.menu.friends_menu, menu);
+        return true;
     }
 
     public void setParams(){
@@ -210,6 +226,29 @@ public class OtherProfileActivity extends AppCompatActivity {
                 addFriendsBtn.setClickable(false);
                 break;
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        //se cargan las acciones del menu de opciones
+        switch (item.getItemId()) {
+
+            case R.id.action_search_btn:
+                //usar el buscador
+                return true;
+
+        }
+        sendToFeed();
+        return false;
+    }
+
+    //--------------Metodos Privados-------------//
+
+    private void sendToFeed() {
+        Intent feedIntent = new Intent(OtherProfileActivity.this, FeedActivity.class);
+        startActivity(feedIntent);
+        finish();
     }
 
 }

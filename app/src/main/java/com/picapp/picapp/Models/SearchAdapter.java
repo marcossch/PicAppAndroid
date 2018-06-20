@@ -14,6 +14,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.picapp.picapp.AndroidModels.Picapp;
+import com.picapp.picapp.FeedActivity;
+import com.picapp.picapp.FriendProfileActivity;
+import com.picapp.picapp.Interfaces.WebApi;
 import com.picapp.picapp.MainActivity;
 import com.picapp.picapp.OtherProfileActivity;
 import com.picapp.picapp.R;
@@ -21,12 +25,19 @@ import com.picapp.picapp.RegisterActivity;
 
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder>{
 
     Context context;
     private ArrayList<String> nameList;
     private ArrayList<String> picList;
     private ArrayList<String> idList;
+    private Intent profIntent;
 
 
     class SearchViewHolder extends RecyclerView.ViewHolder{
@@ -56,21 +67,55 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     @Override
     public void onBindViewHolder(@NonNull final SearchViewHolder holder, final int position) {
+
+        //Inicializo
+        final Picapp picapp = Picapp.getInstance();
+        final String token = picapp.getToken();
+        final Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(WebApi.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        final WebApi webApi = retrofit.create(WebApi.class);
+
         holder.name.setText(nameList.get(position));
         Glide.with(context).load(picList.get(position)).into(holder.profileImg);
         holder.name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent profIntent = new Intent(context, OtherProfileActivity.class);
-                profIntent.putExtra("name", holder.name.getText());
-                profIntent.putExtra("pic", picList.get(position));
-                profIntent.putExtra("id", idList.get(position));
-                context.startActivity(profIntent);
-                //finish();
+
+                Call<FriendshipStatus> friendshipStatus = webApi.getFriendshipStatus((String) idList.get(position), token, "Application/json");
+                friendshipStatus.enqueue(new Callback<FriendshipStatus>() {
+                    @Override
+                    public void onResponse(Call<FriendshipStatus> call, Response<FriendshipStatus> response) {
+                        Log.d("FRIENDSHIP STATUS", response.body().getState());
+                        if(response.body().getState().equals("friends")){
+                            profIntent = new Intent(context, FriendProfileActivity.class);
+                            Log.d("FRIENDSHIP STATUS", "-----------Vamos a profile friend------------");
+                        }
+                        else{
+                            profIntent = new Intent(context, OtherProfileActivity.class);
+                            Log.d("FRIENDSHIP STATUS", "-----------Vamos a other friend------------");
+                        }
+                        sendTo(holder, position);
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<FriendshipStatus> call, Throwable t) {
+                        Log.d("FRIENDSHIP STATUS", "-----> No se pudo obtener el estado de amistad <-----");
+                    }
+                });
+
             }
         });
     }
 
+    private void sendTo(SearchViewHolder holder, int position) {
+        profIntent.putExtra("name", holder.name.getText());
+        profIntent.putExtra("pic", picList.get(position));
+        profIntent.putExtra("id", idList.get(position));
+        context.startActivity(profIntent);
+    }
 
     @Override
     public int getItemCount() {

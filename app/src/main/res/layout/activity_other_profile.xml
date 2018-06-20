@@ -78,6 +78,7 @@
                     android:visibility="invisible"
                     android:clickable="true"
                     app:backgroundTint="@color/redF"
+                    android:tint="@color/colorPrimary"
                     app:srcCompat="@drawable/icon_delete_friend" />
 
                 <android.support.design.widget.FloatingActionButton
@@ -91,6 +92,7 @@
                     android:visibility="invisible"
                     android:clickable="true"
                     app:backgroundTint="@color/greenF"
+                    android:tint="@color/colorPrimary"
                     app:srcCompat="@drawable/icon_add_user" />
 
             </LinearLayout>

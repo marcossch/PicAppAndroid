@@ -85,9 +85,6 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-        //Levanto el boton
-
-
     }
 
     private void setAdapter(final String searchString) {
