@@ -164,6 +164,8 @@ public class NewPostActivity extends AppCompatActivity {
                         BitmapDrawable drawable = (BitmapDrawable) newImage.getDrawable();
                         original = drawable.getBitmap();
                         originalNotSet = false;
+                    } else {
+                        ((BitmapDrawable) newImage.getDrawable()).getBitmap().recycle();
                     }
                     Bitmap input = original.copy(Bitmap.Config.RGB_565, true);
                     Filter filter = getNextFilter();
