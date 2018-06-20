@@ -13,6 +13,7 @@ import com.picapp.picapp.Models.User;
 import com.picapp.picapp.Models.Error;
 import com.picapp.picapp.Models.UserAccount;
 import com.picapp.picapp.Models.UserLogout;
+import com.picapp.picapp.Models.UserPreview;
 import com.picapp.picapp.Models.UserProfile;
 import com.picapp.picapp.Models.UserRequest;
 import com.picapp.picapp.Models.UserUpdate;
@@ -56,6 +57,9 @@ public interface WebApi {
     Call<UserProfile> getUserProfile(@Path("userid") String user,
                                      @Header("token") String token, @Header("Content-Type") String content);
 
+    @GET("users/{userid}/preview")
+    Call<UserPreview> getPreview(@Path("userid") String user,
+                                 @Header("token") String token, @Header("Content-Type") String content);
 /*    @GET("users/{userid}/friends")
     Call<UserProfile> getUserFriends(@Path("userid") String user,
                                      @Header("token") String token, @Header("Content-Type") String content);
