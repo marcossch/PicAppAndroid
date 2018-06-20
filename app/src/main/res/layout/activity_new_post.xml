@@ -40,6 +40,21 @@
                 app:srcCompat="@drawable/cameranext"
                 android:background="#dfdede" />
 
+            <Button
+                    android:id="@+id/filterButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="5dp"
+                    android:drawableLeft="@drawable/baseline_palette_24"
+                    android:drawablePadding="12dp"
+                    android:text="Cambiar Filtro"
+                    android:textColor="@color/greyLetter"
+                    android:backgroundTint="@color/colorPrimary"
+                    style="?android:attr/borderlessButtonStyle" />
+
             <EditText
                 android:id="@+id/titulo"
                 android:layout_width="match_parent"
