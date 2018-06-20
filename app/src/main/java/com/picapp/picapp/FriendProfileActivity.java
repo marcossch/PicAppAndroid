@@ -121,7 +121,6 @@ public class FriendProfileActivity extends AppCompatActivity {
         profile_list = new ArrayList<>();
         profileRecyclerAdapter = new FeedRecyclerAdapter(profile_list);
         profileRecyclerAdapter.setToken(token);
-        profileRecyclerAdapter.isProfile();
         profile_list_view.setLayoutManager(new LinearLayoutManager(FriendProfileActivity.this));
         profile_list_view.setAdapter(profileRecyclerAdapter);
 
