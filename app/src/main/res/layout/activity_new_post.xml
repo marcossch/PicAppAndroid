@@ -31,14 +31,21 @@
             android:orientation="vertical">
 
             <!-- IMAGEN PRINCIPAL -->
+            <VideoView
+                android:id="@+id/videoPresentacion"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:visibility="gone"/>
+
             <ImageView
                 android:layout_below="@id/main_toolbar"
                 android:id="@+id/contenedorPresentacion"
                 android:layout_width="fill_parent"
-                android:layout_height="300dp"
+                android:layout_height="400dp"
                 android:adjustViewBounds="true"
                 app:srcCompat="@drawable/cameranext"
-                android:background="#dfdede" />
+                android:background="#dfdede"
+                android:visibility="visible"/>
 
             <Button
                     android:id="@+id/filterButton"

@@ -16,6 +16,7 @@ package com.picapp.picapp;
     import android.util.Log;
     import android.view.Menu;
     import android.view.MenuItem;
+    import android.view.MotionEvent;
     import android.view.View;
     import android.widget.Button;
     import android.widget.EditText;
@@ -23,6 +24,7 @@ package com.picapp.picapp;
     import android.widget.ProgressBar;
     import android.widget.Switch;
     import android.widget.Toast;
+    import android.widget.VideoView;
 
     import com.google.android.gms.common.ConnectionResult;
     import com.google.android.gms.common.GoogleApiAvailability;
@@ -64,6 +66,7 @@ package com.picapp.picapp;
 public class NewPostVideoActivity extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 123;
+    private static final int REQUEST_TAKE_GALLERY_VIDEO = 999;
     private android.support.v7.widget.Toolbar mainToolbar;
     private ProgressBar newPostProgress;
     private String user_id;
@@ -77,6 +80,7 @@ public class NewPostVideoActivity extends AppCompatActivity {
     private boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationClient;
     private Button locButton;
+    private Button filterButton;
     private double longActual;
     private double latActual;
 
@@ -89,6 +93,7 @@ public class NewPostVideoActivity extends AppCompatActivity {
     private WebApi webApi;
 
     private ImageView newImage;
+    private VideoView newVideo;
     private EditText description;
     private EditText titulo;
     private Uri mainImageURI = null;
@@ -126,18 +131,24 @@ public class NewPostVideoActivity extends AppCompatActivity {
 
         //levanto las imagenes, text y barra de progreso
         newImage = findViewById(R.id.contenedorPresentacion);
+        newImage.setVisibility(View.GONE);
+        newVideo = findViewById(R.id.videoPresentacion);
+        newVideo.setVisibility(View.VISIBLE);
         description = (EditText) findViewById(R.id.descripcion);
         titulo = (EditText) findViewById(R.id.titulo);
         newPostProgress = (ProgressBar) findViewById(R.id.newPostProgress);
         privacidad = (Switch) findViewById(R.id.privacidad);
+        filterButton = (Button) findViewById(R.id.filterButton);
+        filterButton.setVisibility(View.GONE);
 
         //para elegir una imagen
-        newImage.setOnClickListener(new View.OnClickListener() {
+        newVideo.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-
-                bringImagePicker();
-
+            public boolean onTouch(View v, MotionEvent event) {
+                if(mainImageURI == null) {
+                    bringVideoPicker();
+                }
+                return false;
             }
         });
 
@@ -209,17 +220,16 @@ public class NewPostVideoActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_TAKE_GALLERY_VIDEO) {
 
-                mainImageURI = result.getUri();
-                newImage.setImageURI(mainImageURI);
+                mainImageURI = data.getData();
+                newVideo.setVideoURI(mainImageURI);
+                newVideo.seekTo(1);
 
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
             }
         }
+
 
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
@@ -296,12 +306,12 @@ public class NewPostVideoActivity extends AppCompatActivity {
     }
 
 
-    private void bringImagePicker() {
-        CropImage.activity()
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .setMinCropResultSize(512, 512)
-                .setAspectRatio(5,6)
-                .start(NewPostVideoActivity.this);
+    private void bringVideoPicker() {
+
+        Intent intent = new Intent();
+        intent.setType("video/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent,"Select Video"),REQUEST_TAKE_GALLERY_VIDEO);
     }
 
     private void updateAccount() {
@@ -319,7 +329,7 @@ public class NewPostVideoActivity extends AppCompatActivity {
 
         //defino donde se va a  guardar la imagen
         final Long timestamp = System.currentTimeMillis();
-        StorageReference image_path = storageReference.child("stories").child(timestamp.toString() + ".jpg");
+        StorageReference image_path = storageReference.child("stories").child(timestamp.toString() + ".mp4");
 
         image_path.putFile(mainImageURI).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
