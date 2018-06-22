@@ -141,7 +141,7 @@ public class NewPostVideoActivity extends AppCompatActivity {
         filterButton = (Button) findViewById(R.id.filterButton);
         filterButton.setVisibility(View.GONE);
 
-        //para elegir una imagen
+        //para elegir un video
         newVideo.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {

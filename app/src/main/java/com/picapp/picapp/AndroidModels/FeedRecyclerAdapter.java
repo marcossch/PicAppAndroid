@@ -2,6 +2,7 @@ package com.picapp.picapp.AndroidModels;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.internal.NavigationMenu;
@@ -18,8 +19,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -73,6 +76,7 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
     private String user_id;
     private String user_id_post;
     private boolean isProfile = false;
+    private boolean isVideo;
 
 
     public FeedRecyclerAdapter(List<FeedStory> feed_list){
@@ -124,12 +128,24 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
         holder.setDescText(desc_data);
         holder.setLocation(location_data);
         holder.setTitleText(title_data);
-        holder.setImage(imageUrl);
         holder.setDate(dateString);
         holder.setReactionCount(reactions.size());
         holder.setProfileImage(profilePic);
         holder.setUsername(nameU);
 
+        //me fijo si es video o imagen
+        if(imageUrl.contains("jpg")){
+            isVideo = false;
+        } else {
+            isVideo = true;
+        }
+
+        //seteo el URI
+        if(isVideo){
+            holder.setVideo(imageUrl);
+        } else {
+            holder.setImage(imageUrl);
+        }
 
         //levanto el nombre de usuario
         user_id_post = feed_list.get(position).getUser_id();
@@ -363,6 +379,7 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
         private ImageView pImage;
         private AppCompatTextView nameText;
         private TextView story_date;
+        private VideoView video;
 
         private Button deleteButton;
 
@@ -393,6 +410,8 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
             deleteButton = mView.findViewById(R.id.deleteStory);
             deleteButton.setVisibility(View.INVISIBLE);
 
+            image = mView.findViewById(R.id.story_image);
+            video = mView.findViewById(R.id.story_video);
         }
 
         public void setTitleText(String titleText){
@@ -411,7 +430,8 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
         }
 
         public void setImage(String imageUri){
-            image = mView.findViewById(R.id.story_image);
+            image.setVisibility(View.VISIBLE);
+            video.setVisibility(View.GONE);
             Glide.with(context).load(imageUri).into(image);
         }
 
@@ -433,6 +453,26 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
         public void setReactionCount(int reactionCount) {
             reactionsCount = mView.findViewById(R.id.reactios_count);
             reactionsCount.setText(String.valueOf(reactionCount));
+        }
+
+        public void setVideo(String videoUri){
+            image.setVisibility(View.GONE);
+            video.setVisibility(View.VISIBLE);
+            video.setVideoURI(Uri.parse(videoUri));
+
+            MediaController mediaController = new MediaController(context);
+            mediaController.setAnchorView(video);
+            video.setMediaController(mediaController);
+
+            video.setOnPreparedListener(new MediaPlayer.OnPreparedListener()  {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mp.setLooping(true);
+                }
+            });
+//            video.setMediaController((MediaController) null);
+            video.start();
+
         }
     }
 
