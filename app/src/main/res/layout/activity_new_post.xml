@@ -31,21 +31,33 @@
             android:orientation="vertical">
 
             <!-- IMAGEN PRINCIPAL -->
-            <VideoView
-                android:id="@+id/videoPresentacion"
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:visibility="gone"/>
+                android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_below="@id/main_toolbar"
-                android:id="@+id/contenedorPresentacion"
-                android:layout_width="fill_parent"
-                android:layout_height="400dp"
-                android:adjustViewBounds="true"
-                app:srcCompat="@drawable/cameranext"
-                android:background="#dfdede"
-                android:visibility="visible"/>
+                <ImageView
+                    android:id="@+id/contenedorPresentacion"
+                    android:layout_width="0dp"
+                    android:layout_height="400dp"
+                    android:adjustViewBounds="true"
+                    android:background="#dfdede"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/cameranext" />
+
+                <VideoView
+                    android:id="@+id/videoPresentacion"
+                    android:layout_width="0dp"
+                    android:layout_height="400dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </android.support.constraint.ConstraintLayout>
 
             <Button
                     android:id="@+id/filterButton"

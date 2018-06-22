@@ -6,6 +6,7 @@ package com.picapp.picapp;
     import android.graphics.Bitmap;
     import android.location.Location;
     import android.location.LocationManager;
+    import android.media.MediaPlayer;
     import android.net.Uri;
     import android.os.Bundle;
     import android.provider.Settings;
@@ -21,6 +22,7 @@ package com.picapp.picapp;
     import android.widget.Button;
     import android.widget.EditText;
     import android.widget.ImageView;
+    import android.widget.MediaController;
     import android.widget.ProgressBar;
     import android.widget.Switch;
     import android.widget.Toast;
@@ -225,7 +227,18 @@ public class NewPostVideoActivity extends AppCompatActivity {
 
                 mainImageURI = data.getData();
                 newVideo.setVideoURI(mainImageURI);
-                newVideo.seekTo(1);
+                MediaController mediaController = new MediaController(NewPostVideoActivity.this);
+                mediaController.setAnchorView(newVideo);
+                newVideo.setMediaController(mediaController);
+
+                newVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener()  {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+                        mp.setLooping(true);
+                    }
+                });
+//            video.setMediaController((MediaController) null);
+                newVideo.start();
 
             }
         }
