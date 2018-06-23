@@ -135,13 +135,24 @@ public class FeedActivity extends AppCompatActivity {
                     FeedStory feedStory = new FeedStory();
                     feedStory.setDescription(story.getDescription());
                     feedStory.setImage(story.getMedia());
-                    feedStory.setLocation(story.getLocation());
                     feedStory.setTimestamp(story.getTimestamp());
                     feedStory.setTitle(story.getTitle());
                     feedStory.setName(story.getName());
                     feedStory.setProfPic(story.getProfilePic());
                     feedStory.setImage_id(story.getStory_id());
                     feedStory.setUser_id(story.getUsername());
+
+                    //Diferencio la ubicacon para mostrarla bien y para el mapa
+                    String ubicacion = story.getLocation();
+                    String[] parts = ubicacion.split(",");
+                    String loc = "";
+                    if(parts.length >= 2){
+                        loc += parts[1];
+                    }
+                    if(parts.length >= 3){
+                        loc += ", "+parts[2];
+                    }
+                    feedStory.setLocation(loc);
 
                     Map<String, String> reactions = story.getReactions();
                     ArrayList<Comment> coments = story.getComments();
