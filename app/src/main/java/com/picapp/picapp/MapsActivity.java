@@ -8,6 +8,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -80,7 +81,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         String[] latlng = getIntent().getStringExtra("LatLong").split(";");
 
         gmap = googleMap;
-        gmap.setMinZoomPreference(12);
         gmap.setIndoorEnabled(true);
         UiSettings uiSettings = gmap.getUiSettings();
         uiSettings.setIndoorLevelPickerEnabled(true);
@@ -102,10 +102,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             markerOptions.position(newLL);
             gmap.addMarker(markerOptions);
         }
+
         Double length = Double.valueOf(latlng.length);
         cLat = cLat/length;
         cLng = cLng/length;
         LatLng newLL = new LatLng(cLat, cLng);
-        gmap.moveCamera(CameraUpdateFactory.newLatLng(newLL));
+
+        CameraPosition.Builder camBuilder = CameraPosition.builder();
+        camBuilder.bearing(45);
+        camBuilder.tilt(30);
+        camBuilder.target(newLL);
+        CameraPosition cp = camBuilder.build();
+        gmap.moveCamera(CameraUpdateFactory.newCameraPosition(cp));
+
     }
 }
