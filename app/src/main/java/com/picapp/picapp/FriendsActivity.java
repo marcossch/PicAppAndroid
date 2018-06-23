@@ -141,7 +141,6 @@ public class FriendsActivity extends AppCompatActivity {
         }
         else{
             intent = new Intent(FriendsActivity.this, FriendProfileActivity.class);
-            Toast.makeText(FriendsActivity.this, id, Toast.LENGTH_LONG).show();
             intent.putExtra("id",id);
             Log.d("FRIENDS", "--------------> VAMOS A FRIEND PROFILE ACTIVITY <--------------");
         }

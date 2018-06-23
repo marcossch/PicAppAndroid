@@ -298,6 +298,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void sendTo(Intent intent) {
         startActivity(intent);
+        finish();
     }
 
     private void sendToMap() {
