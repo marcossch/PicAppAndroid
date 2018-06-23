@@ -46,6 +46,8 @@ public class FriendProfileActivity extends AppCompatActivity {
     private TextView publicaciones;
     private android.support.v7.widget.Toolbar mainToolbar;
     private String username;
+    private String latlng="";
+    private String user_id;
 
     private RecyclerView profile_list_view;
     private List<FeedStory> profile_list;
@@ -80,11 +82,11 @@ public class FriendProfileActivity extends AppCompatActivity {
         fotoP.setImageDrawable(getDrawable(R.drawable.cameranext));
 
         //levanto la cantidad de publicaciones y amigos
-        amigos = findViewById(R.id.friendsNumber);
+        amigos = findViewById(R.id.frdNumber);
         publicaciones = findViewById(R.id.pubNumber);
 
         //Agarro los atributos desde firebase
-        final String user_id = getIntent().getStringExtra("id");
+        user_id = getIntent().getStringExtra("id");
 
         mapBtn = findViewById(R.id.mapButton);
         mapBtn.setOnClickListener(new View.OnClickListener(){
@@ -95,7 +97,7 @@ public class FriendProfileActivity extends AppCompatActivity {
         });
 
         //Click en el boton de amigos te lleva a ver tus amigos
-        Button friends = (Button) findViewById(R.id.friendsNumber);
+        Button friends = (Button) findViewById(R.id.frdNumber);
 
         //Boton para agregar un post
         //FloatingActionButton addPostButton = (FloatingActionButton) findViewById(R.id.agregarFoto);
@@ -105,6 +107,7 @@ public class FriendProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent friendsIntent = new Intent(FriendProfileActivity.this, FriendsActivity.class);
+                friendsIntent.putExtra("id",user_id);
                 sendTo(friendsIntent);
 
             }
@@ -151,7 +154,6 @@ public class FriendProfileActivity extends AppCompatActivity {
                     FeedStory feedStory = new FeedStory();
                     feedStory.setDescription(story.getDescription());
                     feedStory.setImage(story.getMedia());
-                    feedStory.setLocation(story.getLocation());
                     feedStory.setTimestamp(story.getTimestamp());
                     feedStory.setTitle(story.getTitle());
                     feedStory.setUser_id(story.getUsername());
@@ -159,6 +161,22 @@ public class FriendProfileActivity extends AppCompatActivity {
                     feedStory.setImage_id(story.getStory_id());
                     feedStory.setName(name);
 
+                    //Diferencio la ubicacon para mostrarla bien y para el mapa
+                    String ubicacion = story.getLocation();
+                    String[] parts = ubicacion.split(",");
+                    String loc = "";
+                    if(parts.length >= 2){
+                        loc += parts[1];
+                    }
+                    if(parts.length >= 3){
+                        loc += ", "+parts[2];
+                    }
+                    feedStory.setLocation(loc);
+                    if(parts.length>2) {
+                        String lat = parts[parts.length - 2].substring(10, parts[parts.length - 2].length());
+                        String lng = parts[parts.length - 1].substring(0, parts[parts.length - 1].length() - 1);
+                        latlng = latlng + lat + "," + lng + ";";
+                    }
                     Map<String, String> reactions = story.getReactions();
                     ArrayList<Comment> coments = story.getComments();
 
@@ -242,6 +260,8 @@ public class FriendProfileActivity extends AppCompatActivity {
 
     private void sendToMap() {
         Intent mapIntent = new Intent(FriendProfileActivity.this, MapsActivity.class);
+        mapIntent.putExtra("LatLong", latlng);
+        mapIntent.putExtra("id",user_id);
         startActivity(mapIntent);
         finish();
     }

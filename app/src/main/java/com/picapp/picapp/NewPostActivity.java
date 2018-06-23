@@ -35,6 +35,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -290,6 +291,7 @@ public class NewPostActivity extends AppCompatActivity {
                 Place place = PlacePicker.getPlace(data, this);
                 Ubicacion = (String) place.getAddress();
                 locButton.setText(Ubicacion);
+                Ubicacion = Ubicacion +","+ place.getLatLng().toString();
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
                 Log.d(TAG, status.getStatusMessage());
