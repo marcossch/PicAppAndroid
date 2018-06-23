@@ -2,6 +2,7 @@ package com.picapp.picapp;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -78,7 +79,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         //Levanto las ubicaciones de las distintas publicaciones
-        String[] latlng = getIntent().getStringExtra("LatLong").split(";");
+        String strLL = getIntent().getStringExtra("LatLong");
+        String[] latlng = strLL.split(";");
 
         gmap = googleMap;
         gmap.setIndoorEnabled(true);
@@ -88,6 +90,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         uiSettings.setMapToolbarEnabled(true);
         uiSettings.setCompassEnabled(true);
         uiSettings.setZoomControlsEnabled(true);
+
+        if(strLL.isEmpty()){
+            Toast.makeText(MapsActivity.this, "No se encontraron ubicaciones en las stories.", Toast.LENGTH_LONG).show();
+            return;
+        }
 
         Double cLat = 0.0;
         Double cLng = 0.0;
