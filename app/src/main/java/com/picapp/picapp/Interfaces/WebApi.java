@@ -92,6 +92,14 @@ public interface WebApi {
     @GET("feed")
     Call<Feed> getFeed(@Header("token") String token, @Header("Content-Type") String content);
 
+    //--------------Flashes -------------------------
+    @POST("flashes")
+    Call<StoryResult> postFlash(@Body StoryRequest StoryRequest,
+                                @Header("token") String token, @Header("Content-Type") String content);
+
+    @GET("flashFeed")
+    Call<Feed> getFlashFeed(@Header("token") String token, @Header("Content-Type") String content);
+
     //--------------Reactions -------------------------
     @POST("stories/{storyid}/reactions")
     Call<Reaction> postReaction(@Body Reaction Reaction, @Path("storyid") String story,

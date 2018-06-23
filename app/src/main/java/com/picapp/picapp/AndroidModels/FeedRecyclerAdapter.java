@@ -30,6 +30,7 @@ import com.fangxu.allangleexpandablebutton.AllAngleExpandableButton;
 import com.fangxu.allangleexpandablebutton.ButtonData;
 import com.fangxu.allangleexpandablebutton.ButtonEventListener;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -77,6 +78,7 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
     private String user_id_post;
     private boolean isProfile = false;
     private boolean isVideo;
+    private boolean isFlashes = false;
 
 
     public FeedRecyclerAdapter(List<FeedStory> feed_list){
@@ -120,16 +122,11 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
         Long milliseconds = feed_list.get(position).getTimestamp();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         String dateString = formatter.format(new Date(milliseconds));
-        //levanto las reacciones
-        final Map<String, String> reactions = feed_list.get(position).getReactions();
-        //levanto los comentarios
-        final ArrayList<Comment> comments = feed_list.get(position).getComments();
 
         holder.setDescText(desc_data);
         holder.setLocation(location_data);
         holder.setTitleText(title_data);
         holder.setDate(dateString);
-        holder.setReactionCount(reactions.size());
         holder.setProfileImage(profilePic);
         holder.setUsername(nameU);
 
@@ -178,125 +175,6 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
                 }
             });
         }
-        //-----------likes-----------
-
-        holder.like.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //si el usuario ya reacciono, no puede volver a reaccionar
-                if (!reactions.containsKey(user_id)) {
-
-                    final Reaction reaction = new Reaction();
-                    reaction.setReactingUserId(user_id);
-                    reaction.setReaction("like");
-
-                    Call<Reaction> call = webApi.postReaction(reaction, feed_list.get(position).getImage_id(),
-                            token, "Application/json");
-                    call.enqueue(new Callback<Reaction>() {
-                        @Override
-                        public void onResponse(Call<Reaction> call, Response<Reaction> response) {
-                            reactions.put(user_id, reaction.getReaction());
-                            holder.setReactionCount(reactions.size());
-                        }
-
-                        @Override
-                        public void onFailure(Call<Reaction> call, Throwable t) {
-                            Log.d("UPDATE USER: ", "-----> No se pudo cargar la reaccion <-----" + t.getMessage());
-                        }
-                    });
-
-                }
-            }
-        });
-
-        holder.dislike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //si el usuario ya reacciono, no puede volver a reaccionar
-                if (!reactions.containsKey(user_id)) {
-
-                    final Reaction reaction = new Reaction();
-                    reaction.setReactingUserId(user_id);
-                    reaction.setReaction("dislike");
-
-                    Call<Reaction> call = webApi.postReaction(reaction, feed_list.get(position).getImage_id(),
-                            token, "Application/json");
-                    call.enqueue(new Callback<Reaction>() {
-                        @Override
-                        public void onResponse(Call<Reaction> call, Response<Reaction> response) {
-                            reactions.put(user_id, reaction.getReaction());
-                            holder.setReactionCount(reactions.size());
-                        }
-
-                        @Override
-                        public void onFailure(Call<Reaction> call, Throwable t) {
-                            Log.d("UPDATE USER: ", "-----> No se pudo cargar la reaccion <-----" + t.getMessage());
-                        }
-                    });
-
-                }
-            }
-        });
-
-        holder.funny.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //si el usuario ya reacciono, no puede volver a reaccionar
-                if (!reactions.containsKey(user_id)) {
-
-                    final Reaction reaction = new Reaction();
-                    reaction.setReactingUserId(user_id);
-                    reaction.setReaction("funny");
-
-                    Call<Reaction> call = webApi.postReaction(reaction, feed_list.get(position).getImage_id(),
-                            token, "Application/json");
-                    call.enqueue(new Callback<Reaction>() {
-                        @Override
-                        public void onResponse(Call<Reaction> call, Response<Reaction> response) {
-                            reactions.put(user_id, reaction.getReaction());
-                            holder.setReactionCount(reactions.size());
-                        }
-
-                        @Override
-                        public void onFailure(Call<Reaction> call, Throwable t) {
-                            Log.d("UPDATE USER: ", "-----> No se pudo cargar la reaccion <-----" + t.getMessage());
-                        }
-                    });
-
-                }
-            }
-        });
-
-        holder.boring.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //si el usuario ya reacciono, no puede volver a reaccionar
-                if (!reactions.containsKey(user_id)) {
-
-                    Toast.makeText(context, "aca", Toast.LENGTH_LONG).show();
-
-                    final Reaction reaction = new Reaction();
-                    reaction.setReactingUserId(user_id);
-                    reaction.setReaction("boring");
-
-                    Call<Reaction> call = webApi.postReaction(reaction, feed_list.get(position).getImage_id(),
-                            token, "Application/json");
-                    call.enqueue(new Callback<Reaction>() {
-                        @Override
-                        public void onResponse(Call<Reaction> call, Response<Reaction> response) {
-                            reactions.put(user_id, reaction.getReaction());
-                            holder.setReactionCount(reactions.size());
-                        }
-
-                        @Override
-                        public void onFailure(Call<Reaction> call, Throwable t) {
-                            Log.d("UPDATE USER: ", "-----> No se pudo cargar la reaccion <-----" + t.getMessage());
-                        }
-                    });
-
-                }
-            }
-        });
 
         //elimiar imagenes, solo si esta en el perfil propio
         if (isProfile) {
@@ -324,49 +202,189 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
             });
         }
 
-        holder.reacciones.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(!isFlashes) {
 
-                if(reactions.size() > 0) {
-                    Intent reaccionesIntent = new Intent(context, ReaccionesActivity.class);
-                    reaccionesIntent.putExtra("token", token);
+            //levanto las reacciones
+            final Map<String, String> reactions = feed_list.get(position).getReactions();
+            //levanto los comentarios
+            final ArrayList<Comment> comments = feed_list.get(position).getComments();
+            holder.setReactionCount(reactions.size());
 
-                    for (String key : reactions.keySet()) {
 
-                        reaccionesIntent.putExtra(key, reactions.get(key));
+            //-----------Reactions-----------
+
+            holder.like.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //si el usuario ya reacciono, no puede volver a reaccionar
+                    if (!reactions.containsKey(user_id)) {
+
+                        final Reaction reaction = new Reaction();
+                        reaction.setReactingUserId(user_id);
+                        reaction.setReaction("like");
+
+                        Call<Reaction> call = webApi.postReaction(reaction, feed_list.get(position).getImage_id(),
+                                token, "Application/json");
+                        call.enqueue(new Callback<Reaction>() {
+                            @Override
+                            public void onResponse(Call<Reaction> call, Response<Reaction> response) {
+                                reactions.put(user_id, reaction.getReaction());
+                                holder.setReactionCount(reactions.size());
+                            }
+
+                            @Override
+                            public void onFailure(Call<Reaction> call, Throwable t) {
+                                Log.d("UPDATE USER: ", "-----> No se pudo cargar la reaccion <-----" + t.getMessage());
+                            }
+                        });
+
                     }
-                    context.startActivity(reaccionesIntent);
-                }else{
-                    Toast.makeText(context, "No hay reacciones para este Story aún", Toast.LENGTH_LONG).show();
                 }
+            });
 
+            holder.dislike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //si el usuario ya reacciono, no puede volver a reaccionar
+                    if (!reactions.containsKey(user_id)) {
 
+                        final Reaction reaction = new Reaction();
+                        reaction.setReactingUserId(user_id);
+                        reaction.setReaction("dislike");
 
-            }
-        });
+                        Call<Reaction> call = webApi.postReaction(reaction, feed_list.get(position).getImage_id(),
+                                token, "Application/json");
+                        call.enqueue(new Callback<Reaction>() {
+                            @Override
+                            public void onResponse(Call<Reaction> call, Response<Reaction> response) {
+                                reactions.put(user_id, reaction.getReaction());
+                                holder.setReactionCount(reactions.size());
+                            }
 
-        holder.commentsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent commentsIntent = new Intent(context, CommentsActivity.class);
-                commentsIntent.putExtra("image_id", feed_list.get(position).image_id);
-                ArrayList<String> commentsString = new ArrayList<String>();
-                for (Object comment : comments) {
-                    commentsString.add(((Comment) comment).getCommentingUserId());
-                    commentsString.add(((Comment) comment).getComment());
-                    commentsString.add(String.valueOf(((Comment) comment).getTimestamp()));
+                            @Override
+                            public void onFailure(Call<Reaction> call, Throwable t) {
+                                Log.d("UPDATE USER: ", "-----> No se pudo cargar la reaccion <-----" + t.getMessage());
+                            }
+                        });
+
+                    }
                 }
-                commentsIntent.putStringArrayListExtra("comments", commentsString);
-                context.startActivity(commentsIntent);
-            }
-        });
+            });
+
+            holder.funny.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //si el usuario ya reacciono, no puede volver a reaccionar
+                    if (!reactions.containsKey(user_id)) {
+
+                        final Reaction reaction = new Reaction();
+                        reaction.setReactingUserId(user_id);
+                        reaction.setReaction("funny");
+
+                        Call<Reaction> call = webApi.postReaction(reaction, feed_list.get(position).getImage_id(),
+                                token, "Application/json");
+                        call.enqueue(new Callback<Reaction>() {
+                            @Override
+                            public void onResponse(Call<Reaction> call, Response<Reaction> response) {
+                                reactions.put(user_id, reaction.getReaction());
+                                holder.setReactionCount(reactions.size());
+                            }
+
+                            @Override
+                            public void onFailure(Call<Reaction> call, Throwable t) {
+                                Log.d("UPDATE USER: ", "-----> No se pudo cargar la reaccion <-----" + t.getMessage());
+                            }
+                        });
+
+                    }
+                }
+            });
+
+            holder.boring.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //si el usuario ya reacciono, no puede volver a reaccionar
+                    if (!reactions.containsKey(user_id)) {
+
+                        Toast.makeText(context, "aca", Toast.LENGTH_LONG).show();
+
+                        final Reaction reaction = new Reaction();
+                        reaction.setReactingUserId(user_id);
+                        reaction.setReaction("boring");
+
+                        Call<Reaction> call = webApi.postReaction(reaction, feed_list.get(position).getImage_id(),
+                                token, "Application/json");
+                        call.enqueue(new Callback<Reaction>() {
+                            @Override
+                            public void onResponse(Call<Reaction> call, Response<Reaction> response) {
+                                reactions.put(user_id, reaction.getReaction());
+                                holder.setReactionCount(reactions.size());
+                            }
+
+                            @Override
+                            public void onFailure(Call<Reaction> call, Throwable t) {
+                                Log.d("UPDATE USER: ", "-----> No se pudo cargar la reaccion <-----" + t.getMessage());
+                            }
+                        });
+
+                    }
+                }
+            });
+
+            holder.reacciones.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (reactions.size() > 0) {
+                        Intent reaccionesIntent = new Intent(context, ReaccionesActivity.class);
+                        reaccionesIntent.putExtra("token", token);
+
+                        for (String key : reactions.keySet()) {
+
+                            reaccionesIntent.putExtra(key, reactions.get(key));
+                        }
+                        context.startActivity(reaccionesIntent);
+                    } else {
+                        Toast.makeText(context, "No hay reacciones para este Story aún", Toast.LENGTH_LONG).show();
+                    }
+
+
+                }
+            });
+
+            holder.commentsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent commentsIntent = new Intent(context, CommentsActivity.class);
+                    commentsIntent.putExtra("image_id", feed_list.get(position).image_id);
+                    ArrayList<String> commentsString = new ArrayList<String>();
+                    for (Object comment : comments) {
+                        commentsString.add(((Comment) comment).getCommentingUserId());
+                        commentsString.add(((Comment) comment).getComment());
+                        commentsString.add(String.valueOf(((Comment) comment).getTimestamp()));
+                    }
+                    commentsIntent.putStringArrayListExtra("comments", commentsString);
+                    context.startActivity(commentsIntent);
+                }
+            });
+
+        } else {
+
+            //si es un flash, entonces escondo los botones
+            holder.hideFlashesButtons();
+
+
+        }
 
     }
 
     @Override
     public int getItemCount() {
         return feed_list.size();
+    }
+
+    public void setIsFlashes(boolean isFlashes) {
+        this.isFlashes = isFlashes;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -387,6 +405,7 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
         private FloatingActionButton funny;
         private FloatingActionButton boring;
         private FloatingActionButton dislike;
+        private FloatingActionsMenu reactionsOptions;
         private TextView reactionsCount;
         private Button reacciones;
 
@@ -403,12 +422,13 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
             dislike = (FloatingActionButton) mView.findViewById(R.id.dislike);
             funny = (FloatingActionButton) mView.findViewById(R.id.funny);
             boring = (FloatingActionButton) mView.findViewById(R.id.boring);
+            reactionsOptions = mView.findViewById(R.id.floatingActionsMenu);
 
             reacciones = (Button) mView.findViewById(R.id.reactions);
             commentsButton = (ImageButton) mView.findViewById(R.id.commentButton);
 
             deleteButton = mView.findViewById(R.id.deleteStory);
-            deleteButton.setVisibility(View.INVISIBLE);
+            deleteButton.setVisibility(View.GONE);
 
             image = mView.findViewById(R.id.story_image);
             video = mView.findViewById(R.id.story_video);
@@ -474,6 +494,14 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
             video.start();
 
         }
+
+        public void hideFlashesButtons(){
+            reactionsCount.setVisibility(View.GONE);
+            reacciones.setVisibility(View.GONE);
+            commentsButton.setVisibility(View.GONE);
+            reactionsOptions.setVisibility(View.GONE);
+        }
+
     }
 
 }

@@ -5,23 +5,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    <!--barra superior-->
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/main_toolbar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textSize="50dp"
-        android:text="Flashes" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimary"
+        android:theme="@style/AppTheme" />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/flashesFeed_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/main_toolbar"
+        android:layout_above="@id/main_nav"/>
+
+    <!--barra de navegacion-->
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/main_nav"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        app:menu="@menu/nav_items"
         android:background="@color/colorPrimary"
-        android:theme="@style/NavTheme"/>
+        android:theme="@style/NavTheme"
+        app:menu="@menu/nav_items" />
+
+    <ProgressBar
+        android:id="@+id/flashesFeedProgress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/main_toolbar"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible" />
 
 </RelativeLayout>

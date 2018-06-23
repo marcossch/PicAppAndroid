@@ -104,6 +104,7 @@ public class NewPostActivity extends AppCompatActivity {
     private EditText titulo;
     private Uri mainImageURI = null;
     private Switch privacidad;
+    private Switch flash;
     private String token = "";
     private StoryRequest storyRequest;
 
@@ -154,6 +155,7 @@ public class NewPostActivity extends AppCompatActivity {
         titulo = (EditText) findViewById(R.id.titulo);
         newPostProgress = (ProgressBar) findViewById(R.id.newPostProgress);
         privacidad = (Switch) findViewById(R.id.privacidad);
+        flash = (Switch) findViewById(R.id.flash);
         filterButton = (Button) findViewById(R.id.filterButton);
 
         filterButton.setOnClickListener(new View.OnClickListener() {
@@ -481,7 +483,21 @@ public class NewPostActivity extends AppCompatActivity {
     }
 
     private void callServer() {
-        Call<StoryResult> call = webApi.postStory(storyRequest, token, "Application/json");
+
+        Call<StoryResult> call = null;
+
+        //descomentar esto cuando este el server
+//        //chequeo de flash o story
+//        if(flash.isChecked()){
+//            call = webApi.postFlash(storyRequest, token, "Application/json");
+//        }
+//        else{
+//            call = webApi.postStory(storyRequest, token, "Application/json");
+//        }
+
+        //sacar esta linea cuando este el server
+        call = webApi.postStory(storyRequest, token, "Application/json");
+
         call.enqueue(new Callback<StoryResult>() {
             @Override
             public void onResponse(Call<StoryResult> call, Response<StoryResult> response) {

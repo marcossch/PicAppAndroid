@@ -112,7 +112,6 @@
                 android:textStyle="normal"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"/>
 
             <LinearLayout
@@ -126,6 +125,15 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="20dp"
                     android:text="Público "
+                    android:textSize="18dp"
+                    />
+
+                <Switch
+                    android:id="@+id/flash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:text="Flash"
                     android:textSize="18dp"
                     />
 
