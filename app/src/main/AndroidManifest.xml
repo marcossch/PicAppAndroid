@@ -65,8 +65,10 @@
             android:parentActivityName=".FeedActivity" />
         <activity android:name=".OtherProfileActivity" />
         <activity android:name=".FriendProfileActivity" />
-        <activity android:name=".NewPostVideoActivity"
+        <activity
+            android:name=".NewPostVideoActivity"
             android:parentActivityName=".ProfileActivity" />
+        <activity android:name=".FlashFlowActivity"></activity>
     </application>
 
 </manifest>

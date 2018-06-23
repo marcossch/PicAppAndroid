@@ -53,6 +53,7 @@ dependencies {
     implementation 'com.github.uin3566:AllAngleExpandableButton:v1.2.0'
     implementation 'com.getbase:floatingactionbutton:1.10.1'
     implementation 'com.github.zomato:androidphotofilters:1.0.1'
+    implementation 'com.github.devlight:infinitecycleviewpager:1.0.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

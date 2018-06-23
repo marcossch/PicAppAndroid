@@ -24,7 +24,9 @@ import com.picapp.picapp.Models.Comment;
 import com.picapp.picapp.Models.Feed;
 import com.picapp.picapp.Models.Story;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -48,6 +50,11 @@ public class FlashesActivity extends AppCompatActivity {
     private RecyclerView feed_list_view;
     private List<FeedStory> feed_list;
     private FeedRecyclerAdapter feedRecyclerAdapter;
+
+    private ArrayList<String> flashesV = new ArrayList<String>();
+    private ArrayList<String> flashesName = new ArrayList<String>();
+    private ArrayList<String> flashesLocation = new ArrayList<String>();
+    private ArrayList<String> flashesDate = new ArrayList<String>();
 
     private String token;
 
@@ -141,6 +148,19 @@ public class FlashesActivity extends AppCompatActivity {
                     feedStory.setImage_id(story.getStory_id());
                     feedStory.setUser_id(story.getUsername());
 
+                    if(story.getMedia().contains("jpg")) {
+
+                        //levanto la fecha
+                        Long milliseconds = story.getTimestamp();
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                        String dateString = formatter.format(new Date(milliseconds));
+
+                        flashesV.add(story.getMedia());
+                        flashesDate.add(dateString);
+                        flashesName.add(story.getName());
+                        flashesLocation.add(story.getLocation());
+                    }
+
                     feed_list.add(feedStory);
                     feedRecyclerAdapter.notifyDataSetChanged();
 
@@ -174,7 +194,15 @@ public class FlashesActivity extends AppCompatActivity {
         //se cargan las acciones del menu de opciones
         switch (item.getItemId()) {
             case R.id.flashView:
-                //vistafachera
+                //si terminaron de cargar las fotos
+                if(flashesProgress.getVisibility() == View.INVISIBLE){
+                    Intent flashView = new Intent(FlashesActivity.this, FlashFlowActivity.class);
+                    flashView.putStringArrayListExtra("flashes", flashesV);
+                    flashView.putStringArrayListExtra("flashesNames", flashesName);
+                    flashView.putStringArrayListExtra("flashesDates", flashesDate);
+                    flashView.putStringArrayListExtra("flashesLocations", flashesLocation);
+                    sendTo(flashView);
+                }
                 return true;
         }
 
