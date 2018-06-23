@@ -136,6 +136,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent friendsIntent = new Intent(ProfileActivity.this, FriendsActivity.class);
+                friendsIntent.putExtra("id",user.getUid());
                 sendTo(friendsIntent);
 
             }

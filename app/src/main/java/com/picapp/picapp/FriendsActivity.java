@@ -34,21 +34,22 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class FriendsActivity extends AppCompatActivity {
 
     private android.support.v7.widget.Toolbar mainToolbar;
-    private EditText searchView;
     private RecyclerView peopleList;
     private DatabaseReference dataRef;
-    private FirebaseUser firUser;
     private ArrayList<String> nameList;
     private ArrayList<String> picList;
     private ArrayList<String> idList;
     private SearchAdapter searchAdapter;
-    private Button profBtn;
+    private String id;
+    private FirebaseUser firUser;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
 
+        firUser = FirebaseAuth.getInstance().getCurrentUser();
         //levanta la toolbar
         mainToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mainToolbar);
@@ -60,7 +61,6 @@ public class FriendsActivity extends AppCompatActivity {
 
         //obtengo los usuarios de firebase
         dataRef = FirebaseDatabase.getInstance().getReference();
-        firUser = FirebaseAuth.getInstance().getCurrentUser();
 
         peopleList.setHasFixedSize(true);
         peopleList.setLayoutManager(new LinearLayoutManager(this));
@@ -111,7 +111,8 @@ public class FriendsActivity extends AppCompatActivity {
         picList.clear();
         idList.clear();
 
-        Call<FriendsList> friends = webApi.getUserFriends(firUser.getUid(), token, "Application/json");
+        id = getIntent().getStringExtra("id");
+        Call<FriendsList> friends = webApi.getUserFriends(id, token, "Application/json");
         friends.enqueue(new Callback<FriendsList>() {
 
             @Override
@@ -135,8 +136,16 @@ public class FriendsActivity extends AppCompatActivity {
     //--------------Metodos Privados-------------//
 
     private void sendToProfile() {
-        Intent feedIntent = new Intent(FriendsActivity.this, ProfileActivity.class);
-        startActivity(feedIntent);
+        if(id.contains(firUser.getUid())){
+            intent = new Intent(FriendsActivity.this, ProfileActivity.class);
+            Log.d("FRIENDS", "--------------> VAMOS A PROFILE ACTIVITY <--------------");
+        }
+        else{
+            intent = new Intent(FriendsActivity.this, FriendProfileActivity.class);
+            intent.putExtra("id",id);
+            Log.d("FRIENDS", "--------------> VAMOS A FRIEND PROFILE ACTIVITY <--------------");
+        }
+        startActivity(intent);
         finish();
     }
 
