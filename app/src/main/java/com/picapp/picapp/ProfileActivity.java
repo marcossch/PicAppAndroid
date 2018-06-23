@@ -303,6 +303,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void sendToMap() {
         Intent mapIntent = new Intent(ProfileActivity.this, MapsActivity.class);
         mapIntent.putExtra("LatLong", latlng);
+        mapIntent.putExtra("id", user.getUid());
         startActivity(mapIntent);
         finish();
     }

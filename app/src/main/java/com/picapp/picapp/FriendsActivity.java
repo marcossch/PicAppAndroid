@@ -49,7 +49,6 @@ public class FriendsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
 
-        firUser = FirebaseAuth.getInstance().getCurrentUser();
         //levanta la toolbar
         mainToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mainToolbar);
@@ -58,6 +57,7 @@ public class FriendsActivity extends AppCompatActivity {
 
         //Levanto la lista de gente
         peopleList = (RecyclerView) findViewById(R.id.peopleList);
+        firUser = FirebaseAuth.getInstance().getCurrentUser();
 
         //obtengo los usuarios de firebase
         dataRef = FirebaseDatabase.getInstance().getReference();

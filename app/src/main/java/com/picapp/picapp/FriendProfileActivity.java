@@ -47,6 +47,7 @@ public class FriendProfileActivity extends AppCompatActivity {
     private android.support.v7.widget.Toolbar mainToolbar;
     private String username;
     private String latlng="";
+    private String user_id;
 
     private RecyclerView profile_list_view;
     private List<FeedStory> profile_list;
@@ -85,7 +86,7 @@ public class FriendProfileActivity extends AppCompatActivity {
         publicaciones = findViewById(R.id.pubNumber);
 
         //Agarro los atributos desde firebase
-        final String user_id = getIntent().getStringExtra("id");
+        user_id = getIntent().getStringExtra("id");
 
         mapBtn = findViewById(R.id.mapButton);
         mapBtn.setOnClickListener(new View.OnClickListener(){
@@ -260,6 +261,7 @@ public class FriendProfileActivity extends AppCompatActivity {
     private void sendToMap() {
         Intent mapIntent = new Intent(FriendProfileActivity.this, MapsActivity.class);
         mapIntent.putExtra("LatLong", latlng);
+        mapIntent.putExtra("id",user_id);
         startActivity(mapIntent);
         finish();
     }
