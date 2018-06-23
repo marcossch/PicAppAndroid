@@ -136,6 +136,17 @@
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/instrucciones"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:fontFamily="sans-serif-condensed"
+                android:text=""
+                android:textColor="@color/greyLetter"
+                android:textSize="10sp" />
+
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

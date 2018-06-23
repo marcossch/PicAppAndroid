@@ -118,7 +118,7 @@ public class SearchActivity extends AppCompatActivity {
                     }
 
                 }
-                searchAdapter = new SearchAdapter(SearchActivity.this, nameList, picList, idList);
+                searchAdapter = new SearchAdapter(SearchActivity.this, nameList, picList, idList, "search");
                 peopleList.setAdapter(searchAdapter);
 
             }

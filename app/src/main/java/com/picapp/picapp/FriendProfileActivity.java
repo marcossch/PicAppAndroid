@@ -56,6 +56,7 @@ public class FriendProfileActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private FloatingActionButton addPostButton;
     private android.support.design.widget.FloatingActionButton deleteFriendsBtn;
+    Intent sendTo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,8 +248,15 @@ public class FriendProfileActivity extends AppCompatActivity {
 
 
     private void sendToFeed() {
-        Intent feedIntent = new Intent(FriendProfileActivity.this, FeedActivity.class);
-        startActivity(feedIntent);
+        String from = getIntent().getStringExtra("from");
+        if(from.contains("profile")){
+            Log.d("FRIEND PROFILE", "-----> VOLVEMOS A EL PERFIL <-----");
+            sendTo =  new Intent(FriendProfileActivity.this, ProfileActivity.class);
+        } else{
+            Log.d("FRIEND PROFILE", "-----> VOLVEMOS AL FEED <-----");
+            sendTo =  new Intent(FriendProfileActivity.this, FeedActivity.class);
+        }
+        startActivity(sendTo);
         finish();
     }
 

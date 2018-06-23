@@ -14,12 +14,15 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.picapp.picapp.AndroidModels.Picapp;
 import com.picapp.picapp.FeedActivity;
 import com.picapp.picapp.FriendProfileActivity;
 import com.picapp.picapp.Interfaces.WebApi;
 import com.picapp.picapp.MainActivity;
 import com.picapp.picapp.OtherProfileActivity;
+import com.picapp.picapp.ProfileActivity;
 import com.picapp.picapp.R;
 import com.picapp.picapp.RegisterActivity;
 
@@ -38,6 +41,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
     private ArrayList<String> picList;
     private ArrayList<String> idList;
     private Intent profIntent;
+    private FirebaseUser user;
+    private String from;
 
 
     class SearchViewHolder extends RecyclerView.ViewHolder{
@@ -51,11 +56,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         }
     }
 
-    public SearchAdapter(Context context, ArrayList<String> nList, ArrayList<String> pList, ArrayList<String> idList){
+    public SearchAdapter(Context context, ArrayList<String> nList, ArrayList<String> pList, ArrayList<String> idList, String from){
         this.context = context;
         this.nameList = nList;
         this.picList = pList;
         this.idList = idList;
+        this.from = from;
     }
 
     @NonNull
@@ -88,16 +94,20 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
                     @Override
                     public void onResponse(Call<FriendshipStatus> call, Response<FriendshipStatus> response) {
                         Log.d("FRIENDSHIP STATUS", response.body().getState());
-                        if(response.body().getState().equals("friends")){
-                            profIntent = new Intent(context, FriendProfileActivity.class);
-                            Log.d("FRIENDSHIP STATUS", "-----------Vamos a profile friend------------");
+                        user = FirebaseAuth.getInstance().getCurrentUser();
+                        if(idList.get(position).contains(user.getUid())){
+                            Toast.makeText(context, "Macri Gato", Toast.LENGTH_LONG).show();
                         }
-                        else{
-                            profIntent = new Intent(context, OtherProfileActivity.class);
-                            Log.d("FRIENDSHIP STATUS", "-----------Vamos a other friend------------");
+                        else {
+                            if (response.body().getState().equals("friends")) {
+                                profIntent = new Intent(context, FriendProfileActivity.class);
+                                Log.d("FRIENDSHIP STATUS", "-----------Vamos a profile friend------------");
+                            } else {
+                                profIntent = new Intent(context, OtherProfileActivity.class);
+                                Log.d("FRIENDSHIP STATUS", "-----------Vamos a other friend------------");
+                            }
+                            sendTo(holder, position);
                         }
-                        sendTo(holder, position);
-
                     }
 
                     @Override
@@ -112,6 +122,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     private void sendTo(SearchViewHolder holder, int position) {
         profIntent.putExtra("name", holder.name.getText());
+        profIntent.putExtra("from", from);
         profIntent.putExtra("pic", picList.get(position));
         profIntent.putExtra("id", idList.get(position));
         context.startActivity(profIntent);

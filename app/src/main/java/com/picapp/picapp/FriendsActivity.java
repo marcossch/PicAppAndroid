@@ -121,7 +121,7 @@ public class FriendsActivity extends AppCompatActivity {
                     nameList.add(user.getName());
                     picList.add(user.getProfilePic());
                 }
-                searchAdapter = new SearchAdapter(FriendsActivity.this, nameList, picList, idList);
+                searchAdapter = new SearchAdapter(FriendsActivity.this, nameList, picList, idList, "profile");
                 peopleList.setAdapter(searchAdapter);
             }
 
@@ -135,6 +135,7 @@ public class FriendsActivity extends AppCompatActivity {
     //--------------Metodos Privados-------------//
 
     private void sendToProfile() {
+
         if(id.contains(firUser.getUid())){
             intent = new Intent(FriendsActivity.this, ProfileActivity.class);
             Log.d("FRIENDS", "--------------> VAMOS A PROFILE ACTIVITY <--------------");
@@ -144,6 +145,8 @@ public class FriendsActivity extends AppCompatActivity {
             intent.putExtra("id",id);
             Log.d("FRIENDS", "--------------> VAMOS A FRIEND PROFILE ACTIVITY <--------------");
         }
+        String from = getIntent().getStringExtra("from");
+        intent.putExtra("from", from);
         startActivity(intent);
         finish();
     }

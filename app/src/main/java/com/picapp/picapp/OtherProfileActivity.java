@@ -20,6 +20,8 @@ import com.picapp.picapp.Interfaces.WebApi;
 import com.picapp.picapp.Models.FriendshipResponse;
 import com.picapp.picapp.Models.FriendshipStatus;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -175,6 +177,8 @@ public class OtherProfileActivity extends AppCompatActivity {
     }
 
     public void setButtonConditions(String state) {
+        TextView aux = findViewById(R.id.instrucciones);
+        aux.setText("");
         switch(state){
             //Cuando no son amigos, lo unico que podes hacer es enviarla
             case "not_friends":
@@ -187,6 +191,7 @@ public class OtherProfileActivity extends AppCompatActivity {
             //Cuando recibiste una, podes eliminarla o aceptarla
             case "received":
                 Toast.makeText(OtherProfileActivity.this, "El usuario "+name+" te envio una solicitud de amistad.", Toast.LENGTH_LONG).show();
+                aux.setText("Puedes aceptar la solicitud de amistad con el boton verde, o eliminarla con el rojo");
                 deleteFriendsBtn.setVisibility(View.VISIBLE);
                 deleteFriendsBtn.setClickable(true);
                 addFriendsBtn.setVisibility(View.VISIBLE);
