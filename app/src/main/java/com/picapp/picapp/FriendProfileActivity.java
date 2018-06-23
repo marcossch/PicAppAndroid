@@ -258,6 +258,7 @@ public class FriendProfileActivity extends AppCompatActivity {
 
     private void sendToMap() {
         Intent mapIntent = new Intent(FriendProfileActivity.this, MapsActivity.class);
+        mapIntent.putExtra("LatLong", latlng);
         startActivity(mapIntent);
         finish();
     }

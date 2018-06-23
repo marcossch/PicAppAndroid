@@ -114,6 +114,5 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         camBuilder.target(newLL);
         CameraPosition cp = camBuilder.build();
         gmap.moveCamera(CameraUpdateFactory.newCameraPosition(cp));
-
     }
 }
