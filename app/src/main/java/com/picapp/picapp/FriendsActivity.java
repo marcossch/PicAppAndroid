@@ -79,7 +79,6 @@ public class FriendsActivity extends AppCompatActivity {
         //levanta la barra del menu con sus items
 
         getMenuInflater().inflate(R.menu.friends_menu, menu);
-
         return true;
     }
 
@@ -142,6 +141,7 @@ public class FriendsActivity extends AppCompatActivity {
         }
         else{
             intent = new Intent(FriendsActivity.this, FriendProfileActivity.class);
+            Toast.makeText(FriendsActivity.this, id, Toast.LENGTH_LONG).show();
             intent.putExtra("id",id);
             Log.d("FRIENDS", "--------------> VAMOS A FRIEND PROFILE ACTIVITY <--------------");
         }

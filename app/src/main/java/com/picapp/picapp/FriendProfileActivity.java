@@ -82,7 +82,7 @@ public class FriendProfileActivity extends AppCompatActivity {
         fotoP.setImageDrawable(getDrawable(R.drawable.cameranext));
 
         //levanto la cantidad de publicaciones y amigos
-        amigos = findViewById(R.id.friendsNumber);
+        amigos = findViewById(R.id.frdNumber);
         publicaciones = findViewById(R.id.pubNumber);
 
         //Agarro los atributos desde firebase
@@ -97,7 +97,7 @@ public class FriendProfileActivity extends AppCompatActivity {
         });
 
         //Click en el boton de amigos te lleva a ver tus amigos
-        Button friends = (Button) findViewById(R.id.friendsNumber);
+        Button friends = (Button) findViewById(R.id.frdNumber);
 
         //Boton para agregar un post
         //FloatingActionButton addPostButton = (FloatingActionButton) findViewById(R.id.agregarFoto);
