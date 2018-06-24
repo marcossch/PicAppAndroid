@@ -479,7 +479,7 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
             image.setVisibility(View.GONE);
             video.setVisibility(View.VISIBLE);
             video.setVideoURI(Uri.parse(videoUri));
-
+            video.start();
             MediaController mediaController = new MediaController(context);
             mediaController.setAnchorView(video);
             video.setMediaController(mediaController);

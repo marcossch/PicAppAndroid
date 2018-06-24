@@ -128,49 +128,58 @@ public class FeedActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Feed> call, Response<Feed> response) {
 
-                Feed feed = response.body();
-                List<Story> stories = feed.getStories();
-                for (Story story : stories){
+                if (response.code() != 200) {
+                    Toast.makeText(FeedActivity.this, "Error del Server", Toast.LENGTH_LONG).show();
+                } else {
 
-                    FeedStory feedStory = new FeedStory();
-                    feedStory.setDescription(story.getDescription());
-                    feedStory.setImage(story.getMedia());
-                    feedStory.setTimestamp(story.getTimestamp());
-                    feedStory.setTitle(story.getTitle());
-                    feedStory.setName(story.getName());
-                    feedStory.setProfPic(story.getProfilePic());
-                    feedStory.setImage_id(story.getStory_id());
-                    feedStory.setUser_id(story.getUsername());
+                    Feed feed = response.body();
 
-                    //Diferencio la ubicacon para mostrarla bien y para el mapa
-                    String ubicacion = story.getLocation();
-                    String[] parts = ubicacion.split(",");
-                    String loc = "";
-                    if(parts.length >= 2){
-                        loc += parts[1];
+                    List<Story> stories = feed.getStories();
+                    for (Story story : stories) {
+
+                        FeedStory feedStory = new FeedStory();
+                        feedStory.setDescription(story.getDescription());
+                        feedStory.setImage(story.getMedia());
+                        feedStory.setTimestamp(story.getTimestamp());
+                        feedStory.setTitle(story.getTitle());
+                        feedStory.setName(story.getName());
+                        feedStory.setProfPic(story.getProfilePic());
+                        feedStory.setImage_id(story.getStory_id());
+                        feedStory.setUser_id(story.getUsername());
+
+                        //Diferencio la ubicacon para mostrarla bien y para el mapa
+                        String ubicacion = story.getLocation();
+                        String[] parts = ubicacion.split(",");
+                        String loc = "";
+                        if (parts.length >= 2) {
+                            loc += parts[1];
+                        }
+                        if (parts.length >= 3) {
+                            loc += ", " + parts[2];
+                        }
+                        feedStory.setLocation(loc);
+
+                        Map<String, String> reactions = story.getReactions();
+                        ArrayList<Comment> coments = story.getComments();
+
+                        if (reactions != null) {
+                            feedStory.setReactions(story.getReactions());
+                        }
+
+                        if (coments != null) {
+                            feedStory.setComments(story.getComments());
+                        }
+
+                        feed_list.add(feedStory);
+                        feedRecyclerAdapter.notifyDataSetChanged();
+
                     }
-                    if(parts.length >= 3){
-                        loc += ", "+parts[2];
-                    }
-                    feedStory.setLocation(loc);
-
-                    Map<String, String> reactions = story.getReactions();
-                    ArrayList<Comment> coments = story.getComments();
-
-                    if (reactions != null){
-                        feedStory.setReactions(story.getReactions());
-                    }
-
-                    if (coments != null){
-                        feedStory.setComments(story.getComments());
-                    }
-
-                    feed_list.add(feedStory);
-                    feedRecyclerAdapter.notifyDataSetChanged();
 
                 }
+
                 //escondo la barra de progreso
                 feedProgress.setVisibility(View.INVISIBLE);
+
             }
 
             @Override

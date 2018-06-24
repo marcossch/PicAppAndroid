@@ -14,6 +14,10 @@ public class Feed {
         return stories;
     }
 
+    public boolean isEmpty(){
+        return stories == null;
+    }
+
     public void setStories(List<Story> stories) {
         this.stories = stories;
     }

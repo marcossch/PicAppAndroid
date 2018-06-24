@@ -133,38 +133,46 @@ public class FlashesActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Feed> call, Response<Feed> response) {
 
-                Feed feed = response.body();
-                List<Story> stories = feed.getStories();
-                for (Story story : stories){
+                if (response.code() != 200) {
+                    Toast.makeText(FlashesActivity.this, "Error del Server", Toast.LENGTH_LONG).show();
+                } else {
 
-                    FeedStory feedStory = new FeedStory();
-                    feedStory.setDescription(story.getDescription());
-                    feedStory.setImage(story.getMedia());
-                    feedStory.setLocation(story.getLocation());
-                    feedStory.setTimestamp(story.getTimestamp());
-                    feedStory.setTitle(story.getTitle());
-                    feedStory.setName(story.getName());
-                    feedStory.setProfPic(story.getProfilePic());
-                    feedStory.setImage_id(story.getStory_id());
-                    feedStory.setUser_id(story.getUsername());
+                    Feed feed = response.body();
 
-                    if(story.getMedia().contains("jpg")) {
+                    List<Story> stories = feed.getStories();
+                    for (Story story : stories) {
 
-                        //levanto la fecha
-                        Long milliseconds = story.getTimestamp();
-                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                        String dateString = formatter.format(new Date(milliseconds));
+                        FeedStory feedStory = new FeedStory();
+                        feedStory.setDescription(story.getDescription());
+                        feedStory.setImage(story.getMedia());
+                        feedStory.setLocation(story.getLocation());
+                        feedStory.setTimestamp(story.getTimestamp());
+                        feedStory.setTitle(story.getTitle());
+                        feedStory.setName(story.getName());
+                        feedStory.setProfPic(story.getProfilePic());
+                        feedStory.setImage_id(story.getStory_id());
+                        feedStory.setUser_id(story.getUsername());
 
-                        flashesV.add(story.getMedia());
-                        flashesDate.add(dateString);
-                        flashesName.add(story.getName());
-                        flashesLocation.add(story.getLocation());
+                        if (story.getMedia().contains("jpg")) {
+
+                            //levanto la fecha
+                            Long milliseconds = story.getTimestamp();
+                            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                            String dateString = formatter.format(new Date(milliseconds));
+
+                            flashesV.add(story.getMedia());
+                            flashesDate.add(dateString);
+                            flashesName.add(story.getName());
+                            flashesLocation.add(story.getLocation());
+                        }
+
+                        feed_list.add(feedStory);
+                        feedRecyclerAdapter.notifyDataSetChanged();
+
                     }
 
-                    feed_list.add(feedStory);
-                    feedRecyclerAdapter.notifyDataSetChanged();
-
                 }
+
                 //escondo la barra de progreso
                 flashesProgress.setVisibility(View.INVISIBLE);
             }

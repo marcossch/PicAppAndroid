@@ -6,6 +6,7 @@ public class Picapp{
 
     // Global variable
     public String token = null;
+    public String expiresAt = null;
 
     // Restrict the constructor from being instantiated
     private Picapp(){}
@@ -23,4 +24,13 @@ public class Picapp{
         }
         return instance;
     }
+
+    public void setExpiresAt(String expiresAt) {
+        this.expiresAt = expiresAt;
+    }
+
+    public String getExpiresAt() {
+        return expiresAt;
+    }
+
 }

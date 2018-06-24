@@ -59,9 +59,11 @@ public class MainActivity extends AppCompatActivity {
                             if (task.getResult().exists()) {
                                 //levanto el token
                                 Object aux = task.getResult().get("token");
+                                Object aux2 = task.getResult().get("expiresAt");
                                 token = aux.toString();
 
                                 picapp.setToken(token);
+                                picapp.setExpiresAt(aux2.toString());
 
                                 // User is signed in entonces va al feed
                                 Intent feedIntent = new Intent(MainActivity.this, FeedActivity.class);

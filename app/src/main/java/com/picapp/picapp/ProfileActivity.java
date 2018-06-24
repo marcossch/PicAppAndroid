@@ -193,6 +193,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onResponse(Call<UserProfile> call, Response<UserProfile> response) {
 
                 UserProfile userP = response.body();
+
                 //levanto la info del usuario
                 name = userP.getName();
                 changeProfileName();
@@ -298,7 +299,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void sendTo(Intent intent) {
         startActivity(intent);
-        finish();
     }
 
     private void sendToMap() {
