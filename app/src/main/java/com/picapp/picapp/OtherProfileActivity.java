@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,6 +24,8 @@ import com.picapp.picapp.Models.FriendshipStatus;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -116,11 +119,24 @@ public class OtherProfileActivity extends AppCompatActivity {
                         friendshipStatus.enqueue(new Callback<FriendshipStatus>() {
                             @Override
                             public void onResponse(Call<FriendshipStatus> call, Response<FriendshipStatus> response) {
-                                status = response.body().getState();
-                                setButtonConditions(status);
-                                if(status.contains("friends")){
-                                    sendToFeed();
-                                }
+                                final Response<FriendshipStatus> finalResp = response;
+                                // Send notification
+                                HashMap<String, String> notificationData = new HashMap<>();
+                                notificationData.put("from", currentUser.getUid());
+                                firebaseFirestore.collection("Notifications")
+                                        .document("request")
+                                        .collection(id)
+                                        .document(UUID.randomUUID().toString())
+                                        .set(notificationData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        status = finalResp.body().getState();
+                                        setButtonConditions(status);
+                                        if(status.contains("friends")){
+                                            sendToFeed();
+                                        }
+                                    }
+                                });
 
                             }
 

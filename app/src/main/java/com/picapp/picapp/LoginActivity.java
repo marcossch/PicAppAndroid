@@ -24,6 +24,7 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -31,6 +32,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.picapp.picapp.AndroidModels.Picapp;
@@ -306,10 +308,17 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
 
                 if (task.isSuccessful()) {
-
-                    Picapp picapp = Picapp.getInstance();
-                    picapp.setToken(token.toString());
-                    sendToFeed();
+                    // Store device id
+                    HashMap<String, String> deviceData = new HashMap<>();
+                    deviceData.put("deviceToken", FirebaseInstanceId.getInstance().getToken());
+                    firebaseFirestore.collection("Devices").document(mAuth.getUid()).set(deviceData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Picapp picapp = Picapp.getInstance();
+                            picapp.setToken(token.toString());
+                            sendToFeed();
+                        }
+                    });
 
                 } else {
 
