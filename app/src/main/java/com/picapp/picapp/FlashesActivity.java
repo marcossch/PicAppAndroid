@@ -155,8 +155,6 @@ public class FlashesActivity extends AppCompatActivity {
                         feedStory.setImage_id(story.getFlashId());
                         feedStory.setUser_id(story.getUsername());
 
-                        Toast.makeText(FlashesActivity.this, story.getMedia(), Toast.LENGTH_LONG).show();
-
                         if (story.getMedia().contains("jpg")) {
 
                             //levanto la fecha
