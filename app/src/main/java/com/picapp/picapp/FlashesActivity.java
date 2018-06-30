@@ -22,6 +22,8 @@ import com.picapp.picapp.AndroidModels.Picapp;
 import com.picapp.picapp.Interfaces.WebApi;
 import com.picapp.picapp.Models.Comment;
 import com.picapp.picapp.Models.Feed;
+import com.picapp.picapp.Models.Flash;
+import com.picapp.picapp.Models.FlashFeed;
 import com.picapp.picapp.Models.Story;
 
 import java.text.SimpleDateFormat;
@@ -124,23 +126,23 @@ public class FlashesActivity extends AppCompatActivity {
         final WebApi webApi = retrofit.create(WebApi.class);
 
         //descomentar cuando este
-        //Call<Feed> call = webApi.getFlashFeed(token, "Application/json");
+        Call<FlashFeed> call = webApi.getFlashFeed(token, "Application/json");
 
         //sacar esta linea cuando este terminado el server
-        Call<Feed> call = webApi.getFeed(token, "Application/json");
+        //Call<Feed> call = webApi.getFeed(token, "Application/json");
 
-        call.enqueue(new Callback<Feed>() {
+        call.enqueue(new Callback<FlashFeed>() {
             @Override
-            public void onResponse(Call<Feed> call, Response<Feed> response) {
+            public void onResponse(Call<FlashFeed> call, Response<FlashFeed> response) {
 
                 if (response.code() != 200) {
                     Toast.makeText(FlashesActivity.this, "Error del Server", Toast.LENGTH_LONG).show();
                 } else {
 
-                    Feed feed = response.body();
+                    FlashFeed feed = response.body();
 
-                    List<Story> stories = feed.getStories();
-                    for (Story story : stories) {
+                    List<Flash> stories = feed.getFlashes();
+                    for (Flash story : stories) {
 
                         FeedStory feedStory = new FeedStory();
                         feedStory.setDescription(story.getDescription());
@@ -150,8 +152,10 @@ public class FlashesActivity extends AppCompatActivity {
                         feedStory.setTitle(story.getTitle());
                         feedStory.setName(story.getName());
                         feedStory.setProfPic(story.getProfilePic());
-                        feedStory.setImage_id(story.getStory_id());
+                        feedStory.setImage_id(story.getFlashId());
                         feedStory.setUser_id(story.getUsername());
+
+                        Toast.makeText(FlashesActivity.this, story.getMedia(), Toast.LENGTH_LONG).show();
 
                         if (story.getMedia().contains("jpg")) {
 
@@ -178,7 +182,7 @@ public class FlashesActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Feed> call, Throwable t) {
+            public void onFailure(Call<FlashFeed> call, Throwable t) {
                 Toast.makeText(FlashesActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                 //escondo la barra de progreso
                 flashesProgress.setVisibility(View.INVISIBLE);
@@ -225,7 +229,7 @@ public class FlashesActivity extends AppCompatActivity {
                     switch (item.getItemId()){
 
                         case R.id.nav_feed :
-                            Intent feedIntent = new Intent(FlashesActivity.this, FlashesActivity.class);
+                            Intent feedIntent = new Intent(FlashesActivity.this, FeedActivity.class);
                             sendTo(feedIntent);
                             return true;
 

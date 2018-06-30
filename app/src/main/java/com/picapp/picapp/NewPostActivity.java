@@ -48,6 +48,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.picapp.picapp.AndroidModels.Picapp;
 import com.picapp.picapp.Interfaces.WebApi;
+import com.picapp.picapp.Models.FlashRequest;
+import com.picapp.picapp.Models.FlashResult;
 import com.picapp.picapp.Models.StoryDeleted;
 import com.picapp.picapp.Models.StoryRequest;
 import com.picapp.picapp.Models.StoryResult;
@@ -108,6 +110,7 @@ public class NewPostActivity extends AppCompatActivity {
     private Switch flash;
     private String token = "";
     private StoryRequest storyRequest;
+    private FlashRequest flashRequest;
 
     private List<Filter> filters = new ArrayList<>();
     private int filterCounter;
@@ -440,6 +443,44 @@ public class NewPostActivity extends AppCompatActivity {
 
     }
 
+    private void storeFirestoreFlash(final FlashResult story) {
+
+        Map<String, Object> postMap = new HashMap<>();
+        postMap.put("image_id", story.getFlashId());
+        postMap.put("image", story.getMedia());
+        postMap.put("thumb", "thumbUri");
+        postMap.put("user_id", user_id);
+        postMap.put("timestamp", story.getTimestamp());
+        postMap.put("description", story.getDescription());
+        postMap.put("title", story.getTitle());
+        postMap.put("location", story.getLocation());
+        postMap.put("isPrivate", "false");
+
+        //cada usuario tiene su propio documento
+        firebaseFirestore.collection("Stories").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
+
+                if (task.isSuccessful()) {
+
+                    //escondo la barra de progreso
+                    newPostProgress.setVisibility(View.INVISIBLE);
+                    sendToProfile();
+
+                } else {
+
+                    String error = task.getException().getMessage();
+                    Toast.makeText(NewPostActivity.this, "FIRESTORE Error: " + error, Toast.LENGTH_LONG).show();
+
+                    //escondo la barra de progreso
+                    newPostProgress.setVisibility(View.INVISIBLE);
+                }
+
+            }
+        });
+
+    }
+
     private void serverDeleteStory(StoryResult story) {
 
         Call<StoryDeleted> call = webApi.deleteStory(story.getStoryId(), token, "Application/json");
@@ -480,42 +521,65 @@ public class NewPostActivity extends AppCompatActivity {
         storyRequest.setTitle(titulo.getText().toString());
         storyRequest.setIsPrivate(!(privacidad.isChecked()));
 
+        //Creo la request para pasarle en el body
+        flashRequest = new FlashRequest();
+        flashRequest.setMedia(imageUri.toString());
+        flashRequest.setDescription(description.getText().toString());
+        //completar la descripcion
+        flashRequest.setLocation(Ubicacion);
+        flashRequest.setTimestamp(timestamp);
+        flashRequest.setTitle(titulo.getText().toString());
+
         callServer();
 
     }
 
     private void callServer() {
 
-        Call<StoryResult> call = null;
+        //chequeo de flash o story
+        if(flash.isChecked()){
+            Call<FlashResult> call = webApi.postFlash(flashRequest, token, "Application/json");
 
-        //descomentar esto cuando este el server
-//        //chequeo de flash o story
-//        if(flash.isChecked()){
-//            call = webApi.postFlash(storyRequest, token, "Application/json");
-//        }
-//        else{
-//            call = webApi.postStory(storyRequest, token, "Application/json");
-//        }
+            call.enqueue(new Callback<FlashResult>() {
+                @Override
+                public void onResponse(Call<FlashResult> call, Response<FlashResult> response) {
 
-        //sacar esta linea cuando este el server
-        call = webApi.postStory(storyRequest, token, "Application/json");
+                    final FlashResult storyResult = response.body();
+                    storeFirestoreFlash(storyResult);
+                }
 
-        call.enqueue(new Callback<StoryResult>() {
-            @Override
-            public void onResponse(Call<StoryResult> call, Response<StoryResult> response) {
+                @Override
+                public void onFailure(Call<FlashResult> call, Throwable t) {
 
-                final StoryResult storyResult = response.body();
-                storeFirestore(storyResult);
-            }
+                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                    //escondo la barra de progreso
+                    newPostProgress.setVisibility(View.INVISIBLE);
+                }
+            });
 
-            @Override
-            public void onFailure(Call<StoryResult> call, Throwable t) {
+        }
+        else{
+            Call<StoryResult> call = webApi.postStory(storyRequest, token, "Application/json");
 
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-                //escondo la barra de progreso
-                newPostProgress.setVisibility(View.INVISIBLE);
-            }
-        });
+            call.enqueue(new Callback<StoryResult>() {
+                @Override
+                public void onResponse(Call<StoryResult> call, Response<StoryResult> response) {
+
+                    final StoryResult storyResult = response.body();
+                    storeFirestore(storyResult);
+                }
+
+                @Override
+                public void onFailure(Call<StoryResult> call, Throwable t) {
+
+                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                    //escondo la barra de progreso
+                    newPostProgress.setVisibility(View.INVISIBLE);
+                }
+            });
+
+        }
+
     }
 
     private void sendToFeed() {

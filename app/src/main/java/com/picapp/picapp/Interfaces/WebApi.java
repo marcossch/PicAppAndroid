@@ -3,6 +3,9 @@ package com.picapp.picapp.Interfaces;
 import com.picapp.picapp.Models.Comment;
 import com.picapp.picapp.Models.CommentRequest;
 import com.picapp.picapp.Models.Feed;
+import com.picapp.picapp.Models.FlashFeed;
+import com.picapp.picapp.Models.FlashRequest;
+import com.picapp.picapp.Models.FlashResult;
 import com.picapp.picapp.Models.FriendsList;
 import com.picapp.picapp.Models.FriendshipResponse;
 import com.picapp.picapp.Models.FriendshipStatus;
@@ -94,11 +97,11 @@ public interface WebApi {
 
     //--------------Flashes -------------------------
     @POST("flashes")
-    Call<StoryResult> postFlash(@Body StoryRequest StoryRequest,
+    Call<FlashResult> postFlash(@Body FlashRequest FlashRequest,
                                 @Header("token") String token, @Header("Content-Type") String content);
 
-    @GET("flashFeed")
-    Call<Feed> getFlashFeed(@Header("token") String token, @Header("Content-Type") String content);
+    @GET("flashfeed")
+    Call<FlashFeed> getFlashFeed(@Header("token") String token, @Header("Content-Type") String content);
 
     //--------------Reactions -------------------------
     @POST("stories/{storyid}/reactions")
