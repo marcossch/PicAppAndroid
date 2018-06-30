@@ -142,10 +142,19 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
+                android:layout_below="@+id/blockProfile"
                 android:fontFamily="sans-serif-condensed"
                 android:text=""
                 android:textColor="@color/greyLetter"
                 android:textSize="10sp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/profile_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/instrucciones"
+                android:layout_above="@id/main_nav"/>
 
         </LinearLayout>
     </ScrollView>
