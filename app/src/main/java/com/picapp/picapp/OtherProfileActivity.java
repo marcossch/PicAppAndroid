@@ -3,8 +3,6 @@ package com.picapp.picapp;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,24 +12,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.picapp.picapp.AndroidModels.FeedRecyclerAdapter;
-import com.picapp.picapp.AndroidModels.FeedStory;
 import com.picapp.picapp.AndroidModels.Picapp;
 import com.picapp.picapp.Interfaces.WebApi;
-import com.picapp.picapp.Models.Comment;
 import com.picapp.picapp.Models.FriendshipResponse;
 import com.picapp.picapp.Models.FriendshipStatus;
-import com.picapp.picapp.Models.Story;
-import com.picapp.picapp.Models.UserProfile;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.HashMap;
+import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,7 +38,6 @@ public class OtherProfileActivity extends AppCompatActivity {
     private String name;
     private String id;
     private String pic;
-    private String latlng="";
     private String status;
     private FirebaseFirestore firebaseFirestore;
     private android.support.design.widget.FloatingActionButton addFriendsBtn;
@@ -54,10 +47,6 @@ public class OtherProfileActivity extends AppCompatActivity {
     private ArrayList<String> enviadas;
     private Retrofit retrofit;
     private android.support.v7.widget.Toolbar mainToolbar;
-
-    private RecyclerView profile_list_view;
-    private List<FeedStory> profile_list;
-    private FeedRecyclerAdapter profileRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,11 +119,24 @@ public class OtherProfileActivity extends AppCompatActivity {
                         friendshipStatus.enqueue(new Callback<FriendshipStatus>() {
                             @Override
                             public void onResponse(Call<FriendshipStatus> call, Response<FriendshipStatus> response) {
-                                status = response.body().getState();
-                                setButtonConditions(status);
-                                if(status.contains("friends")){
-                                    sendToFeed();
-                                }
+                                final Response<FriendshipStatus> finalResp = response;
+                                // Send notification
+                                HashMap<String, String> notificationData = new HashMap<>();
+                                notificationData.put("from", currentUser.getUid());
+                                firebaseFirestore.collection("Notifications")
+                                        .document("request")
+                                        .collection(id)
+                                        .document(UUID.randomUUID().toString())
+                                        .set(notificationData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        status = finalResp.body().getState();
+                                        setButtonConditions(status);
+                                        if(status.contains("friends")){
+                                            sendToFeed();
+                                        }
+                                    }
+                                });
 
                             }
 
@@ -168,75 +170,6 @@ public class OtherProfileActivity extends AppCompatActivity {
                         Log.d("DELETE FRIEND", "-----> No se pudo cancelar la amistad <-----");
                     }
                 });
-            }
-        });
-
-        //levanto la lista de visualizacion de stories
-        profile_list_view = (RecyclerView) findViewById(R.id.profile_list_view);
-
-        //cargo la lista de stories
-        profile_list = new ArrayList<>();
-        profileRecyclerAdapter = new FeedRecyclerAdapter(profile_list);
-        profileRecyclerAdapter.setToken(token);
-        profile_list_view.setLayoutManager(new LinearLayoutManager(OtherProfileActivity.this));
-        profile_list_view.setAdapter(profileRecyclerAdapter);
-
-
-        Call<UserProfile> call = webApi.getUserProfile(id, token, "Application/json");
-        call.enqueue(new Callback<UserProfile>() {
-            @Override
-            public void onResponse(Call<UserProfile> call, Response<UserProfile> response) {
-
-                UserProfile userP = response.body();
-                List<Story> stories = userP.getStories();
-                for (Story story : stories){
-
-                    FeedStory feedStory = new FeedStory();
-                    feedStory.setDescription(story.getDescription());
-                    feedStory.setImage(story.getMedia());
-                    feedStory.setTimestamp(story.getTimestamp());
-                    feedStory.setTitle(story.getTitle());
-                    feedStory.setUser_id(story.getUsername());
-                    feedStory.setProfPic(pic);
-                    feedStory.setImage_id(story.getStory_id());
-                    feedStory.setName(name);
-
-                    //Diferencio la ubicacon para mostrarla bien y para el mapa
-                    String ubicacion = story.getLocation();
-                    String[] parts = ubicacion.split(",");
-                    String loc = "";
-                    if(parts.length >= 2){
-                        loc += parts[1];
-                    }
-                    if(parts.length >= 3){
-                        loc += ", "+parts[2];
-                    }
-                    feedStory.setLocation(loc);
-                    if(parts.length>2) {
-                        String lat = parts[parts.length - 2].substring(10, parts[parts.length - 2].length());
-                        String lng = parts[parts.length - 1].substring(0, parts[parts.length - 1].length() - 1);
-                        latlng = latlng + lat + "," + lng + ";";
-                    }
-                    Map<String, String> reactions = story.getReactions();
-                    ArrayList<Comment> coments = story.getComments();
-
-                    if (reactions != null){
-                        feedStory.setReactions(story.getReactions());
-                    }
-
-                    if (coments != null){
-                        feedStory.setComments(story.getComments());
-                    }
-
-                    profile_list.add(feedStory);
-                    profileRecyclerAdapter.notifyDataSetChanged();
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<UserProfile> call, Throwable t) {
-                Toast.makeText(OtherProfileActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -320,4 +253,5 @@ public class OtherProfileActivity extends AppCompatActivity {
         startActivity(feedIntent);
         finish();
     }
+
 }

@@ -29,4 +29,6 @@
     <string name="agregarDescripcion">Agregue una descripción...</string>
     <string name="agregarTitulo">Agregue un titulo...</string>
     <string name="privacidad">Características Extra:</string>
+    <string name="notificationChannel">notifications</string>
+    <string name="notificationChannelDescr">Channel for friendship notifications</string>
 </resources>
