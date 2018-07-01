@@ -119,24 +119,31 @@ public class OtherProfileActivity extends AppCompatActivity {
                         friendshipStatus.enqueue(new Callback<FriendshipStatus>() {
                             @Override
                             public void onResponse(Call<FriendshipStatus> call, Response<FriendshipStatus> response) {
-                                final Response<FriendshipStatus> finalResp = response;
+                                status = response.body().getState();
                                 // Send notification
-                                HashMap<String, String> notificationData = new HashMap<>();
-                                notificationData.put("from", currentUser.getUid());
-                                firebaseFirestore.collection("Notifications")
-                                        .document("request")
-                                        .collection(id)
-                                        .document(UUID.randomUUID().toString())
-                                        .set(notificationData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        status = finalResp.body().getState();
-                                        setButtonConditions(status);
-                                        if(status.contains("friends")){
-                                            sendToFeed();
+                                if (status.equals("not_friends")) {
+                                    HashMap<String, String> notificationData = new HashMap<>();
+                                    notificationData.put("from", currentUser.getUid());
+                                    firebaseFirestore.collection("Notifications")
+                                            .document("request")
+                                            .collection(id)
+                                            .document(UUID.randomUUID().toString())
+                                            .set(notificationData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            setButtonConditions(status);
+                                            if (status.contains("friends")) {
+                                                sendToFeed();
+                                            }
                                         }
+                                    });
+                                } else {
+                                    status = response.body().getState();
+                                    setButtonConditions(status);
+                                    if (status.contains("friends")) {
+                                        sendToFeed();
                                     }
-                                });
+                                }
 
                             }
 
