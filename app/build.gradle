@@ -55,6 +55,7 @@ dependencies {
     implementation 'com.getbase:floatingactionbutton:1.10.1'
     implementation 'com.github.zomato:androidphotofilters:1.0.1'
     implementation 'com.github.devlight:infinitecycleviewpager:1.0.2'
+    implementation "com.android.support:support-compat:27.1.1"
 }
 
 apply plugin: 'com.google.gms.google-services'

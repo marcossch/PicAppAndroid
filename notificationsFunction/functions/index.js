@@ -18,6 +18,7 @@ exports.sendReqNotif = functions.firestore.document('Notifications/request/{rece
   return admin.firestore().collection('Users').doc(sender).get().then(user => {
     if (user.exists){
       const senderName = user.data().name;
+      const image = user.data().image;
 
       return admin.firestore().collection('Devices').doc(receiver).get().then(doc => {
         if (doc.exists) {
@@ -26,6 +27,11 @@ exports.sendReqNotif = functions.firestore.document('Notifications/request/{rece
               title: "Solicitud de amistad",
               body: senderName + " quiere ser tu amigo!",
               clickAction: "NOTIFICATION_ACTIVITY"
+            },
+            data: {
+              name: senderName,
+              senderId: sender,
+              picUrl: image
             }
           };
 
