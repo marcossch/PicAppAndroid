@@ -136,7 +136,7 @@ public class FlashesActivity extends AppCompatActivity {
             public void onResponse(Call<FlashFeed> call, Response<FlashFeed> response) {
 
                 if (response.code() != 200) {
-                    Toast.makeText(FlashesActivity.this, "Error del Server", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(FlashesActivity.this, "Error del Server", Toast.LENGTH_LONG).show();
                 } else {
 
                     FlashFeed feed = response.body();

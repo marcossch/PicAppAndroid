@@ -129,7 +129,7 @@ public class FeedActivity extends AppCompatActivity {
             public void onResponse(Call<Feed> call, Response<Feed> response) {
 
                 if (response.code() != 200) {
-                    Toast.makeText(FeedActivity.this, "Error del Server", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(FeedActivity.this, "Error del Server", Toast.LENGTH_LONG).show();
                 } else {
 
                     Feed feed = response.body();
