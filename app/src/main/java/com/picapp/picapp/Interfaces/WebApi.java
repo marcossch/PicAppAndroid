@@ -68,7 +68,6 @@ public interface WebApi {
     Call<FriendsList> getUserFriends(@Path("userid") String user,
                                      @Header("token") String token, @Header("Content-Type") String content);
 
-
     //--------------Friendship ----------------------
 
     @GET("users/{userid}/friendship")

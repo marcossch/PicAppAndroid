@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,17 +22,27 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.picapp.picapp.AndroidModels.Picapp;
+import com.picapp.picapp.Interfaces.WebApi;
+import com.picapp.picapp.Models.FriendsList;
+import com.picapp.picapp.Models.SearchAdapter;
 import com.picapp.picapp.Models.SelectableUser;
 import com.picapp.picapp.Models.SessionData;
+import com.picapp.picapp.Models.UserAccount;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ChatSelectionActivity extends AppCompatActivity {
 
     private BottomNavigationView mMainNav;
     private String userId;
     private FirebaseAuth mAuth;
-    private FirebaseFirestore firebaseFirestore;
     private android.support.v7.widget.Toolbar mainToolbar;
 
 
@@ -39,16 +50,16 @@ public class ChatSelectionActivity extends AppCompatActivity {
     TextView noUsersText;
     ArrayList<SelectableUser> selectableList = new ArrayList<>();
     ArrayList<String> toShowList = new ArrayList<>();
-    Integer counter;
     ProgressDialog progressDialog;
+    ArrayList<String> nameList;
+    ArrayList<String> idList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_selection);
 
-        //instacia de firebase y firestore
-        firebaseFirestore = FirebaseFirestore.getInstance();
+        //instacia de firebase
         mAuth = FirebaseAuth.getInstance();
         userId = mAuth.getUid();
 
@@ -65,18 +76,10 @@ public class ChatSelectionActivity extends AppCompatActivity {
 
         /* The following should be a request to Application Server for active user friends
         and doOnSuccess should process the selectableList of friends and add it to the selectableList. Now we mock it*/
-        counter = 2;
-        this.addUserToList("bVorEQY5cWRpiMaclTDKmEfzUlg2");
-        this.addUserToList("y39LYqRvTsf5nEut6gpVyShCIN62");
-        this.addUserToList("8UvBIcA4uQaydZkTXCXur5ZWdIj1");
+        nameList = new ArrayList<>();
+        idList = new ArrayList<>();
 
-        usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SessionData.onChat = selectableList.get(position);
-                startActivity(new Intent(ChatSelectionActivity.this, ChatActivity.class));
-            }
-        });
+        setAdapter();
 
         //barra de navegacion
         mMainNav = (BottomNavigationView) findViewById(R.id.main_nav);
@@ -93,21 +96,38 @@ public class ChatSelectionActivity extends AppCompatActivity {
         return true;
     }
 
-    public void doOnSuccess(String s){
-        /*try {
-            JSONObject obj = new JSONObject(s);
-            Iterator i = obj.keys();
-            String key = "";
-            while(i.hasNext()){
-                key = i.next().toString();
-                if(!key.equals(mAuth.getCurrentUser().getDisplayName())) {
-                    selectableList.add(key);
+    private void setAdapter() {
+        final Picapp picapp = Picapp.getInstance();
+        final String token = picapp.getToken();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(WebApi.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        final WebApi webApi = retrofit.create(WebApi.class);
+        nameList.clear();
+        idList.clear();
+
+        Call<FriendsList> friends = webApi.getUserFriends(userId, token, "Application/json");
+        friends.enqueue(new Callback<FriendsList>() {
+
+            @Override
+            public void onResponse(Call<FriendsList> call, Response<FriendsList> response) {
+                for(UserAccount user : response.body().getUsers()){
+                    selectableList.add(new SelectableUser(user.getUsername(), user.getName()));
+                    toShowList.add(user.getName());
                 }
-                totalUsers++;
+                progressDialog.dismiss();
+                doOnSuccess();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
+
+            @Override
+            public void onFailure(Call<FriendsList> call, Throwable t) {
+                Log.d("SHOW FRIENDS", "-----> No se pudo obtener la lista de amigos <-----");
+            }
+        });
+    }
+
+    public void doOnSuccess(){
         if(toShowList.size() == 0){
             noUsersText.setVisibility(View.VISIBLE);
             usersList.setVisibility(View.GONE);
@@ -115,9 +135,15 @@ public class ChatSelectionActivity extends AppCompatActivity {
             noUsersText.setVisibility(View.GONE);
             usersList.setVisibility(View.VISIBLE);
             usersList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, toShowList));
+            usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                SessionData.onChat = selectableList.get(position);
+                startActivity(new Intent(ChatSelectionActivity.this, ChatActivity.class));
+            }
+        });
         }
 
-        progressDialog.dismiss();
     }
 
     //cambio de activities principales
@@ -160,26 +186,4 @@ public class ChatSelectionActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void addUserToList(String id){
-        if (id.equals(userId)) return;
-        final String userId = id;
-        DocumentReference docRef = firebaseFirestore.collection("Users").document(userId);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        String userName = document.getString("name");
-                        selectableList.add(new SelectableUser(userId, userName));
-                        toShowList.add(userName);
-                        counter = counter - 1;
-                        if (counter == 0){
-                            doOnSuccess("Nothing");
-                        }
-                    }
-                }
-            }
-        });
-    }
 }
