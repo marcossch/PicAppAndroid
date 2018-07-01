@@ -66,7 +66,7 @@ public class OtherProfileActivity extends AppCompatActivity {
         if(token == null) {
             Log.d("TOKEN: ", "-----> El token es Null. <-----");
         }
-        
+
         //Inicializaciones:
         firebaseFirestore = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -75,10 +75,10 @@ public class OtherProfileActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         final WebApi webApi = retrofit.create(WebApi.class);
-        
+
         recibidas = new ArrayList<>();
         enviadas = new ArrayList<>();
-        
+
         //Setteo los parametros pasados por parametro
         setParams();
         //Agrego los parametros al nuevo perfil
@@ -119,31 +119,24 @@ public class OtherProfileActivity extends AppCompatActivity {
                         friendshipStatus.enqueue(new Callback<FriendshipStatus>() {
                             @Override
                             public void onResponse(Call<FriendshipStatus> call, Response<FriendshipStatus> response) {
-                                status = response.body().getState();
+                                final Response<FriendshipStatus> finalResp = response;
                                 // Send notification
-                                if (status.equals("not_friends")) {
-                                    HashMap<String, String> notificationData = new HashMap<>();
-                                    notificationData.put("from", currentUser.getUid());
-                                    firebaseFirestore.collection("Notifications")
-                                            .document("request")
-                                            .collection(id)
-                                            .document(UUID.randomUUID().toString())
-                                            .set(notificationData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            setButtonConditions(status);
-                                            if (status.contains("friends")) {
-                                                sendToFeed();
-                                            }
+                                HashMap<String, String> notificationData = new HashMap<>();
+                                notificationData.put("from", currentUser.getUid());
+                                firebaseFirestore.collection("Notifications")
+                                        .document("request")
+                                        .collection(id)
+                                        .document(UUID.randomUUID().toString())
+                                        .set(notificationData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        status = finalResp.body().getState();
+                                        setButtonConditions(status);
+                                        if(status.contains("friends")){
+                                            sendToFeed();
                                         }
-                                    });
-                                } else {
-                                    status = response.body().getState();
-                                    setButtonConditions(status);
-                                    if (status.contains("friends")) {
-                                        sendToFeed();
                                     }
-                                }
+                                });
 
                             }
 

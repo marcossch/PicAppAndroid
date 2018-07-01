@@ -74,6 +74,9 @@ public interface WebApi {
     Call<FriendshipStatus> getFriendshipStatus(@Path("userid") String user,
                                          @Header("token") String token, @Header("Content-Type") String content);
 
+    @GET("users/{userid}/friendship")
+    Call<FriendshipStatus> getFriendshipStatusCustom(@Path("userid") String user, @Header("token") String token);
+
     @POST("users/{userid}/friendship")
      Call<FriendshipResponse> postFriendship(@Path("userid") String user,
                                              @Header("token") String token, @Header("Content-Type") String content);
