@@ -196,7 +196,7 @@ public class NewPostActivity extends AppCompatActivity {
         //Chequeo de permisos(no es necesario pero android studio se queja)
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            Toast.makeText(NewPostActivity.this, "Error al obtener permisos para la ubicacion actual", Toast.LENGTH_LONG).show();
+            //Toast.makeText(NewPostActivity.this, "Error al obtener permisos para la ubicacion actual", Toast.LENGTH_LONG).show();
 
         }
         mFusedLocationClient.getLastLocation()
@@ -292,7 +292,10 @@ public class NewPostActivity extends AppCompatActivity {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(data, this);
-                Ubicacion = (String) place.getAddress();
+                Ubicacion = (String) place.getName();
+                if(Ubicacion.length() == 0){
+                    Ubicacion = (String) place.getAddress();
+                }
                 locButton.setText(Ubicacion);
                 Ubicacion = Ubicacion +","+ place.getLatLng().toString();
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {

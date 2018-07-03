@@ -137,23 +137,22 @@
                     android:textSize="18dp"
                     />
 
-                <Button
-                    android:id="@+id/locationButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="5dp"
-                    android:drawableLeft="@drawable/ic_place_accent_24dp"
-                    android:drawablePadding="12dp"
-                    android:text="ubicacion"
-                    android:textColor="@color/greyLetter"
-                    android:backgroundTint="@color/colorPrimary"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-
             </LinearLayout>
+
+            <Button
+                android:id="@+id/locationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:drawableLeft="@drawable/ic_place_accent_24dp"
+                android:drawablePadding="12dp"
+                android:text="ubicación"
+                android:textColor="@color/greyLetter"
+                android:backgroundTint="@color/colorPrimary"
+                style="?android:attr/borderlessButtonStyle"
+                />
 
 
         </LinearLayout>

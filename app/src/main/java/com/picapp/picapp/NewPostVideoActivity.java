@@ -166,7 +166,7 @@ public class NewPostVideoActivity extends AppCompatActivity {
         //Chequeo de permisos(no es necesario pero android studio se queja)
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            Toast.makeText(NewPostVideoActivity.this, "Error al obtener permisos para la ubicacion actual", Toast.LENGTH_LONG).show();
+            //Toast.makeText(NewPostVideoActivity.this, "Error al obtener permisos para la ubicacion actual", Toast.LENGTH_LONG).show();
 
         }
         mFusedLocationClient.getLastLocation()
