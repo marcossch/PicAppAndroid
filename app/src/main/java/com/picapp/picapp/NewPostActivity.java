@@ -196,19 +196,19 @@ public class NewPostActivity extends AppCompatActivity {
         //Chequeo de permisos(no es necesario pero android studio se queja)
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            //Toast.makeText(NewPostActivity.this, "Error al obtener permisos para la ubicacion actual", Toast.LENGTH_LONG).show();
+            Toast.makeText(NewPostActivity.this, "Error al obtener permisos para la ubicacion actual", Toast.LENGTH_LONG).show();
 
         }
         mFusedLocationClient.getLastLocation()
-            .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    if (location != null) {
-                        latActual = location.getLatitude();
-                        longActual = location.getLatitude();
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            latActual = location.getLatitude();
+                            longActual = location.getLatitude();
+                        }
                     }
-                }
-            });
+                });
 
         locButton = findViewById(R.id.locationButton);
         locButton.setOnClickListener(new View.OnClickListener() {
@@ -292,10 +292,7 @@ public class NewPostActivity extends AppCompatActivity {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(data, this);
-                Ubicacion = (String) place.getName();
-                if(Ubicacion.length() == 0){
-                    Ubicacion = (String) place.getAddress();
-                }
+                Ubicacion = (String) place.getAddress();
                 locButton.setText(Ubicacion);
                 Ubicacion = Ubicacion +","+ place.getLatLng().toString();
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
@@ -407,42 +404,42 @@ public class NewPostActivity extends AppCompatActivity {
 
     private void storeFirestore(final StoryResult story) {
 
-                Map<String, Object> postMap = new HashMap<>();
-                postMap.put("image_id", story.getStoryId());
-                postMap.put("image", story.getMedia());
-                postMap.put("thumb", "thumbUri");
-                postMap.put("user_id", user_id);
-                postMap.put("timestamp", story.getTimestamp());
-                postMap.put("description", story.getDescription());
-                postMap.put("title", story.getTitle());
-                postMap.put("location", story.getLocation());
-                postMap.put("isPrivate", story.getIsPrivate());
+        Map<String, Object> postMap = new HashMap<>();
+        postMap.put("image_id", story.getStoryId());
+        postMap.put("image", story.getMedia());
+        postMap.put("thumb", "thumbUri");
+        postMap.put("user_id", user_id);
+        postMap.put("timestamp", story.getTimestamp());
+        postMap.put("description", story.getDescription());
+        postMap.put("title", story.getTitle());
+        postMap.put("location", story.getLocation());
+        postMap.put("isPrivate", story.getIsPrivate());
 
-                //cada usuario tiene su propio documento
-                firebaseFirestore.collection("Stories").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentReference> task) {
+        //cada usuario tiene su propio documento
+        firebaseFirestore.collection("Stories").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
 
-                        if (task.isSuccessful()) {
+                if (task.isSuccessful()) {
 
-                            //escondo la barra de progreso
-                            newPostProgress.setVisibility(View.INVISIBLE);
-                            sendToProfile();
+                    //escondo la barra de progreso
+                    newPostProgress.setVisibility(View.INVISIBLE);
+                    sendToProfile();
 
-                        } else {
+                } else {
 
-                            String error = task.getException().getMessage();
-                            Toast.makeText(NewPostActivity.this, "FIRESTORE Error: " + error, Toast.LENGTH_LONG).show();
+                    String error = task.getException().getMessage();
+                    Toast.makeText(NewPostActivity.this, "FIRESTORE Error: " + error, Toast.LENGTH_LONG).show();
 
-                            //elimino la story del server
-                            serverDeleteStory(story);
+                    //elimino la story del server
+                    serverDeleteStory(story);
 
-                            //escondo la barra de progreso
-                            newPostProgress.setVisibility(View.INVISIBLE);
-                        }
+                    //escondo la barra de progreso
+                    newPostProgress.setVisibility(View.INVISIBLE);
+                }
 
-                    }
-                });
+            }
+        });
 
     }
 
