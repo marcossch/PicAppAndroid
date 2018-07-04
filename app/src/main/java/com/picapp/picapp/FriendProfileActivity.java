@@ -1,31 +1,34 @@
 package com.picapp.picapp;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.picapp.picapp.AndroidModels.FeedRecyclerAdapter;
+import com.picapp.picapp.AndroidModels.FeedStory;
 import com.picapp.picapp.AndroidModels.Picapp;
 import com.picapp.picapp.Interfaces.WebApi;
+import com.picapp.picapp.Models.Comment;
 import com.picapp.picapp.Models.FriendshipResponse;
-import com.picapp.picapp.Models.FriendshipStatus;
-
-import org.w3c.dom.Text;
+import com.picapp.picapp.Models.Story;
+import com.picapp.picapp.Models.UserProfile;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,30 +36,32 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class OtherProfileActivity extends AppCompatActivity {
+public class FriendProfileActivity extends AppCompatActivity {
 
+    private FloatingActionButton fab;
     private String name;
-    private String id;
-    private String pic;
-    private String latlng="";
-    private String status;
-    private FirebaseFirestore firebaseFirestore;
-    private android.support.design.widget.FloatingActionButton addFriendsBtn;
-    private android.support.design.widget.FloatingActionButton deleteFriendsBtn;
-    private FirebaseUser currentUser;
-    private ArrayList<String> recibidas;
-    private ArrayList<String> enviadas;
-    private Retrofit retrofit;
+    private String picURL;
+    private ImageView fotoP;
+    private TextView amigos;
+    private TextView publicaciones;
     private android.support.v7.widget.Toolbar mainToolbar;
+    private String username;
+    private String latlng="";
+    private String user_id;
 
     private RecyclerView profile_list_view;
     private List<FeedStory> profile_list;
     private FeedRecyclerAdapter profileRecyclerAdapter;
+    private ImageButton mapBtn;
+    private Retrofit retrofit;
+    private FloatingActionButton addPostButton;
+    private android.support.design.widget.FloatingActionButton deleteFriendsBtn;
+    Intent sendTo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_other_profile);
+        setContentView(R.layout.activity_friend_profile);
 
         //levanta la toolbar
         mainToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.main_toolbar);
@@ -64,121 +69,54 @@ public class OtherProfileActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("PicApp");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //Levanto el token desde la applicacion.
+        //levanto el token
         final Picapp picapp = Picapp.getInstance();
         final String token = picapp.getToken();
 
         if(token == null) {
-            Log.d("TOKEN: ", "-----> El token es Null. <-----");
+            Intent mainIntent = new Intent(FriendProfileActivity.this, MainActivity.class);
+            sendTo(mainIntent);
         }
 
-        //Inicializaciones:
-        firebaseFirestore = FirebaseFirestore.getInstance();
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        retrofit = new Retrofit.Builder()
-                .baseUrl(WebApi.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        final WebApi webApi = retrofit.create(WebApi.class);
+        //levantamos la foto default
+        fotoP = findViewById(R.id.contenedorFotoPerfil);
+        fotoP.setImageDrawable(getDrawable(R.drawable.cameranext));
 
-        recibidas = new ArrayList<>();
-        enviadas = new ArrayList<>();
+        //levanto la cantidad de publicaciones y amigos
+        amigos = findViewById(R.id.frdNumber);
+        publicaciones = findViewById(R.id.pubNumber);
 
-        //Setteo los parametros pasados por parametro
-        setParams();
-        //Agrego los parametros al nuevo perfil
-        TextView nameView = findViewById(R.id.userName);
-        nameView.setText(this.name);
-        ImageView imgView = findViewById(R.id.contenedorFotoPerfil);
-        Glide.with(this).load(this.pic).into(imgView);
+        //Agarro los atributos desde firebase
+        user_id = getIntent().getStringExtra("id");
 
-        //Obtengo los botones de solicitudes
-        addFriendsBtn = findViewById(R.id.agregarAmigos);
-        deleteFriendsBtn = findViewById(R.id.borrarAmigos);
-
-        //levanto el nombre del usuario
-        Call<FriendshipStatus> friendshipStatus = webApi.getFriendshipStatus(id, token, "Application/json");
-        friendshipStatus.enqueue(new Callback<FriendshipStatus>() {
+        mapBtn = findViewById(R.id.mapButton);
+        mapBtn.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onResponse(Call<FriendshipStatus> call, Response<FriendshipStatus> response) {
-                status = response.body().getState();
-                setButtonConditions(status);
-            }
-
-            @Override
-            public void onFailure(Call<FriendshipStatus> call, Throwable t) {
-                Log.d("FRIENDSHIP STATUS", "-----> No se pudo obtener el estado de amistad <-----");
+            public void onClick(View v){
+                sendToMap();
             }
         });
 
-        addFriendsBtn.setOnClickListener(new View.OnClickListener() {
+        //Click en el boton de amigos te lleva a ver tus amigos
+        Button friends = (Button) findViewById(R.id.frdNumber);
+
+        //Boton para agregar un post
+        //FloatingActionButton addPostButton = (FloatingActionButton) findViewById(R.id.agregarFoto);
+
+        friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Call<FriendshipResponse> friendshipResponse = webApi.postFriendship(id, token, "Application/json");
-                friendshipResponse.enqueue(new Callback<FriendshipResponse>() {
 
-                    @Override
-                    public void onResponse(Call<FriendshipResponse> call, Response<FriendshipResponse> response) {
-                        //levanto el nombre del usuario
-                        Call<FriendshipStatus> friendshipStatus = webApi.getFriendshipStatus(id, token, "Application/json");
-                        friendshipStatus.enqueue(new Callback<FriendshipStatus>() {
-                            @Override
-                            public void onResponse(Call<FriendshipStatus> call, Response<FriendshipStatus> response) {
-                                final Response<FriendshipStatus> finalResp = response;
-                                // Send notification
-                                HashMap<String, String> notificationData = new HashMap<>();
-                                notificationData.put("from", currentUser.getUid());
-                                firebaseFirestore.collection("Notifications")
-                                        .document("request")
-                                        .collection(id)
-                                        .document(UUID.randomUUID().toString())
-                                        .set(notificationData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        status = finalResp.body().getState();
-                                        setButtonConditions(status);
-                                        if(status.contains("friends")){
-                                            sendToFeed();
-                                        }
-                                    }
-                                });
+                Intent friendsIntent = new Intent(FriendProfileActivity.this, FriendsActivity.class);
+                friendsIntent.putExtra("id",user_id);
+                sendTo(friendsIntent);
 
-                            }
-
-                            @Override
-                            public void onFailure(Call<FriendshipStatus> call, Throwable t) {
-                                Log.d("FRIENDSHIP STATUS", "-----> No se pudo obtener el estado de amistad <-----");
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onFailure(Call<FriendshipResponse> call, Throwable t) {
-                        Log.d("ADD FRIEND", "-----> No se pudo enviar la solicitud de amistad <-----");
-                    }
-                });
             }
         });
 
-        deleteFriendsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Call<FriendshipResponse> friendshipResponse = webApi.deleteFriendship(id, token, "Application/json");
-                friendshipResponse.enqueue(new Callback<FriendshipResponse>() {
-                    @Override
-                    public void onResponse(Call<FriendshipResponse> call, Response<FriendshipResponse> response) {
-                        setButtonConditions("not_friends");
-                    }
 
-                    @Override
-                    public void onFailure(Call<FriendshipResponse> call, Throwable t) {
-                        Log.d("DELETE FRIEND", "-----> No se pudo cancelar la amistad <-----");
-                    }
-                });
-            }
-        });
-        
-        //PUBLICACIONES
+        //-------------levanto las publicaciones del usuario--------------
+
         //levanto la lista de visualizacion de stories
         profile_list_view = (RecyclerView) findViewById(R.id.profile_list_view);
 
@@ -186,15 +124,29 @@ public class OtherProfileActivity extends AppCompatActivity {
         profile_list = new ArrayList<>();
         profileRecyclerAdapter = new FeedRecyclerAdapter(profile_list);
         profileRecyclerAdapter.setToken(token);
-        profile_list_view.setLayoutManager(new LinearLayoutManager(OtherProfileActivity.this));
+        profile_list_view.setLayoutManager(new LinearLayoutManager(FriendProfileActivity.this));
         profile_list_view.setAdapter(profileRecyclerAdapter);
-        
-        Call<UserProfile> call = webApi.getUserProfile(id, token, "Application/json");
+
+        //creo retrofit que es la libreria para manejar Apis
+        retrofit = new Retrofit.Builder()
+                .baseUrl(WebApi.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        final WebApi webApi = retrofit.create(WebApi.class);
+
+        Call<UserProfile> call = webApi.getUserProfile(user_id, token, "Application/json");
         call.enqueue(new Callback<UserProfile>() {
             @Override
             public void onResponse(Call<UserProfile> call, Response<UserProfile> response) {
 
                 UserProfile userP = response.body();
+                //levanto la info del usuario
+                name = userP.getName();
+                changeProfileName();
+                picURL = userP.getProfilePic();
+                changeProfilePic();
+                amigos.setText(userP.getNumberOfFriends().toString());
+                publicaciones.setText(userP.getNumberOfStories().toString());
                 username = userP.getUsername();
 
                 List<Story> stories = userP.getStories();
@@ -205,8 +157,8 @@ public class OtherProfileActivity extends AppCompatActivity {
                     feedStory.setImage(story.getMedia());
                     feedStory.setTimestamp(story.getTimestamp());
                     feedStory.setTitle(story.getTitle());
-                    feedStory.setUser_id(id);
-                    feedStory.setProfPic(pic);
+                    feedStory.setUser_id(story.getUsername());
+                    feedStory.setProfPic(picURL);
                     feedStory.setImage_id(story.getStory_id());
                     feedStory.setName(name);
 
@@ -248,6 +200,27 @@ public class OtherProfileActivity extends AppCompatActivity {
                 Toast.makeText(FriendProfileActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+        //Preparo las cosas para el delete
+        deleteFriendsBtn = findViewById(R.id.borrarAmigos);
+        final String id = getIntent().getStringExtra("id");
+
+        deleteFriendsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Call<FriendshipResponse> friendshipResponse = webApi.deleteFriendship(id, token, "Application/json");
+                friendshipResponse.enqueue(new Callback<FriendshipResponse>() {
+                    @Override
+                    public void onResponse(Call<FriendshipResponse> call, Response<FriendshipResponse> response) {
+                        sendToFeed();
+                    }
+
+                    @Override
+                    public void onFailure(Call<FriendshipResponse> call, Throwable t) {
+                        Log.d("DELETE FRIEND", "-----> No se pudo cancelar la amistad <-----");
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -256,55 +229,6 @@ public class OtherProfileActivity extends AppCompatActivity {
 
         getMenuInflater().inflate(R.menu.friends_menu, menu);
         return true;
-    }
-
-    public void setParams(){
-        Intent myIntent = getIntent(); // gets the previously created intent
-        String userName = myIntent.getStringExtra("name");
-        this.name = userName;
-        String profilePic = myIntent.getStringExtra("pic");
-        this.pic = profilePic;
-        String id = myIntent.getStringExtra("id");
-        this.id = id;
-    }
-
-    public void setButtonConditions(String state) {
-        TextView aux = findViewById(R.id.instrucciones);
-        aux.setText("");
-        switch(state){
-            //Cuando no son amigos, lo unico que podes hacer es enviarla
-            case "not_friends":
-                deleteFriendsBtn.setVisibility(View.INVISIBLE);
-                deleteFriendsBtn.setClickable(false);
-                addFriendsBtn.setVisibility(View.VISIBLE);
-                addFriendsBtn.setClickable(true);
-                break;
-
-            //Cuando recibiste una, podes eliminarla o aceptarla
-            case "received":
-                Toast.makeText(OtherProfileActivity.this, "El usuario "+name+" te envio una solicitud de amistad.", Toast.LENGTH_LONG).show();
-                aux.setText("Puedes aceptar la solicitud de amistad con el boton verde, o eliminarla con el rojo");
-                deleteFriendsBtn.setVisibility(View.VISIBLE);
-                deleteFriendsBtn.setClickable(true);
-                addFriendsBtn.setVisibility(View.VISIBLE);
-                addFriendsBtn.setClickable(true);
-                break;
-
-            //Cuando son amigos o la enviaste, lo unico que podes hacer es eliminarla
-            case "sent":
-                deleteFriendsBtn.setVisibility(View.VISIBLE);
-                deleteFriendsBtn.setClickable(true);
-                addFriendsBtn.setVisibility(View.INVISIBLE);
-                addFriendsBtn.setClickable(false);
-                break;
-
-            case "friends":
-                deleteFriendsBtn.setVisibility(View.VISIBLE);
-                deleteFriendsBtn.setClickable(true);
-                addFriendsBtn.setVisibility(View.INVISIBLE);
-                addFriendsBtn.setClickable(false);
-                break;
-        }
     }
 
     @Override
@@ -322,12 +246,41 @@ public class OtherProfileActivity extends AppCompatActivity {
         return false;
     }
 
-    //--------------Metodos Privados-------------//
 
     private void sendToFeed() {
-        Intent feedIntent = new Intent(OtherProfileActivity.this, FeedActivity.class);
-        startActivity(feedIntent);
+        String from = getIntent().getStringExtra("from");
+        if(from.contains("profile")){
+            Log.d("FRIEND PROFILE", "-----> VOLVEMOS A EL PERFIL <-----");
+            sendTo =  new Intent(FriendProfileActivity.this, ProfileActivity.class);
+        } else{
+            Log.d("FRIEND PROFILE", "-----> VOLVEMOS AL FEED <-----");
+            sendTo =  new Intent(FriendProfileActivity.this, FeedActivity.class);
+        }
+        startActivity(sendTo);
         finish();
+    }
+
+    //--------------Metodos Privados-------------//
+
+    private void sendTo(Intent intent) {
+        startActivity(intent);
+    }
+
+    private void sendToMap() {
+        Intent mapIntent = new Intent(FriendProfileActivity.this, MapsActivity.class);
+        mapIntent.putExtra("LatLong", latlng);
+        mapIntent.putExtra("id",user_id);
+        startActivity(mapIntent);
+        finish();
+    }
+
+    private void changeProfileName() {
+        TextView txtCambiado = (TextView)findViewById(R.id.userName);
+        txtCambiado.setText(name);
+    }
+
+    private void changeProfilePic(){
+        Glide.with(FriendProfileActivity.this).load(picURL).into(fotoP);
     }
 
 }
