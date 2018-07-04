@@ -278,6 +278,9 @@ public class NewPostActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(this, data);
                 Ubicacion = (String) place.getName();
+                if(Ubicacion.length() == 0){
+                    Ubicacion = (String) place.getAddress();
+                };
                 locButton.setText(Ubicacion);
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
@@ -292,9 +295,13 @@ public class NewPostActivity extends AppCompatActivity {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(data, this);
-                Ubicacion = (String) place.getAddress();
+                Ubicacion = (String) place.getName();
+                if(Ubicacion.length() == 0){
+                    Ubicacion = (String) place.getAddress();
+                }
                 locButton.setText(Ubicacion);
                 Ubicacion = Ubicacion +","+ place.getLatLng().toString();
+                Toast.makeText(NewPostActivity.this, "Ubic(new post) + coord: "+Ubicacion, Toast.LENGTH_LONG).show();
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
                 Log.d(TAG, status.getStatusMessage());

@@ -172,12 +172,14 @@ public class FriendProfileActivity extends AppCompatActivity {
                     if(parts.length >= 3){
                         loc += ", "+parts[2];
                     }
+                    Toast.makeText(FriendProfileActivity.this, "ubicacion seteada: "+loc, Toast.LENGTH_LONG).show();
                     feedStory.setLocation(loc);
                     if(parts.length>2) {
                         String lat = parts[parts.length - 2].substring(10, parts[parts.length - 2].length());
                         String lng = parts[parts.length - 1].substring(0, parts[parts.length - 1].length() - 1);
                         latlng = latlng + lat + "," + lng + ";";
                     }
+                    Toast.makeText(FriendProfileActivity.this, "latlng: "+ latlng, Toast.LENGTH_LONG).show();
                     Map<String, String> reactions = story.getReactions();
                     ArrayList<Comment> coments = story.getComments();
 
