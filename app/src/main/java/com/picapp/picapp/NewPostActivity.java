@@ -301,7 +301,7 @@ public class NewPostActivity extends AppCompatActivity {
                 }
                 locButton.setText(Ubicacion);
                 Ubicacion = Ubicacion +","+ place.getLatLng().toString();
-                Toast.makeText(NewPostActivity.this, "Ubic(new post) + coord: "+Ubicacion, Toast.LENGTH_LONG).show();
+                //Toast.makeText(NewPostActivity.this, "Ubic(new post) + coord: "+Ubicacion, Toast.LENGTH_LONG).show();
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
                 Log.d(TAG, status.getStatusMessage());
