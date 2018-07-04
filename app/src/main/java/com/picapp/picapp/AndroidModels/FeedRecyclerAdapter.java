@@ -124,7 +124,9 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
         String dateString = formatter.format(new Date(milliseconds));
 
         holder.setDescText(desc_data);
-        holder.setLocation(location_data);
+
+        String[] location = location_data.split(",");
+        holder.setLocation(location[0]);
         holder.setTitleText(title_data);
         holder.setDate(dateString);
         holder.setProfileImage(profilePic);

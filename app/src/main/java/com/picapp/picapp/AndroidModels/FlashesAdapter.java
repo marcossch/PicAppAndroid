@@ -83,7 +83,6 @@ public class FlashesAdapter extends PagerAdapter {
 //        }
 
         name.setText(listFlasesName.get(position));
-        location.setText(listFlasesLocation.get(position));
         date.setText(listFlasesDate.get(position));
         container.addView(view);
         return view;

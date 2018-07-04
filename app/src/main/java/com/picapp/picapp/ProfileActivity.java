@@ -229,7 +229,7 @@ public class ProfileActivity extends AppCompatActivity {
                         if (parts.length >= 3) {
                             loc += ", " + parts[2];
                         }
-                        feedStory.setLocation(loc);
+                        feedStory.setLocation(ubicacion);
                         if (parts.length > 2) {
                             String lat = parts[parts.length - 2].substring(10, parts[parts.length - 2].length());
                             String lng = parts[parts.length - 1].substring(0, parts[parts.length - 1].length() - 1);
