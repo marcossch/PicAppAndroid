@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private MapView mapView;
+    private String TAG = "MAPS";
     private GoogleMap gmap;
     private android.support.v7.widget.Toolbar mainToolbar;
 
@@ -126,6 +127,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Double cLng = 0.0;
         for(String ll : latlng){
             String[] auxLL = ll.split(",");
+            if(ll.contains("res")){
+                continue;
+            }
             Double lat = Double.parseDouble(auxLL[0]);
             Double lng = Double.parseDouble(auxLL[1]);
             cLat += lat;
