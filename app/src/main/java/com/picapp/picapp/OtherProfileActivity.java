@@ -3,6 +3,8 @@ package com.picapp.picapp;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,15 +18,22 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.picapp.picapp.AndroidModels.FeedRecyclerAdapter;
+import com.picapp.picapp.AndroidModels.FeedStory;
 import com.picapp.picapp.AndroidModels.Picapp;
 import com.picapp.picapp.Interfaces.WebApi;
+import com.picapp.picapp.Models.Comment;
 import com.picapp.picapp.Models.FriendshipResponse;
 import com.picapp.picapp.Models.FriendshipStatus;
+import com.picapp.picapp.Models.Story;
+import com.picapp.picapp.Models.UserProfile;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import retrofit2.Call;
@@ -195,7 +204,6 @@ public class OtherProfileActivity extends AppCompatActivity {
             public void onResponse(Call<UserProfile> call, Response<UserProfile> response) {
 
                 UserProfile userP = response.body();
-                username = userP.getUsername();
 
                 List<Story> stories = userP.getStories();
                 for (Story story : stories){
@@ -245,7 +253,7 @@ public class OtherProfileActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<UserProfile> call, Throwable t) {
-                Toast.makeText(FriendProfileActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(OtherProfileActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
