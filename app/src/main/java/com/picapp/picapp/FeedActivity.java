@@ -157,7 +157,7 @@ public class FeedActivity extends AppCompatActivity {
                         if (parts.length >= 3) {
                             loc += ", " + parts[2];
                         }
-                        feedStory.setLocation(loc);
+                        feedStory.setLocation(ubicacion);
 
                         Map<String, String> reactions = story.getReactions();
                         ArrayList<Comment> coments = story.getComments();

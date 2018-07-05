@@ -308,8 +308,6 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
                     //si el usuario ya reacciono, no puede volver a reaccionar
                     if (!reactions.containsKey(user_id)) {
 
-                        Toast.makeText(context, "aca", Toast.LENGTH_LONG).show();
-
                         final Reaction reaction = new Reaction();
                         reaction.setReactingUserId(user_id);
                         reaction.setReaction("boring");
