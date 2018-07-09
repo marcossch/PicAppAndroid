@@ -9,7 +9,7 @@ android:layout_height="match_parent">
     <ImageView
         android:id="@+id/signinBac"
         android:layout_width="match_parent"
-        android:layout_height="566dp"
+        android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:src="@drawable/background" />
 

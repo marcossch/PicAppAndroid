@@ -87,9 +87,8 @@
                     android:layout_weight="0.1"
                     android:clickable="true"
                     android:tint="@color/colorPrimary"
-                    android:backgroundTint="#FF3688AE"
+                    app:backgroundTint="#FF3688AE"
                     app:srcCompat="@drawable/baseline_add_black_48dp" />
-
                 <!--<TextView-->
                 <!--android:id="@+id/userDescription"-->
                 <!--android:layout_width="match_parent"-->
